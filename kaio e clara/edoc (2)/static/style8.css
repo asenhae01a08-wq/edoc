@@ -1,0 +1,176 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#1436b3,#1f49d8);
+color:white;
+}
+
+.container{
+width:420px;
+text-align:center;
+}
+
+.logo{
+width:100px;
+height:100px;
+background:white;
+border-radius:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:0 auto 20px;
+font-size:50px;
+color:#1f49d8;
+}
+
+h1{
+font-size:25px;
+margin-bottom:25px;
+}
+
+.cadeado{
+width:80px;
+height:80px;
+border:2px solid white;
+border-radius:50%;
+display:flex;
+justify-content:center;
+align-items:center;
+margin:0 auto 20px;
+font-size:35px;
+}
+
+h2{
+margin-bottom:15px;
+font-size:36px;
+}
+
+p{
+font-size:18px;
+line-height:1.5;
+margin-bottom:30px;
+}
+
+.btn-voltar {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+
+    background-color: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+}
+
+.btn-voltar:hover{
+background-color: rgba(255,255,255,0.25);
+}
+.input-box{
+position:relative;
+margin-bottom:25px;
+}
+
+.input-box input{
+width:100%;
+padding:18px 20px 18px 55px;
+border:2px solid rgba(255,255,255,0.7);
+border-radius:40px;
+background:transparent;
+color:white;
+font-size:18px;
+outline:none;
+}
+
+.input-box input::placeholder{
+color:#ddd;
+}
+
+.input-box span{
+position:absolute;
+left:20px;
+top:50%;
+transform:translateY(-50%);
+font-size:22px;
+}
+
+.btn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:40px;
+font-size:22px;
+font-weight:bold;
+color:white;
+cursor:pointer;
+background:linear-gradient(to right,#4b8cff,#70c2ff);
+box-shadow:0 8px 15px rgba(0,0,0,.25);
+transition:.3s;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+}
+
+.ou{
+display:flex;
+align-items:center;
+gap:15px;
+margin:30px 0;
+}
+
+.ou::before,
+.ou::after{
+content:"";
+flex:1;
+height:1px;
+background:rgba(255,255,255,.5);
+}
+
+.voltar{
+width:100%;
+padding:16px;
+border:2px solid rgba(255,255,255,.8);
+border-radius:40px;
+background:transparent;
+color:white;
+font-size:20px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.voltar:hover{
+background:rgba(255,255,255,.1);
+}
+
+.login{
+margin-top:35px;
+font-size:18px;
+}
+
+.login a{
+color:#9fd0ff;
+text-decoration:none;
+font-weight:bold;
+}
+
+.mensagem{
+margin-top:20px;
+font-size:16px;
+}
