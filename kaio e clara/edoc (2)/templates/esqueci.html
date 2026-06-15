@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>eDOC
 Recuperar Senha</title>
-<link rel="stylesheet" href="style8.css">
+  <link rel="stylesheet" href="{{url_for('static',filename='style8.css')}}">
 </head>
 <body>
 
@@ -14,7 +14,7 @@ Recuperar Senha</title>
 <div class="logo"><logo class="png"></logo></div>
 
 <button class="btn-voltar" onclick="history.back()">
-<a href="index.html">  </a>
+<a href="/index"> <- </a>
 </button>
 
 <h1>eDOC</h1>
@@ -34,17 +34,3 @@ um link para redefinir sua senha.
 <button class="btn" onclick="enviarEmail()">
 ENVIAR
 </button>
-
-
-
-
-
-
-<div class="mensagem" id="mensagem"></div>
-
-</div>
-
-<script src="script7.js"></script>
-
-</body>
-</html>

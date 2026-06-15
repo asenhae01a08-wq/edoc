@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>eDOC
 Acesso do Funcionário</title>
-<link rel="stylesheet" href="style2.css">
+  <link rel="stylesheet" href="{{url_for('static',filename='style2.css')}}">
 <!--Ícones -->
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"&gt;
@@ -45,7 +45,7 @@ placeholder="Digite sua senha" required>
 <button type="submit">ENTRAR</button>
 
 <a href="#" class="forgot">
-<a href="esqueci.html">esqueci minha senha</a>
+<a href="/esqueci">esqueci minha senha</a>
 </a>
 
 </form>
