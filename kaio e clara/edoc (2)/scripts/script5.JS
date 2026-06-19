@@ -12,13 +12,11 @@ this.value = cpf;
 
 document.getElementById("formAluno").addEventListener("submit", function(event){
 
-event.preventDefault();
-
-let nome = document.getElementById("nome").value;
-let matricula = document.getElementById("matricula").value;
-let cpf = document.getElementById("cpf").value;
-let email = document.getElementById("email").value;
-let dataNascimento = document.getElementById("dataNascimento").value;
+let nome = document.getElementById("nome").value.trim;
+let matricula = document.getElementById("matricula").value.trim;
+let cpf = document.getElementById("cpf").value.trim;
+let email = document.getElementById("email").value.trim;
+let dataNascimento = document.getElementById("dataNascimento").value.trim;
 
 if(
 nome.trim() === "" ||
@@ -33,17 +31,8 @@ return;
 
 if(cpf.length !== 14){
 alert("Digite um CPF válido!");
+event.preventDefault();
 return;
 }
-
-alert("Aluno cadastrado com sucesso!");
-
-console.log("Nome:", nome);
-console.log("Matrícula:", matricula);
-console.log("CPF:", cpf);
-console.log("Email:", email);
-console.log("Data de nascimento:", dataNascimento);
-
-document.getElementById("formAluno").reset();
 
 });
