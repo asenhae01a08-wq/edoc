@@ -1,1 +1,1 @@
-from usuarioBD import verificarLogin
+from models.usuarioBD import verificarLogin
