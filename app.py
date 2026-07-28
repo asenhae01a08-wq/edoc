@@ -36,45 +36,6 @@ def login_required_aluno(f):
         
     return decorated_function
 
-# @app.route('/adicionar_aluno', methods=['POST'])
-# def adicionar_aluno():
-#     nome = request.form.get('nome')
-#     matricula = request.form.get('matricula')
-#     cpf = request.form.get('cpf')
-#     email = request.form.get('email')
-#     data_nascimento = request.form.get('dataNascimento')
-
-#     # Validações
-#     if not all([nome, matricula, cpf, email, data_nascimento]):
-#         flash('Todos os campos são obrigatórios!', 'error')
-#         return redirect(url_for('index'))   # volta pro index por enquanto
-
-#     if len(cpf) != 14:
-#         flash('CPF inválido! Deve ter 14 caracteres (com pontuação).', 'error')
-#         return redirect(url_for('index'))
-
-#     try:
-#         conectar = conectar_db()
-#         cursor = conectar.cursor()
-
-#         cursor.execute("""
-#             INSERT INTO aluno (nome, matricula, cpf, email, data_nascimento)
-#             VALUES (?, ?, ?, ?, ?)
-#         """, (nome, matricula, cpf, email, data_nascimento))
-
-#         conectar.commit()
-#         conectar.close()
-
-#         flash('Aluno cadastrado com sucesso!', 'success')
-#         return redirect(url_for('index'))
-
-#     except sqlite3.IntegrityError:
-#         flash('Matrícula ou CPF já cadastrado!', 'error')
-#         return redirect(url_for('index'))
-#     except Exception as e:
-#         flash(f'Erro ao cadastrar: {str(e)}', 'error')
-#         return redirect(url_for('index'))
-    
 @app.route("/login")
 def login():
     return render_template("login.html")
@@ -109,18 +70,24 @@ def esqueci():
 def suorte():
     return render_template("suorte.html")
 
-@app.route("/login", methods=['POST'])
-def realizarLoigin():
-    email = request.form.get("email")
-    senha = request.form.get("senha")
+@app.route("/", methods=["GET", "POST"])
+def login1():
+    if request.method == "POST":
+        email = request.form.get("email")
+        senha = request.form.get("senha")
 
-    usuario = models.verificarLogin(email, senha)
-    if usuario == None:
-        redirect(url_for('login'))
-    else:
-        session['nivel'] = usuario['cargo_nivel']
-        session['nome'] = usuario['nome']
-        if(session['nivel'] == "Profissional"):
-            redirect(url_for('inicialp'))
-        else:
-            redirect(url_for('iniciala'))
+        usuario = models.verificarLogin(email, senha)
+
+        if usuario is None:
+            flash("E-mail ou senha inválidos.")
+            return redirect(url_for("login"))
+
+        session["nivel"] = usuario["cargo_nivel"]
+        session["nome"] = usuario["nome"]
+
+        if session["nivel"] == "Profissional":
+            return redirect(url_for("inicialp"))
+
+        return redirect(url_for("iniciala"))
+
+    return render_template("login.html")
