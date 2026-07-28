@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `ficha19` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `ficha19`;
--- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.46, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ficha19
 -- ------------------------------------------------------
--- Server version	8.0.45
+-- Server version	8.0.46
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -48,7 +46,7 @@ CREATE TABLE `alunos` (
   KEY `curso_id` (`curso_id`),
   CONSTRAINT `alunos_ibfk_1` FOREIGN KEY (`escola_id`) REFERENCES `escolas` (`id`),
   CONSTRAINT `alunos_ibfk_2` FOREIGN KEY (`curso_id`) REFERENCES `cursos` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -57,7 +55,7 @@ CREATE TABLE `alunos` (
 
 LOCK TABLES `alunos` WRITE;
 /*!40000 ALTER TABLE `alunos` DISABLE KEYS */;
-INSERT INTO `alunos` VALUES (1,'Rodrigo de Souza Silva Junior','3674783','2008-01-05',NULL,NULL,NULL,NULL,'Brasileira',NULL,NULL,NULL,NULL,NULL,NULL,1,'2026-06-01 12:27:19'),(2,'Rodrigo de Souza Silva Junior','3674783','2008-01-05','3º TDS A',NULL,NULL,NULL,'Brasileira',NULL,NULL,NULL,NULL,NULL,NULL,1,'2026-06-01 12:27:19');
+INSERT INTO `alunos` VALUES (1,'Rodrigo de Souza Silva Junior','3674783','2008-01-05','3º TDS A',NULL,NULL,NULL,'Brasileira',NULL,NULL,NULL,NULL,NULL,NULL,1,'2026-06-01 12:27:19'),(2,'Ana Beatriz Oliveira','3674801','2008-03-14','3º TDS A','438.271.590-11','10234567','SSP/AL','Brasileira','Carlos Henrique Oliveira','Mariana Oliveira Santos','Rua das Palmeiras, 152 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(3,'Gabriel Henrique Souza','3674802','2008-07-29','3º TDS B','527.903.146-20','10234568','SSP/AL','Brasileiro','José Henrique Souza','Luciana Pereira Souza','Rua Boa Vista, 81 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(4,'Maria Eduarda Lima','3674803','2007-11-08','3º MKT A','184.635.902-45','10234569','SSP/AL','Brasileira','Fernando Lima','Patrícia Lima','Av. Fernandes Lima, 245 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(5,'João Pedro Santos','3674804','2009-01-17','3º MKT B','319.728.450-87','10234570','SSP/AL','Brasileiro','Roberto Santos','Eliane dos Santos','Rua São José, 48 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(6,'Larissa Vitória Costa','3674805','2008-05-22','3º TDS A','768.204.513-30','10234571','SSP/AL','Brasileira','Anderson Costa','Cristina Costa','Rua do Sol, 217 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(7,'Lucas Vinicius Almeida','3674806','2007-09-10','3º TDS B','905.361.247-18','10234572','SSP/AL','Brasileiro','Márcio Almeida','Sandra Almeida','Rua Tiradentes, 95 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(8,'Isabela Fernandes Rocha','3674807','2008-12-02','3º MKT A','251.847.396-42','10234573','SSP/AL','Brasileira','Eduardo Rocha','Juliana Fernandes Rocha','Rua Santa Luzia, 430 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(9,'Matheus Cavalcante Silva','3674808','2009-06-18','3º MKT B','682.945.137-54','10234574','SSP/AL','Brasileiro','Cláudio Silva','Rosângela Cavalcante','Rua do Comércio, 312 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(10,'Camila Rodrigues Melo','3674809','2008-08-30','3º TDS A','143.690.825-76','10234575','SSP/AL','Brasileira','Ricardo Melo','Vanessa Rodrigues Melo','Rua Benedito Bentes, 170 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(11,'Felipe Augusto Barros','3674810','2007-04-05','3º TDS B','836.417.259-69','10234576','SSP/AL','Brasileiro','Paulo Barros','Márcia Barros','Rua Pajuçara, 66 - Maceió/AL','3º Ano',1,1,1,'2026-07-28 12:21:31'),(12,'Deyvid Bergson Medeiros Santos','1234567','2008-09-11','3º TDS A','123.456.789-10','01234576','SDS/PE','Brasileiro','Pedro Santos','Iara Medeiros','Rua Indo e Voltando, 96 - Caruaru/PE','3º Ano',1,1,1,'2026-07-28 12:41:11');
 /*!40000 ALTER TABLE `alunos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -70,4 +68,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-08 10:46:52
+-- Dump completed on 2026-07-28 12:45:53
