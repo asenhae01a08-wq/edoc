@@ -56,7 +56,7 @@ def login():
 
         return redirect(url_for("iniciala"))
 
-        return render_template("login.html")
+    return render_template("login.html")
 
 @app.route("/loginprofissional")
 def loginprofissional():
