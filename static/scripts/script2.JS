@@ -54,3 +54,22 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
     }
 
 });
+
+const senha = 
+document.getElementById("senha");
+const toggleSenha = 
+document.getElementById("toggleSenha");
+
+toggleSenha.addEventListener("Click", function(){
+    if(senha.type ==="password"){
+        senha.type = "text";
+
+        toggleSenha.classList.remove("fa-eye");
+        toggleSenha.classList.add("fa-eye-slash");
+       }else{
+        senha.type = "password";
+
+        toggleSenha.classList.remove("fa-eye-slash");
+        toggleSenha.classList.add("fa-eye");
+       }
+});
