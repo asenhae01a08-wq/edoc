@@ -1,5 +1,5 @@
 from models.conexaoBD import conectar_mysql
-import _mysql_connector
+import mysql.connector
 
 def verificarLogin(email, senha):
     conexao = conectar_mysql()

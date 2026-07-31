@@ -38,7 +38,7 @@ def login_required_aluno(f):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-   if request.method == "POST":
+    if request.method == "POST":
         email = request.form.get("email")
         senha = request.form.get("senha")
 
@@ -72,9 +72,7 @@ def iniciala():
 def inicialp():
     return render_template("inicialp.html")
 
-@app.route("/PROFISSIONAL")
-def PROFISSIONAL():
-    return render_template("PROFISSIONAL.html")
+
 
 @app.route("/preenchimento")
 def preenchimento():
