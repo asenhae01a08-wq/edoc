@@ -21,6 +21,9 @@ def verificarLogin(email, senha):
     cursor.execute(query, (email, senha))
     usuario = cursor.fetchone()
 
+    print("Email:", email)
+    print("Senha:", senha)
+    print("Usuario:", usuario)
     cursor.close()
     conexao.close()
 

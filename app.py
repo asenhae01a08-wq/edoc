@@ -72,8 +72,6 @@ def iniciala():
 def inicialp():
     return render_template("inicialp.html")
 
-
-
 @app.route("/preenchimento")
 def preenchimento():
     return render_template("preenchimento.html")
