@@ -9,7 +9,7 @@ def login_required_profissional(f):
     @wraps(f)  # Essential: Preserves function name and docstrings for Flask's routing
     def decorated_function(*args, **kwargs):
         # 1. Pre-request logic (e.g., check headers, log data)
-        if 'nivel' not in session or not session['nivell'] != 'Profissional':
+        if 'nivel' not in session or session['nivel'] != 'Profissional':
             return redirect(url_for('login'))
             
         # 2. Execute the actual route controller
@@ -25,7 +25,7 @@ def login_required_aluno(f):
     @wraps(f)  # Essential: Preserves function name and docstrings for Flask's routing
     def decorated_function(*args, **kwargs):
         # 1. Pre-request logic (e.g., check headers, log data)
-        if 'nivel' not in session or not session['nivell'] != 'Aluno':
+        if 'nivel' not in session or session['nivel'] != 'Aluno':
             return redirect(url_for('login'))
             
         # 2. Execute the actual route controller
@@ -36,8 +36,26 @@ def login_required_aluno(f):
         
     return decorated_function
 
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        senha = request.form.get("senha")
+
+        usuario = models.verificarLogin(email, senha)
+
+        if usuario is None:
+            flash("E-mail ou senha inválidos.")
+            return redirect(url_for("login"))
+
+        session["nivel"] = usuario["cargo_nivel"]
+        session["nome"] = usuario["nome"]
+
+        if session["nivel"] == "Profissional":
+            return redirect(url_for("inicialp"))
+
+        return redirect(url_for("iniciala"))
+
     return render_template("login.html")
 
 @app.route("/loginprofissional")
@@ -53,10 +71,6 @@ def iniciala():
 @login_required_profissional
 def inicialp():
     return render_template("inicialp.html")
-
-@app.route("/PROFISSIONAL")
-def PROFISSIONAL():
-    return render_template("PROFISSIONAL.html")
 
 @app.route("/preenchimento")
 def preenchimento():

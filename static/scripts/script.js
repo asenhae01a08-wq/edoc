@@ -1,8 +1,7 @@
-function aluno(){ 
-    alert("Entrando como aluno");
+const suporte = {
+email: "",
+telefone: ""
+};
 
-}
-function profissional(){ 
-    alert("Entrando como profissional");
-    
-}
+document.getElementById("email").textContent = suporte.email;
+document.getElementById("telefone").textContent = suporte.telefone;

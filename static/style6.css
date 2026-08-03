@@ -3,7 +3,7 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, sans-serif;
+font-family:Arial, Helvetica, sans-serif;
 }
 
 body{
@@ -16,7 +16,7 @@ background:linear-gradient(
 180deg,
 #1d3ec9,
 #2349d8,
-#1e3bbf
+#1f49d8
 );
 
 color:white;
