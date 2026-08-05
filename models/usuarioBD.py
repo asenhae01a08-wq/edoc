@@ -1,3 +1,5 @@
+
+
 from models.conexaoBD import conectar_mysql
 import mysql.connector
 
