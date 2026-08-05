@@ -6,7 +6,7 @@
 <title>eDOC
 Área do Aluno</title>
   <link rel="stylesheet" href="{{url_for('static',filename='style3.css')}}">
-<script src="script3.js" defer></script>
+<script src="{{ url_for('static', filename='script/script3.js') }}" defer></script>
 </head>
 <body>
 <!--Barra Superior -->
@@ -22,16 +22,18 @@
 
 <h1>eDOC</h1>
 
-<h2 id="boasVindas">BEM-VINDO, ALUNO!</h2>
+<h2 id="boasVindas">
+    {{ aluno["nome"].upper() }} 
+</h2>
 
 <p class="subtitulo">
 Acompanhe o status de seus documentos abaixo.
 </p>
 
 <div class="dados-aluno">
-<p><strong>Matrícula:</strong> ...</p>
+<p><strong>Matrícula:</strong> {{ aluno["matricula"] }}
 <p><strong>Curso:</strong> Ensino Médio</p>
-<p><strong>Turma:</strong> ...</p>
+<p><strong>Turma:</strong> {{ aluno["id_turma"] }}
 </div>
 
 <div class="card">
@@ -39,8 +41,8 @@ Acompanhe o status de seus documentos abaixo.
 
 <hr>
 
-<p><strong>FICHA 19:</strong> ...</p>
-<p><strong>CERTIFICADO:</strong> ...</p>
+<p><strong>FICHA 19:</strong> {{ aluno["status_ficha19"] }}</p>
+
 
 <hr>
 

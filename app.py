@@ -48,8 +48,10 @@ def login():
             flash("E-mail ou senha inválidos.")
             return redirect(url_for("login"))
 
-        session["nivel"] = usuario["cargo_nivel"]
+        session["id"] = usuario["id"]
         session["nome"] = usuario["nome"]
+        session["email"] = usuario["email"]
+        session["nivel"] = usuario["cargo_nivel"]
 
         if session["nivel"] == "Profissional":
             return redirect(url_for("inicialp"))
@@ -65,8 +67,17 @@ def loginprofissional():
 @app.route("/iniciala")
 @login_required_aluno
 def iniciala():
-    return render_template("iniciala.html")
 
+    aluno = models.buscar_aluno(session["email"])
+
+    if aluno is None:
+        flash("Aluno não encontrado.")
+        return redirect(url_for("login"))
+
+    return render_template(
+        "iniciala.html",
+        aluno=aluno
+    )
 @app.route("/inicialp")
 @login_required_profissional
 def inicialp():
@@ -84,24 +95,6 @@ def esqueci():
 def suorte():
     return render_template("suorte.html")
 
-@app.route("/", methods=["GET", "POST"])
-def login1():
-    if request.method == "POST":
-        email = request.form.get("email")
-        senha = request.form.get("senha")
-
-        usuario = models.verificarLogin(email, senha)
-
-        if usuario is None:
-            flash("E-mail ou senha inválidos.")
-            return redirect(url_for("login"))
-
-        session["nivel"] = usuario["cargo_nivel"]
-        session["nome"] = usuario["nome"]
-
-        if session["nivel"] == "Profissional":
-            return redirect(url_for("inicialp"))
-
-        return redirect(url_for("iniciala"))
-
-    return render_template("login.html")
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
