@@ -1,36 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eDOC
-Recuperar Senha</title>
-  <link rel="stylesheet" href="{{url_for('static',filename='style8.css')}}">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Recuperar Senha</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style8.css') }}"
+    >
 </head>
+
 <body>
 
-<div class="container">
+    <div class="container">
 
-<div class="logo"><logo class="png"></logo></div>
+        <a
+            href="{{ url_for('login') }}"
+            class="btn-voltar"
+            aria-label="Voltar para o login"
+        >
+            ←
+        </a>
 
-<button class="btn-voltar" onclick="history.back()">
-<a href="/index"> <- </a>
-</button>
+        <div class="logo">
+            <img
+                src="{{ url_for('static', filename='img/logo.png') }}"
+                alt="Logo eDOC"
+            >
+        </div>
 
-<h1>eDOC</h1>
+        <h1>eDOC</h1>
 
-<h2>ESQUECEU SUA SENHA?</h2>
+        <h2>ESQUECEU SUA SENHA?</h2>
 
-<p>
-Digite seu e-mail e enviaremos
-um link para redefinir sua senha.
-</p>
+        <p class="descricao">
+            Digite seu e-mail e enviaremos um link para redefinir sua senha.
+        </p>
 
-<div class="input-box">
-<span>✉</span>
-<input type="email" id="email" placeholder="Digite seu email">
-</div>
+        <form method="POST" action="{{ url_for('esqueci') }}">
 
-<button class="btn" onclick="enviarEmail()">
-ENVIAR
-</button>
+            <div class="input-box">
+                <span>✉</span>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Digite seu e-mail"
+                    required
+                >
+            </div>
+
+            <button class="btn" type="submit">
+                ENVIAR
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>

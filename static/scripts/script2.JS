@@ -73,3 +73,4 @@ toggleSenha.addEventListener("Click", function(){
         toggleSenha.classList.add("fa-eye");
        }
 });
+

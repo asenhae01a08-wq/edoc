@@ -1,138 +1,373 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eDOC</title>
+    <meta charset="UTF-8">
 
-  <link rel="stylesheet" href="{{url_for('static',filename='style6.css')}}">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Área do Profissional</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style13.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
 </head>
+
 <body>
 
-<div class="container">
+    <header class="cabecalho">
 
-<div class="logo">
-<div class="circulo">
-<i class="fa-solid fa-graduation-cap"></i>
-</div>
+        <div class="topo">
 
-<h1>eDOC</h1>
-</div>
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="marca"
+            >
+                <div class="logo-circle">
+                    <i class="fa-regular fa-file-lines"></i>
+                </div>
 
-<h2>OLÁ, SECRETARIA ESCOLAR</h2>
+                <div class="nome-sistema">
+                    <strong>eDOC</strong>
+                    <span>Gestão Documental Escolar</span>
+                </div>
+            </a>
 
-<div class="search-box">
-<i class="fa-solid fa-magnifying-glass"></i>
-<input type="text" id="pesquisa" placeholder="Buscar">
-</div>
+            <div class="usuario">
 
-<div class="acoes">
-<a href="/preenchimento">
-<button class="card">
-  <img src="{{url_for('static',filename='img/add.png')}}" alt="add">
-<i class="fa-solid fa-user-plus"></i>
-<span>Adicionar aluno</span>
-</button>
-</a>
-<button class="card">
-<img src="{{url_for('static',filename='img/editarc.png')}}" alt="editar">
-<i class="fa-regular fa-pen-to-square"></i>
-<span>Editar cadastro</span>
-</button>
-</div>
+                <div class="dados-usuario">
+                    <strong>
+                        {{ session.get('nome', 'Profissional') }}
+                    </strong>
 
-<button class="btn-largo">
-  <img src="{{url_for('static',filename='img/f19.png')}}" alt="ficha19">
-<i class="fa-regular fa-file-lines"></i>
-Gerar Ficha 19
-</button>
+                    <span>Profissional</span>
+                </div>
 
-<button class="btn-largo">
-  <img src="{{url_for('static',filename='img/buscardoc.png')}}" alt="consultar">
-<i class="fa-regular fa-folder-open"></i>
-Consultar Documentos
-</button>
+                <div class="icone-usuario">
+                    <i class="fa-regular fa-user"></i>
+                </div>
 
-<div class="titulo">
-<strong>Documentos</strong> Recentes
-</div>
+            </div>
 
-<!--ScrollView -->
-<div class="lista-documentos">
-<div class="documento">
-<div>
-<h3>Mayse Gabryelle</h3>
-<p>123.456.***-01</p>
-</div>
+        </div>
 
-<button class="download">
-<i class="fa-solid fa-download"></i>
-</button>
-</div>
+        <nav class="menu-principal">
 
-<div class="documento">
-<div>
-<h3>Rayanny Vitória</h3>
-<p>123.456.***-01</p>
-</div>
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="menu-item ativo"
+            >
+                <i class="fa-solid fa-house"></i>
+                Início
+            </a>
 
-<button class="download">
-<i class="fa-solid fa-download"></i>
-</button>
-</div>
+            <a
+                href="{{ url_for('consultar') }}"
+                class="menu-item"
+            >
+                <i class="fa-regular fa-folder-open"></i>
+                Consultar documentos
+            </a>
 
-<div class="documento">
-<div>
-<h3>Rodrigo Júnior</h3>
-<p>123.456.***-01</p>
-</div>
+            <a
+                href="{{ url_for('preenchimento') }}"
+                class="menu-item"
+            >
+                <i class="fa-regular fa-pen-to-square"></i>
+                Preenchimento
+            </a>
 
-<button class="download">
-<i class="fa-solid fa-download"></i>
-</button>
-</div>
+            <a
+                href="{{ url_for('suporte') }}"
+                class="menu-item"
+            >
+                <i class="fa-solid fa-headset"></i>
+                Suporte
+            </a>
 
-<div class="documento">
-<div>
-<h3>Maria Eduarda</h3>
-<p>123.456.***-01</p>
-</div>
+            <a
+                href="{{ url_for('logout') }}"
+                class="menu-item sair"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair
+            </a>
 
-<button class="download">
-<i class="fa-solid fa-download"></i>
-</button>
-</div>
+        </nav>
 
-<div class="documento">
-<div>
-<h3>João Pedro</h3>
-<p>123.456.***-01</p>
-</div>
+    </header>
 
-<button class="download">
-<i class="fa-solid fa-download"></i>
-</button>
-</div>
+    <main class="estrutura">
 
-</div>
+        <aside class="barra-lateral">
 
-<div class="footer">
+            <div class="titulo-lateral">
+                ÁREA DO PROFISSIONAL
+            </div>
 
-<button class="footer-btn">
-<i class="fa-solid fa-house"></i>
-<span>INÍCIO</span>
-</button>
+            <a
+                href="{{ url_for('consultar') }}"
+                class="opcao-lateral"
+            >
+                <i class="fa-solid fa-magnifying-glass"></i>
 
-<button class="footer-btn">
-<i class="fa-solid fa-arrow-left"></i>
-<a href="PROFISSIONAL.html"></a>
-<span>VOLTAR</span>
-</button>
+                <span>
+                    Consultar documentos
+                </span>
 
-</div>
+                <i class="fa-solid fa-chevron-right seta"></i>
+            </a>
 
-</div>
+            <a
+                href="{{ url_for('preenchimento') }}"
+                class="opcao-lateral"
+            >
+                <i class="fa-solid fa-file-pen"></i>
 
-<script src="script6.js"></script>
+                <span>
+                    Preencher Ficha 19
+                </span>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+            </a>
+
+            <a
+                href="{{ url_for('consultar') }}"
+                class="opcao-lateral"
+            >
+                <i class="fa-solid fa-users"></i>
+
+                <span>
+                    Turmas e alunos
+                </span>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+            </a>
+
+            <a
+                href="{{ url_for('suporte') }}"
+                class="opcao-lateral"
+            >
+                <i class="fa-regular fa-circle-question"></i>
+
+                <span>
+                    Ajuda e suporte
+                </span>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+            </a>
+
+            <div class="aviso-lateral">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <div>
+                    <strong>Acesso seguro</strong>
+
+                    <p>
+                        Não compartilhe sua senha com outras pessoas.
+                    </p>
+                </div>
+
+            </div>
+
+        </aside>
+
+        <section class="conteudo">
+
+            <div class="boas-vindas">
+
+                <div>
+                    <span class="saudacao">
+                        Área administrativa
+                    </span>
+
+                    <h1>
+                        Bem-vindo(a),
+                        {{ session.get('nome', 'Profissional') }}
+                    </h1>
+
+                    <p>
+                        Consulte alunos, acompanhe documentos e realize
+                        o preenchimento da Ficha 19.
+                    </p>
+                </div>
+
+                <div class="icone-boas-vindas">
+                    <i class="fa-solid fa-school"></i>
+                </div>
+
+            </div>
+
+            <h2 class="titulo-secao">
+                Acesso rápido
+            </h2>
+
+            <div class="grade-acoes">
+
+                <a
+                    href="{{ url_for('consultar') }}"
+                    class="card-acao"
+                >
+                    <div class="card-icon">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+
+                    <div class="card-conteudo">
+                        <h3>Consultar alunos</h3>
+
+                        <p>
+                            Selecione uma turma e visualize os alunos cadastrados.
+                        </p>
+
+                        <span>
+                            Acessar
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+                <a
+                    href="{{ url_for('preenchimento') }}"
+                    class="card-acao"
+                >
+                    <div class="card-icon">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+
+                    <div class="card-conteudo">
+                        <h3>Preencher Ficha 19</h3>
+
+                        <p>
+                            Preencha e gere o histórico escolar dos estudantes.
+                        </p>
+
+                        <span>
+                            Acessar
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+                <a
+                    href="{{ url_for('consultar') }}"
+                    class="card-acao"
+                >
+                    <div class="card-icon">
+                        <i class="fa-regular fa-folder-open"></i>
+                    </div>
+
+                    <div class="card-conteudo">
+                        <h3>Documentos</h3>
+
+                        <p>
+                            Consulte o andamento e a situação dos documentos.
+                        </p>
+
+                        <span>
+                            Acessar
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+                <a
+                    href="{{ url_for('suporte') }}"
+                    class="card-acao"
+                >
+                    <div class="card-icon">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+
+                    <div class="card-conteudo">
+                        <h3>Suporte</h3>
+
+                        <p>
+                            Entre em contato em caso de dúvidas ou problemas.
+                        </p>
+
+                        <span>
+                            Acessar
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+            </div>
+
+            <section class="painel-informacoes">
+
+                <div class="cabecalho-painel">
+
+                    <div>
+                        <h2>Informações do sistema</h2>
+
+                        <p>
+                            Acompanhe as principais orientações do eDOC.
+                        </p>
+                    </div>
+
+                    <i class="fa-regular fa-bell"></i>
+
+                </div>
+
+                <div class="lista-informacoes">
+
+                    <div class="informacao">
+
+                        <div class="informacao-icon">
+                            <i class="fa-solid fa-file-circle-check"></i>
+                        </div>
+
+                        <div>
+                            <strong>Emissão de documentos</strong>
+
+                            <p>
+                                Selecione uma turma para consultar ou gerar a
+                                Ficha 19 de um aluno.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="informacao">
+
+                        <div class="informacao-icon">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+
+                        <div>
+                            <strong>Dados escolares</strong>
+
+                            <p>
+                                Verifique os dados do aluno antes de emitir
+                                qualquer documento.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>
+            eDOC — Sistema de Gestão Documental Escolar
+        </p>
+    </footer>
+
 </body>
 </html>
