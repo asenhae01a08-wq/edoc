@@ -6,9 +6,10 @@
 }
 
 :root {
-    --azul-principal: #1f49d8;
-    --azul-escuro: #1738a6;
-    --azul-claro: #66a8ff;
+    
+    --azul-principal: #0c4770;
+    --azul-escuro: #073450;
+    --azul-claro: #e9f3fa;
     --azul-suave: #edf3ff;
     --branco: #ffffff;
     --cinza-fundo: #f5f7fb;
@@ -59,9 +60,9 @@ a {
     background:
         linear-gradient(
             135deg,
-            #1f49d8 0%,
-            #244fdf 60%,
-            #1f5f99 100%
+            #0c4770 0%,
+            #073450 60%,
+            #1c557e 100%
         );
     box-shadow: 0 6px 18px rgba(31, 73, 216, 0.22);
 }

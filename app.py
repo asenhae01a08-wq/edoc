@@ -113,3 +113,13 @@ def turma_TDSA():
 @app.route("/")
 def index():
     return redirect(url_for("login"))
+
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    flash("Você saiu da sua conta.")
+
+    return redirect(
+        url_for("login")
+    )
