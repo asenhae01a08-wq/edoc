@@ -1,0 +1,156 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(
+        180deg,
+        #0d1438,
+        #1f49d8,
+        #4d77ff
+    );
+
+    color:white;
+}
+
+.container{
+    width:100%;
+    max-width:1000px;
+    text-align:center;
+    position:relative;
+}
+
+.voltar{
+    position:absolute;
+    top:0;
+    left:0;
+
+    color:white;
+    font-size:28px;
+    text-decoration:none;
+}
+
+.logo{
+    margin-bottom:25px;
+}
+
+.logo-circle{
+    width:80px;
+    height:80px;
+
+    background:white;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin:auto;
+}
+
+.logo-circle i{
+    color:#1f49d8;
+    font-size:35px;
+}
+
+.logo h2{
+    margin-top:10px;
+    font-size:36px;
+}
+
+h1{
+    font-size:48px;
+    margin-bottom:10px;
+}
+
+p{
+    margin-bottom:40px;
+    font-size:18px;
+}
+
+.turmas{
+    display:grid;
+    grid-template-columns:repeat(2, 300px);
+    justify-content:center;
+    gap:30px;
+}
+
+.card{
+    height:220px;
+
+    background:rgba(255,255,255,0.15);
+
+    border:2px solid rgba(255,255,255,0.4);
+
+    border-radius:25px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    transition:0.3s;
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    background:rgba(255,255,255,0.25);
+}
+
+.icone-card{
+    width:70px;
+    height:70px;
+
+    background:rgb(255, 255, 255);
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.icone-card i{
+    color:#1f49d8;
+    font-size:28px;
+}
+
+.card h3{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+.card span{
+    width:80%;
+    font-size:16px;
+    text-align:center;
+}
+
+@media(max-width:768px){
+
+    .turmas{
+        grid-template-columns:1fr;
+    }
+
+    h1{
+        font-size:36px;
+    }
+
+    .card{
+        width:300px;
+        margin:auto;
+    }
+
+}

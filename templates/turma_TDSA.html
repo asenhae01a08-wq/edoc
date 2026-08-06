@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>3º TDS A</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style11.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+</head>
+
+<body>
+
+    <div class="container">
+
+        <a href="{{ url_for('consultar') }}" class="voltar">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        <div class="logo">
+            <div class="logo-circle">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+
+            <h2>eDOC</h2>
+        </div>
+
+        <h1>Turma 3º TDS A</h1>
+
+        <p class="subtitulo">
+            Alunos - Consulta de Documentos
+        </p>
+
+        <div class="pesquisa">
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="pesquisa"
+                placeholder="Buscar por nome ou matrícula..."
+                onkeyup="pesquisar

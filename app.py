@@ -93,9 +93,22 @@ def preenchimento():
 def esqueci():
     return render_template("esqueci.html")
 
-@app.route("/suorte")
-def suorte():
-    return render_template("suorte.html")
+@app.route("/suporte")
+def suporte():
+    return render_template("suporte.html")
+
+@app.route("/consultar_documentos")
+def consultar():
+    return render_template("consultar.html")
+
+@app.route("/turma_TDSA")
+def turma_TDSA():
+    alunos = models.buscar_alunos_por_turma(1)
+
+    return render_template(
+        "turma_TDSA.html",
+        alunos=alunos
+    )
 
 @app.route("/")
 def index():

@@ -1,0 +1,235 @@
+
+CSS
+
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+
+    background:linear-gradient(
+        180deg,
+        #08153d,
+        #0d56da,
+        #38b6ff
+    );
+
+    color:white;
+}
+
+.container{
+
+    width:90%;
+    max-width:700px;
+
+    text-align:center;
+
+    padding:50px 0;
+}
+
+.voltar{
+
+    position:absolute;
+
+    top:40px;
+    left:40px;
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    border:2px solid rgba(255,255,255,.5);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:white;
+    text-decoration:none;
+}
+
+.logo{
+
+    margin-bottom:20px;
+}
+
+.logo-circle{
+
+    width:80px;
+    height:80px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:white;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.logo-circle i{
+
+    color:#2558d7;
+    font-size:35px;
+}
+
+.logo h2{
+
+    margin-top:12px;
+    font-size:34px;
+}
+
+h1{
+
+    margin-top:20px;
+    font-size:40px;
+}
+
+.subtitulo{
+
+    margin-top:8px;
+    margin-bottom:30px;
+
+    color:#e8e8e8;
+}
+
+.pesquisa{
+
+    width:100%;
+    height:55px;
+
+    background:white;
+
+    border-radius:30px;
+
+    display:flex;
+    align-items:center;
+
+    padding:0 20px;
+
+    margin-bottom:25px;
+}
+
+.pesquisa i{
+
+    color:#2455d6;
+}
+
+.pesquisa input{
+
+    flex:1;
+
+    border:none;
+    outline:none;
+
+    margin-left:10px;
+
+    font-size:17px;
+}
+
+.lista-alunos{
+
+    background:rgba(255,255,255,.12);
+
+    border:2px solid rgba(255,255,255,.4);
+
+    border-radius:25px;
+
+    padding:10px 20px;
+
+    backdrop-filter:blur(8px);
+}
+
+.aluno{
+
+    display:flex;
+
+    align-items:center;
+
+    padding:18px 0;
+}
+
+.aluno:not(:last-child){
+
+    border-bottom:1px solid rgba(255,255,255,.2);
+}
+
+.foto{
+
+    width:55px;
+    height:55px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.25);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:22px;
+    font-weight:bold;
+}
+
+.informacoes{
+
+    flex:1;
+
+    text-align:left;
+
+    margin-left:18px;
+}
+
+.informacoes h3{
+
+    font-size:18px;
+}
+
+.informacoes p{
+
+    margin-top:5px;
+
+    color:#ececec;
+}
+
+.btn-ficha{
+
+    width:150px;
+    height:45px;
+
+    border:none;
+
+    border-radius:25px;
+
+    background:white;
+
+    color:#2b55d5;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.3s;
+}
+
+.btn-ficha:hover{
+
+    transform:scale(1.05);
+}
+
+.btn-ficha i{
+
+    margin-right:8px;
+}
