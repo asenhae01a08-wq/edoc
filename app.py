@@ -1,5 +1,4 @@
 
-
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from functools import wraps
 import models
@@ -119,6 +118,11 @@ def turma_TDSA():
 def index():
     return redirect(url_for("login"))
 
+
+@app.route("/ficha19")
+def ficha19():
+
+    return render_template("ficha19.html")
 @app.route("/logout")
 def logout():
     session.clear()
