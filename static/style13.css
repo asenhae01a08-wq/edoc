@@ -68,7 +68,7 @@ body {
     align-items: center;
     justify-content: center;
 
-    background: var(--azul-principal);
+    background: var(--azul-escuro);
     color: var(--branco);
 
     border-radius: 18px;

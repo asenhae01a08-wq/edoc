@@ -85,6 +85,11 @@ def iniciala():
 def inicialp():
     return render_template("inicialp.html")
 
+@app.route("/telagerar")
+@login_required_profissional
+def telagerar():
+    return render_template("telagerar.html")
+
 @app.route("/preenchimento")
 def preenchimento():
     return render_template("preenchimento.html")
@@ -123,3 +128,4 @@ def logout():
     return redirect(
         url_for("login")
     )
+

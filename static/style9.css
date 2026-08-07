@@ -34,7 +34,7 @@ body {
 
 .btn-voltar {
     position: absolute;
-    top: 20px;
+    top: 30px;
     left: 20px;
 
     width: 42px;
@@ -44,7 +44,7 @@ body {
     justify-content: center;
     align-items: center;
 
-    background: #1f5f99;
+    background: #0c4770;
     color: #ffffff;
 
     text-decoration: none;
@@ -141,7 +141,7 @@ h2 {
 }
 
 .info-box:hover {
-    border-color: #1f5f99;
+    border-color: #0c4770;
     transform: translateY(-1px);
 }
 
