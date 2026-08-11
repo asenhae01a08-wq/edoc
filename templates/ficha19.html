@@ -1,0 +1,2906 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Ficha 19</title>
+
+   <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='ficha19.css') }}"
+>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #d9dde2;
+            color: #000000;
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 100px 15px 40px;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* ================================================= */
+        /* BARRA SUPERIOR DO EDOC                            */
+        /* ================================================= */
+
+        .barra-edoc {
+            align-items: center;
+            background: #ffffff;
+            border-bottom: 1px solid #cfd5dc;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            left: 0;
+            padding: 14px 24px;
+            position: fixed;
+            right: 0;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .identidade-edoc {
+            align-items: center;
+            display: flex;
+            gap: 11px;
+        }
+
+        .icone-edoc {
+            align-items: center;
+            background: #17365d;
+            border-radius: 8px;
+            color: #ffffff;
+            display: flex;
+            font-size: 22px;
+            height: 45px;
+            justify-content: center;
+            width: 45px;
+        }
+
+        .identidade-edoc h1 {
+            color: #17365d;
+            font-size: 21px;
+        }
+
+        .identidade-edoc p {
+            color: #666666;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .acoes-edoc {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .botao-edoc,
+        .rotulo-upload {
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 12px;
+            font-weight: bold;
+            gap: 7px;
+            justify-content: center;
+            padding: 10px 13px;
+            text-decoration: none;
+        }
+
+        .botao-voltar {
+            background: #58626e;
+        }
+
+        .rotulo-upload {
+            background: #1e5f9e;
+        }
+
+        .botao-imprimir {
+            background: #287248;
+        }
+
+        .botao-edoc:hover,
+        .rotulo-upload:hover {
+            filter: brightness(0.9);
+        }
+
+        #arquivoSiepe {
+            display: none;
+        }
+
+        .nome-arquivo {
+            color: #555555;
+            font-size: 11px;
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ================================================= */
+        /* FOLHAS A4                                        */
+        /* ================================================= */
+
+        .folha {
+            background: #ffffff;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto 30px;
+            min-height: 297mm;
+            overflow: hidden;
+            padding: 9mm 10mm 8mm;
+            position: relative;
+            width: 210mm;
+        }
+
+        .numero-pagina {
+            bottom: 5mm;
+            color: #777777;
+            font-size: 7px;
+            position: absolute;
+            right: 8mm;
+        }
+
+        /* ================================================= */
+        /* CABEÇALHO DO DOCUMENTO                            */
+        /* ================================================= */
+
+        .cabecalho-documento {
+            align-items: center;
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 85px 1fr 85px;
+            min-height: 85px;
+        }
+
+        .logo-documento {
+            align-items: center;
+            display: flex;
+            height: 75px;
+            justify-content: center;
+        }
+
+        .logo-documento img {
+            max-height: 72px;
+            max-width: 78px;
+            object-fit: contain;
+        }
+
+        .simbolo-escola {
+            align-items: center;
+            border: 1px solid #000000;
+            border-radius: 50%;
+            display: flex;
+            font-size: 8px;
+            font-weight: bold;
+            height: 64px;
+            justify-content: center;
+            text-align: center;
+            width: 64px;
+        }
+
+        .dados-escola {
+            font-size: 8px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .nome-escola {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .titulo-documento {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .subtitulo-documento {
+            font-size: 12px;
+            font-weight: bold;
+            margin: 10px 0 4px;
+            text-align: center;
+        }
+
+        /* ================================================= */
+        /* CAMPOS                                           */
+        /* ================================================= */
+
+        input,
+        select,
+        textarea {
+            background: transparent;
+            border: none;
+            color: #000000;
+            outline: none;
+        }
+
+        input:hover,
+        input:focus,
+        select:hover,
+        select:focus,
+        textarea:hover,
+        textarea:focus {
+            background: #fff9cf;
+        }
+
+        .campo-linha {
+            border-bottom: 1px solid #000000;
+            font-size: 9px;
+            min-height: 17px;
+            padding: 1px 3px;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #999999;
+        }
+
+        /* ================================================= */
+        /* PÁGINA 1                                         */
+        /* ================================================= */
+
+        .texto-certificado {
+            font-size: 9px;
+            line-height: 2;
+            margin-top: 10px;
+            text-align: justify;
+        }
+
+        .texto-certificado p {
+            margin-bottom: 5px;
+        }
+
+        .campo-nome {
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 320px;
+        }
+
+        .campo-filiacao {
+            text-transform: uppercase;
+            width: 225px;
+        }
+
+        .campo-data {
+            width: 110px;
+        }
+
+        .campo-cidade {
+            text-transform: uppercase;
+            width: 105px;
+        }
+
+        .campo-uf {
+            text-align: center;
+            text-transform: uppercase;
+            width: 32px;
+        }
+
+        .campo-nacionalidade {
+            text-transform: uppercase;
+            width: 115px;
+        }
+
+        .campo-rg {
+            width: 100px;
+        }
+
+        .campo-orgao {
+            width: 80px;
+        }
+
+        .campo-cpf {
+            width: 125px;
+        }
+
+        .campo-conclusao {
+            text-transform: uppercase;
+            width: 115px;
+        }
+
+        .campo-modalidade {
+            text-transform: uppercase;
+            width: 120px;
+        }
+
+        .informacoes-complementares {
+            font-size: 8px;
+            line-height: 1.45;
+            margin-top: 15px;
+        }
+
+        .informacoes-complementares h2 {
+            font-size: 10px;
+            margin-bottom: 5px;
+        }
+
+        .informacoes-complementares ol {
+            padding-left: 17px;
+        }
+
+        .informacoes-complementares li {
+            margin-bottom: 5px;
+            text-align: justify;
+        }
+
+        .observacoes {
+            font-size: 8px;
+            margin-top: 10px;
+        }
+
+        .observacoes textarea {
+            border: 1px solid #000000;
+            display: block;
+            height: 58px;
+            margin-top: 3px;
+            padding: 4px;
+            resize: none;
+            width: 100%;
+        }
+
+        /* ================================================= */
+        /* IDENTIFICAÇÃO                                    */
+        /* ================================================= */
+
+        .identificacao-aluno {
+            font-size: 8px;
+            line-height: 1.55;
+            margin-bottom: 7px;
+        }
+
+        .campo-identificacao {
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 400px;
+        }
+
+        .campo-matricula {
+            width: 130px;
+        }
+
+        /* ================================================= */
+        /* TABELAS                                          */
+        /* ================================================= */
+
+        .tabela-documento {
+            border-collapse: collapse;
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        .tabela-documento th,
+        .tabela-documento td {
+            border: 1px solid #000000;
+            font-size: 6.8px;
+            padding: 1px 2px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .tabela-documento th {
+            font-weight: bold;
+        }
+
+        .tabela-documento input,
+        .tabela-documento select {
+            font-size: 6.8px;
+            height: 16px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .tabela-documento .texto-esquerda {
+            text-align: left;
+        }
+
+        .tabela-documento .componente {
+            font-weight: bold;
+            text-align: left;
+            text-transform: uppercase;
+        }
+
+        .campo-ano-tabela {
+            font-size: 7px;
+            font-weight: bold;
+            max-width: 44px;
+            text-align: center;
+        }
+
+        .coluna-componente {
+            width: 32%;
+        }
+
+        .coluna-nota {
+            width: 7%;
+        }
+
+        .coluna-ch {
+            width: 7%;
+        }
+
+        .coluna-total {
+            width: 9%;
+        }
+
+        .linha-resumo td {
+            font-size: 7px;
+            height: 19px;
+        }
+
+        .linha-resumo input {
+            font-weight: bold;
+        }
+
+        .legenda {
+            font-size: 7px;
+            margin-top: 3px;
+        }
+
+        /* ================================================= */
+        /* RESULTADOS DOS ANOS                              */
+        /* ================================================= */
+
+        .titulo-resultados {
+            font-size: 9px;
+            margin: 10px 0 3px;
+        }
+
+        .resultados-anos {
+            border: 1px solid #000000;
+        }
+
+        .resultado-ano {
+            border-bottom: 1px solid #000000;
+            display: grid;
+            font-size: 7px;
+            gap: 2px 8px;
+            grid-template-columns: 2fr 1fr;
+            padding: 4px;
+        }
+
+        .resultado-ano:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-ano label {
+            align-items: center;
+            display: flex;
+        }
+
+        .resultado-ano input,
+        .resultado-ano select {
+            border-bottom: 1px solid #000000;
+            flex: 1;
+            font-size: 7px;
+            margin-left: 3px;
+        }
+
+        /* ================================================= */
+        /* ITINERÁRIO FORMATIVO                             */
+        /* ================================================= */
+
+        .bloco-itinerario {
+            border: 1px solid #000000;
+            margin-bottom: 5px;
+        }
+
+        .dados-itinerario {
+            font-size: 7px;
+            line-height: 1.5;
+            padding: 3px 4px;
+        }
+
+        .linha-itinerario {
+            display: flex;
+            gap: 12px;
+        }
+
+        .linha-itinerario label {
+            align-items: center;
+            display: flex;
+            flex: 1;
+        }
+
+        .dados-itinerario input {
+            border-bottom: 1px solid #000000;
+            flex: 1;
+            font-size: 7px;
+            margin-left: 3px;
+        }
+
+        .tabela-itinerario th,
+        .tabela-itinerario td {
+            font-size: 6.5px;
+        }
+
+        .tabela-itinerario th:nth-child(1),
+        .tabela-itinerario td:nth-child(1) {
+            width: 19%;
+        }
+
+        .tabela-itinerario th:nth-child(2),
+        .tabela-itinerario td:nth-child(2) {
+            text-align: left;
+            width: 30%;
+        }
+
+        .tabela-itinerario th:nth-child(3),
+        .tabela-itinerario td:nth-child(3) {
+            width: 7%;
+        }
+
+        .tabela-itinerario th:nth-child(4),
+        .tabela-itinerario td:nth-child(4) {
+            width: 12%;
+        }
+
+        .tabela-itinerario th:nth-child(5),
+        .tabela-itinerario td:nth-child(5) {
+            width: 7%;
+        }
+
+        .tabela-itinerario th:nth-child(6),
+        .tabela-itinerario td:nth-child(6) {
+            width: 7%;
+        }
+
+        .tabela-itinerario th:nth-child(7),
+        .tabela-itinerario td:nth-child(7) {
+            width: 9%;
+        }
+
+        .tabela-itinerario th:nth-child(8),
+        .tabela-itinerario td:nth-child(8) {
+            width: 10%;
+        }
+
+        /* ================================================= */
+        /* RESULTADO FINAL                                  */
+        /* ================================================= */
+
+        .resultado-final {
+            margin-top: 16px;
+        }
+
+        .resultado-final h2 {
+            font-size: 11px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .quadro-resultado {
+            border: 1px solid #000000;
+            display: flex;
+            flex-direction: column;
+            font-size: 8px;
+            gap: 7px;
+            min-height: 120px;
+            padding: 9px;
+        }
+
+        .quadro-resultado label {
+            align-items: center;
+            display: flex;
+        }
+
+        .quadro-resultado input,
+        .quadro-resultado select {
+            border-bottom: 1px solid #000000;
+            font-size: 8px;
+            margin-left: 6px;
+            min-width: 155px;
+        }
+
+        .espaco-resultado {
+            margin-top: 6px;
+        }
+
+        .local-data {
+            align-items: center;
+            display: flex;
+            font-size: 8px;
+            justify-content: flex-end;
+            margin-top: 28px;
+        }
+
+        .local-data input {
+            border-bottom: 1px solid #000000;
+            font-size: 8px;
+            margin: 0 3px;
+            text-align: center;
+        }
+
+        .campo-local {
+            width: 72px;
+        }
+
+        .campo-estado {
+            width: 27px;
+        }
+
+        .assinaturas {
+            display: flex;
+            gap: 50px;
+            justify-content: space-between;
+            margin-top: 42px;
+        }
+
+        .assinatura {
+            align-items: center;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            font-size: 8px;
+            text-align: center;
+        }
+
+        .linha-assinatura {
+            border-top: 1px solid #000000;
+            margin-bottom: 4px;
+            width: 100%;
+        }
+
+        .assinatura input {
+            font-size: 8px;
+            text-align: center;
+            text-transform: uppercase;
+            width: 100%;
+        }
+
+        /* ================================================= */
+        /* RODAPÉ                                           */
+        /* ================================================= */
+
+        .rodape-documento {
+            align-items: center;
+            display: flex;
+            font-size: 6.5px;
+            gap: 12px;
+            justify-content: center;
+            margin-top: auto;
+            padding-top: 12px;
+            text-align: center;
+        }
+
+        .rodape-documento input {
+            border-bottom: 1px solid #000000;
+            font-size: 6.5px;
+        }
+
+        .rodape-nome {
+            text-transform: uppercase;
+            width: 140px;
+        }
+
+        .rodape-matricula {
+            width: 60px;
+        }
+
+        /* ================================================= */
+        /* RESPONSIVIDADE                                   */
+        /* ================================================= */
+
+        @media screen and (max-width: 900px) {
+            body {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
+            .barra-edoc {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .acoes-edoc {
+                width: 100%;
+            }
+
+            .folha {
+                min-height: auto;
+                overflow-x: auto;
+                padding: 14px;
+                width: 100%;
+            }
+        }
+
+        /* ================================================= */
+        /* IMPRESSÃO                                        */
+        /* ================================================= */
+
+        @page {
+            margin: 0;
+            size: A4 portrait;
+        }
+
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+
+            .barra-edoc {
+                display: none !important;
+            }
+
+            .folha {
+                box-shadow: none;
+                break-after: page;
+                margin: 0;
+                min-height: 297mm;
+                page-break-after: always;
+                padding: 9mm 10mm 8mm;
+                width: 210mm;
+            }
+
+            .folha:last-child {
+                break-after: auto;
+                page-break-after: auto;
+            }
+
+            input,
+            select,
+            textarea {
+                background: transparent !important;
+            }
+
+            input::placeholder,
+            textarea::placeholder {
+                color: transparent;
+            }
+
+            .campo-linha,
+            .resultado-ano input,
+            .resultado-ano select,
+            .dados-itinerario input,
+            .quadro-resultado input,
+            .quadro-resultado select,
+            .local-data input,
+            .rodape-documento input {
+                border-bottom-color: transparent !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================================================= -->
+    <!-- BARRA DO SISTEMA EDOC                            -->
+    <!-- ================================================= -->
+
+    <header class="barra-edoc">
+
+        <div class="identidade-edoc">
+
+            <div class="icone-edoc">
+                <i class="fa-regular fa-file-lines"></i>
+            </div>
+
+            <div>
+                <h1>eDOC</h1>
+                <p>Importação e leitura da Ficha 19</p>
+            </div>
+
+        </div>
+
+        <div class="acoes-edoc">
+
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="botao-edoc botao-voltar"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar
+            </a>
+
+            <label
+                for="arquivoSiepe"
+                class="rotulo-upload"
+            >
+                <i class="fa-solid fa-file-pdf"></i>
+                Importar PDF do SIEPE
+            </label>
+
+            <input
+                type="file"
+                id="arquivoSiepe"
+                accept="application/pdf,.pdf"
+            >
+
+            <span
+                class="nome-arquivo"
+                id="nomeArquivo"
+            >
+                Nenhum PDF selecionado
+            </span>
+
+            <button
+                type="button"
+                class="botao-edoc botao-imprimir"
+                id="botaoImprimir"
+            >
+                <i class="fa-solid fa-print"></i>
+                Imprimir ficha
+            </button>
+
+        </div>
+
+    </header>
+
+    <form id="formFicha19">
+
+        <!-- ================================================= -->
+        <!-- PÁGINA 1                                         -->
+        <!-- ================================================= -->
+
+        <section class="folha">
+
+            <header class="cabecalho-oficial">
+
+    <div class="brasao-oficial">
+        <img
+            src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"
+            alt="Brasão do Estado de Pernambuco"
+        >
+    </div>
+
+    <div class="linha-superior"></div>
+
+    <h1 class="nome-escola-oficial">
+        ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA
+    </h1>
+
+    <p class="endereco-escola-oficial">
+        Rua Vereador João Avelino Sobrinho, s/n, Alameda,
+        Cidade Alta - Caruaru, PE - CEP: 55031-470
+    </p>
+
+    <p class="telefone-escola-oficial">
+        Telefone:
+        <input
+            type="text"
+            id="telefoneEscola"
+            name="telefoneEscola"
+        >
+    </p>
+
+    <div class="quadro-autorizacao-oficial">
+
+        <div class="autorizacao-esquerda">
+            <strong>Autorização de Funcionamento:</strong>
+
+            <input
+                type="text"
+                id="autorizacaoFuncionamento"
+                name="autorizacaoFuncionamento"
+                value="Portaria 856"
+            >
+        </div>
+
+        <div class="autorizacao-direita">
+            <strong>D.O.E/PE de</strong>
+
+            <input
+                type="text"
+                id="dataDoe"
+                name="dataDoe"
+                value="02/02/2017"
+            >
+        </div>
+
+    </div>
+
+    <div class="quadro-cadastro-oficial">
+
+        <strong>Cadastro Escolar -</strong>
+
+        <input
+            type="text"
+            id="cadastroEscolar"
+            name="cadastroEscolar"
+            class="sincronizar-cadastro"
+        >
+
+    </div>
+
+</header>
+
+<h1 class="titulo-certificado-oficial">
+    CERTIFICADO E HISTÓRICO ESCOLAR DO ENSINO MÉDIO /
+    ENSINO REGULAR
+</h1>
+                  
+
+          <div class="texto-certificado-original">
+
+    <p>
+        Pelo presente Histórico Escolar certificamos que
+
+        <span
+            id="nomeAluno"
+            class="campo-editavel destaque sincronizar-nome"
+            contenteditable="true"
+        >
+            NOME COMPLETO DO ESTUDANTE
+        </span>
+
+        Filho(a) de
+
+        <span
+            id="nomeMae"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            NOME DA MÃE
+        </span>
+
+        e
+
+        <span
+            id="nomePai"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            NOME DO PAI
+        </span>.
+
+        Nascido(a) em
+
+        <span
+            id="dataNascimento"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            DD/MM/AAAA
+        </span>.
+
+        Cidade:
+
+        <span
+            id="cidadeNascimento"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            CIDADE
+        </span>
+
+        UF:
+
+        <span
+            id="ufNascimento"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            PE
+        </span>.
+
+        Nacionalidade:
+
+        <span
+            id="nacionalidade"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            BRASILEIRA
+        </span>.
+
+        RG:
+
+        <span
+            id="rg"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            0000000
+        </span>
+
+        Órgão Expedidor:
+
+        <span
+            id="orgaoExpedidor"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            SDS/PE
+        </span>
+
+        CPF:
+
+        <span
+            id="cpf"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            000.000.000-00
+        </span>.
+
+        Concluiu o(a)
+
+        <span
+            id="anoConcluido"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            3º ANO - ENSINO MÉDIO
+        </span>
+
+        do
+
+        <span
+            id="modalidadeEnsino"
+            class="campo-editavel destaque"
+            contenteditable="true"
+        >
+            ENSINO MÉDIO
+        </span>
+
+        nos termos da Lei nº 9.394/96, publicada no D.O.U de
+        23.12.1996.
+    </p>
+
+</div>
+
+            <section class="informacoes-complementares">
+
+                <h2>INFORMAÇÕES COMPLEMENTARES</h2>
+
+                <ol>
+                    <li>
+                        O mínimo exigido para promoção é a média 6,0
+                        (seis) e 75% de frequência do total de horas
+                        letivas. Após a recuperação final, o índice
+                        de aproveitamento é 6,0, em observância à
+                        Instrução Normativa de Avaliação vigente e
+                        Art. 24, Inciso IV, da Lei Federal nº 9.394/96.
+                    </li>
+
+                    <li>
+                        O(a) estudante optou por não vivenciar o
+                        componente curricular Ensino Religioso, em
+                        observância à Lei nº 9.475/97, de 22/07/1997.
+                    </li>
+
+                    <li>
+                        Estudante
+
+                        <select
+                            id="situacaoEducacaoFisica"
+                            name="situacaoEducacaoFisica"
+                            class="campo-linha"
+                        >
+                            <option value=""></option>
+
+                            <option value="não dispensado(a)">
+                                não dispensado(a)
+                            </option>
+
+                            <option value="dispensado(a)">
+                                dispensado(a)
+                            </option>
+                        </select>
+
+                        da prática de Educação Física em observância
+                        à Lei Federal nº 9.394/96, art. 26, §3º.
+                    </li>
+                </ol>
+
+            </section>
+
+            <div class="observacoes">
+
+                <strong>OBSERVAÇÕES:</strong>
+
+                <textarea
+                    id="observacoesCertificado"
+                    name="observacoesCertificado"
+                ></textarea>
+
+            </div>
+
+            <footer class="rodape-documento">
+
+                <span>
+                    SECRETÁRIO:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-secretario"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-secretario"
+                    >
+                </span>
+
+                <span>
+                    DIRETOR:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-diretor"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-diretor"
+                    >
+                </span>
+
+            </footer>
+
+            <span class="numero-pagina">1</span>
+
+        </section>
+
+        <!-- ================================================= -->
+        <!-- PÁGINA 2                                         -->
+        <!-- ================================================= -->
+
+        <section class="folha">
+
+            <h1 class="titulo-documento">
+                HISTÓRICO ESCOLAR DO ENSINO MÉDIO /
+                ENSINO REGULAR
+            </h1>
+
+            <div class="identificacao-aluno">
+
+                <div>
+                    <strong>Nome:</strong>
+
+                    <input
+                        type="text"
+                        class="campo-linha campo-identificacao sincronizar-nome"
+                    >
+                </div>
+
+                <div>
+                    <strong>Matrícula:</strong>
+
+                    <input
+                        type="text"
+                        id="matriculaAluno"
+                        name="matriculaAluno"
+                        class="campo-linha campo-matricula sincronizar-matricula"
+                    >
+                </div>
+
+            </div>
+
+            <h2 class="subtitulo-documento">
+                FORMAÇÃO GERAL BÁSICA
+            </h2>
+
+            <table
+                class="tabela-documento"
+                id="tabelaFormacaoGeral"
+            >
+
+                <thead>
+
+                    <tr>
+                        <th
+                            rowspan="2"
+                            class="coluna-componente"
+                        >
+                            COMPONENTES CURRICULARES
+                        </th>
+
+                        <th
+                            colspan="2"
+                            class="coluna-nota"
+                        >
+                            1º ANO
+
+                            <br>
+
+                            Ano:
+
+                            <input
+                                type="number"
+                                class="campo-ano-tabela"
+                                id="anoPrimeiro"
+                                placeholder="2024"
+                            >
+                        </th>
+
+                        <th
+                            colspan="2"
+                            class="coluna-nota"
+                        >
+                            2º ANO - ENSINO MÉDIO
+
+                            <br>
+
+                            Ano:
+
+                            <input
+                                type="number"
+                                class="campo-ano-tabela"
+                                id="anoSegundo"
+                                placeholder="2025"
+                            >
+                        </th>
+
+                        <th
+                            colspan="2"
+                            class="coluna-nota"
+                        >
+                            3º ANO
+
+                            <br>
+
+                            Ano:
+
+                            <input
+                                type="number"
+                                class="campo-ano-tabela"
+                                id="anoTerceiro"
+                                placeholder="2026"
+                            >
+                        </th>
+
+                        <th
+                            rowspan="2"
+                            class="coluna-total"
+                        >
+                            CH Total
+                        </th>
+                    </tr>
+
+                    <tr>
+                        <th>Nota</th>
+                        <th>CH</th>
+
+                        <th>Nota</th>
+                        <th>CH</th>
+
+                        <th>Nota</th>
+                        <th>CH</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td class="componente">BIOLOGIA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">FÍSICA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">MATEMÁTICA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">QUÍMICA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">FILOSOFIA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">GEOGRAFIA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">HISTÓRIA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">SOCIOLOGIA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">ARTE</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">EDUCAÇÃO FÍSICA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">LÍNGUA INGLESA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td class="componente">LÍNGUA PORTUGUESA</td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <input
+                                type="text"
+                                class="componente"
+                                placeholder="OUTRO COMPONENTE"
+                            >
+                        </td>
+
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-primeiro"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-segundo"></td>
+                        <td><input type="number" step="0.1"></td>
+                        <td><input type="number" class="ch-terceiro"></td>
+                        <td><input type="text" class="ch-total-linha" readonly></td>
+                    </tr>
+
+                </tbody>
+
+                <tfoot>
+
+                    <tr class="linha-resumo">
+                        <td class="texto-esquerda">
+                            Carga Horária Total
+                        </td>
+
+                        <td colspan="2">
+                            <input
+                                type="text"
+                                id="totalPrimeiroAno"
+                                readonly
+                            >
+                        </td>
+
+                        <td colspan="2">
+                            <input
+                                type="text"
+                                id="totalSegundoAno"
+                                readonly
+                            >
+                        </td>
+
+                        <td colspan="2">
+                            <input
+                                type="text"
+                                id="totalTerceiroAno"
+                                readonly
+                            >
+                        </td>
+
+                        <td>
+                            <input
+                                type="text"
+                                id="totalFormacaoGeral"
+                                readonly
+                            >
+                        </td>
+                    </tr>
+
+                    <tr class="linha-resumo">
+                        <td class="texto-esquerda">
+                            Carga Horária em Horas/Relógio
+                        </td>
+
+                        <td colspan="2">
+                            <input type="text" placeholder="000:00">
+                        </td>
+
+                        <td colspan="2">
+                            <input type="text" placeholder="000:00">
+                        </td>
+
+                        <td colspan="2">
+                            <input type="text" placeholder="000:00">
+                        </td>
+
+                        <td>
+                            <input type="text" placeholder="000:00">
+                        </td>
+                    </tr>
+
+                    <tr class="linha-resumo">
+                        <td class="texto-esquerda">
+                            Percentual de Frequência do(a) Estudante
+                        </td>
+
+                        <td colspan="2">
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                            >
+                        </td>
+
+                        <td colspan="2">
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                            >
+                        </td>
+
+                        <td colspan="2">
+                            <input
+                                type="number"
+                                min="0"
+                                max="100"
+                                step="0.01"
+                            >
+                        </td>
+
+                        <td>-</td>
+                    </tr>
+
+                </tfoot>
+
+            </table>
+
+            <p class="legenda">
+                Legenda: CH = Carga Horária
+            </p>
+
+            <h3 class="titulo-resultados">
+                FORMAÇÃO GERAL BÁSICA
+            </h3>
+
+            <div class="resultados-anos">
+
+                <div class="resultado-ano">
+
+                    <label>
+                        <strong>Estabelecimento:</strong>
+
+                        <input
+                            type="text"
+                            value="ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA"
+                        >
+                    </label>
+
+                    <label>
+                        <strong>Cidade:</strong>
+
+                        <input
+                            type="text"
+                            value="CARUARU"
+                        >
+                    </label>
+
+                    <label>
+                        <strong>Estado:</strong>
+
+                        <input
+                            type="text"
+                            value="PE"
+                        >
+                    </label>
+
+                    <label>
+                        <strong>Resultado:</strong>
+
+                        <select>
+                            <option value=""></option>
+                            <option value="PROGRESSÃO PLENA">
+                                PROGRESSÃO PLENA
+                            </option>
+                            <option value="APROVADO">
+                                APROVADO
+                            </option>
+                            <option value="REPROVADO">
+                                REPROVADO
+                            </option>
+                        </select>
+                    </label>
+
+                </div>
+
+                <div class="resultado-ano">
+
+                    <label>
+                        <strong>Estabelecimento:</strong>
+
+                        <input
+                            type="text"
+                            value="ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA"
+                        >
+                    </label>
+
+                    <label>
+                        <strong>Cidade:</strong>
+
+                        <input
+                            type="text"
+                            value="CARUARU"
+                        >
+                    </label>
+
+                    <label>
+                        <strong>Estado:</strong>
+
+                        <input
+                            type="text"
+                            value="PE"
+                        >
+                    </label>
+
+                    <label>
+                        <strong>Resultado:</strong>
+
+                        <select>
+                            <option value=""></option>
+                            <option value="PROGRESSÃO PLENA">
+                                PROGRESSÃO PLENA
+                            </option>
+                            <option value="APROVADO">
+                                APROVADO
+                            </option>
+                            <option value="REPROVADO">
+                                REPROVADO
+                            </option>
+                        </select>
+                    </label>
+
+                </div>
+
+                <div class="resultado-ano">
+
+                    <label>
+                        <strong>Estabelecimento:</strong>
+
+                        <input type="text">
+                    </label>
+
+                    <label>
+                        <strong>Cidade:</strong>
+
+                        <input type="text">
+                    </label>
+
+                    <label>
+                        <strong>Estado:</strong>
+
+                        <input type="text">
+                    </label>
+
+                    <label>
+                        <strong>Resultado:</strong>
+
+                        <select>
+                            <option value=""></option>
+                            <option value="PROGRESSÃO PLENA">
+                                PROGRESSÃO PLENA
+                            </option>
+                            <option value="APROVADO">
+                                APROVADO
+                            </option>
+                            <option value="REPROVADO">
+                                REPROVADO
+                            </option>
+                        </select>
+                    </label>
+
+                </div>
+
+            </div>
+
+            <footer class="rodape-documento">
+
+                <span>
+                    SECRETÁRIO:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-secretario"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-secretario"
+                    >
+                </span>
+
+                <span>
+                    DIRETOR:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-diretor"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-diretor"
+                    >
+                </span>
+
+            </footer>
+
+            <span class="numero-pagina">2</span>
+
+        </section>
+
+        <!-- ================================================= -->
+        <!-- PÁGINA 3                                         -->
+        <!-- ================================================= -->
+
+        <section class="folha">
+
+            <h1 class="titulo-documento">
+                ITINERÁRIO FORMATIVO
+            </h1>
+
+            <div class="identificacao-aluno">
+
+                <div>
+                    <strong>Nome:</strong>
+
+                    <input
+                        type="text"
+                        class="campo-linha campo-identificacao sincronizar-nome"
+                    >
+                </div>
+
+                <div>
+                    <strong>Matrícula:</strong>
+
+                    <input
+                        type="text"
+                        class="campo-linha campo-matricula sincronizar-matricula"
+                    >
+                </div>
+
+            </div>
+             #blocohisorico#
+            <div class="bloco-historico">
+
+    <div class="topo-historico">
+        <div class="linha-topo">
+            <div class="campo-topo grande">
+                <strong>Estabelecimento de Ensino:</strong>
+                ESCOLA TECNICA ESTADUAL MINISTRO FERNANDO LYRA
+            </div>
+
+            <div class="campo-topo pequeno">
+                <strong>Cadastro Escolar:</strong>
+                <span class="linha-preenchimento"></span>
+            </div>
+        </div>
+
+        <div class="linha-topo">
+            <div class="campo-topo grande">
+                <strong>Cidade:</strong>
+                Caruaru
+            </div>
+
+            <div class="campo-topo pequeno">
+                <strong>Estado:</strong>
+                Pernambuco
+            </div>
+        </div>
+
+        <div class="linha-topo">
+            <div class="campo-topo grande">
+                <strong>Itinerário:</strong>
+                FORMAÇÃO TÉCNICA E PROFISSIONAL
+            </div>
+        </div>
+    </div>
+
+    <table class="tabela-historico-modelo">
+        <thead>
+            <tr>
+                <th class="col-vertical"></th>
+                <th class="col-tipo">Tipo</th>
+                <th class="col-unidade">Unidades Curriculares</th>
+                <th class="col-ano">Ano</th>
+                <th class="col-periodo">Período Letivo</th>
+                <th class="col-ch">CH</th>
+                <th class="col-nota">Nota</th>
+                <th class="col-freq">Frequência</th>
+                <th class="col-resultado">Resultado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td class="ano-vertical" rowspan="8">2025 - 2º Ano</td>
+                <td>Área de Integração BNCC/CNCT</td>
+                <td>Letramento Linguístico</td>
+                <td>2º</td>
+                <td>2025</td>
+                <td>40</td>
+                <td>7,5</td>
+                <td>98</td>
+                <td>Aprovado</td>
+            </tr>
+
+            <tr>
+                <td>Área de Integração BNCC/CNCT</td>
+                <td>Lógica Matemática e STEM</td>
+                <td>2º</td>
+                <td>2025</td>
+                <td>40</td>
+                <td>7,0</td>
+                <td>90</td>
+                <td>Aprovado</td>
+            </tr>
+
+            <tr>
+                <td>Eletiva</td>
+                <td>JOGOS CULTURAIS</td>
+                <td>2º</td>
+                <td>2025</td>
+                <td>40</td>
+                <td>7,0</td>
+                <td>100</td>
+                <td>Aprovado</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="observacoes-historico">
+        <strong>Observações:</strong>
+    </div>
+</div>
+
+            <!-- BLOCO 1 -->
+
+            <div class="bloco-itinerario">
+
+                <div class="dados-itinerario">
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Estabelecimento de Ensino:</strong>
+
+                            <input
+                                type="text"
+                                value="ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Cadastro Escolar:</strong>
+
+                            <input
+                                type="text"
+                                class="sincronizar-cadastro"
+                            >
+                        </label>
+
+                    </div>
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Cidade:</strong>
+
+                            <input
+                                type="text"
+                                value="Caruaru"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Estado:</strong>
+
+                            <input
+                                type="text"
+                                value="Pernambuco"
+                            >
+                        </label>
+
+                    </div>
+
+                    <label>
+                        <strong>Itinerário:</strong>
+
+                        <input type="text">
+                    </label>
+
+                    <label>
+                        <strong>Trilha:</strong>
+
+                        <input type="text">
+                    </label>
+
+                </div>
+
+                <table class="tabela-documento tabela-itinerario">
+
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Unidades Curriculares</th>
+                            <th>Ano</th>
+                            <th>Período Letivo</th>
+                            <th>CH</th>
+                            <th>Nota</th>
+                            <th>Frequência</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td>
+                                <select>
+                                    <option value=""></option>
+                                    <option>Eletiva</option>
+                                    <option>Aprofundamento - OB</option>
+                                    <option>Atividade Complementar</option>
+                                    <option>Projeto de Vida</option>
+                                </select>
+                            </td>
+
+                            <td>
+                                <input type="text">
+                            </td>
+
+                            <td>
+                                <select>
+                                    <option value=""></option>
+                                    <option>1º</option>
+                                    <option>2º</option>
+                                    <option>3º</option>
+                                </select>
+                            </td>
+
+                            <td>
+                                <input
+                                    type="text"
+                                    placeholder="2024.1"
+                                >
+                            </td>
+
+                            <td>
+                                <input
+                                    type="number"
+                                    class="ch-itinerario"
+                                >
+                            </td>
+
+                            <td>
+                                <input
+                                    type="number"
+                                    step="0.1"
+                                >
+                            </td>
+
+                            <td>
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                >
+                            </td>
+
+                            <td>
+                                <select>
+                                    <option value=""></option>
+                                    <option>Aprovado</option>
+                                    <option>Reprovado</option>
+                                    <option>Cursando</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- BLOCO 2 -->
+
+            <div class="bloco-itinerario">
+
+                <div class="dados-itinerario">
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Estabelecimento de Ensino:</strong>
+
+                            <input
+                                type="text"
+                                value="ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Cadastro Escolar:</strong>
+
+                            <input
+                                type="text"
+                                class="sincronizar-cadastro"
+                            >
+                        </label>
+
+                    </div>
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Cidade:</strong>
+
+                            <input
+                                type="text"
+                                value="Caruaru"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Estado:</strong>
+
+                            <input
+                                type="text"
+                                value="Pernambuco"
+                            >
+                        </label>
+
+                    </div>
+
+                    <label>
+                        <strong>Itinerário:</strong>
+
+                        <input type="text">
+                    </label>
+
+                    <label>
+                        <strong>Trilha:</strong>
+
+                        <input type="text">
+                    </label>
+
+                </div>
+
+                <table class="tabela-documento tabela-itinerario">
+
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Unidades Curriculares</th>
+                            <th>Ano</th>
+                            <th>Período Letivo</th>
+                            <th>CH</th>
+                            <th>Nota</th>
+                            <th>Frequência</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- BLOCO 3 -->
+
+            <div class="bloco-itinerario">
+
+                <div class="dados-itinerario">
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Estabelecimento de Ensino:</strong>
+
+                            <input
+                                type="text"
+                                value="ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Cadastro Escolar:</strong>
+
+                            <input
+                                type="text"
+                                class="sincronizar-cadastro"
+                            >
+                        </label>
+
+                    </div>
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Cidade:</strong>
+
+                            <input
+                                type="text"
+                                value="Caruaru"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Estado:</strong>
+
+                            <input
+                                type="text"
+                                value="Pernambuco"
+                            >
+                        </label>
+
+                    </div>
+
+                    <label>
+                        <strong>Itinerário:</strong>
+
+                        <input type="text">
+                    </label>
+
+                    <label>
+                        <strong>Trilha:</strong>
+
+                        <input type="text">
+                    </label>
+
+                </div>
+
+                <table class="tabela-documento tabela-itinerario">
+
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Unidades Curriculares</th>
+                            <th>Ano</th>
+                            <th>Período Letivo</th>
+                            <th>CH</th>
+                            <th>Nota</th>
+                            <th>Frequência</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="observacoes">
+
+                <strong>Observações:</strong>
+
+                <textarea
+                    id="observacoesItinerario"
+                    name="observacoesItinerario"
+                ></textarea>
+
+            </div>
+
+            <footer class="rodape-documento">
+
+                <span>
+                    SECRETÁRIO:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-secretario"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-secretario"
+                    >
+                </span>
+
+                <span>
+                    DIRETOR:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-diretor"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-diretor"
+                    >
+                </span>
+
+            </footer>
+
+            <span class="numero-pagina">3</span>
+
+        </section>
+
+        <!-- ================================================= -->
+        <!-- PÁGINA 4                                         -->
+        <!-- ================================================= -->
+
+        <section class="folha">
+
+            <div class="bloco-itinerario">
+
+                <div class="dados-itinerario">
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Estabelecimento de Ensino:</strong>
+
+                            <input
+                                type="text"
+                                value="ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Cadastro Escolar:</strong>
+
+                            <input
+                                type="text"
+                                class="sincronizar-cadastro"
+                            >
+                        </label>
+
+                    </div>
+
+                    <div class="linha-itinerario">
+
+                        <label>
+                            <strong>Cidade:</strong>
+
+                            <input
+                                type="text"
+                                value="Caruaru"
+                            >
+                        </label>
+
+                        <label>
+                            <strong>Estado:</strong>
+
+                            <input
+                                type="text"
+                                value="Pernambuco"
+                            >
+                        </label>
+
+                    </div>
+
+                    <label>
+                        <strong>Itinerário:</strong>
+
+                        <input
+                            type="text"
+                            value="FORMAÇÃO TÉCNICA E PROFISSIONAL"
+                        >
+                    </label>
+
+                </div>
+
+                <table class="tabela-documento tabela-itinerario">
+
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Unidades Curriculares</th>
+                            <th>Ano</th>
+                            <th>Período Letivo</th>
+                            <th>CH</th>
+                            <th>Nota</th>
+                            <th>Frequência</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><input type="number" class="ch-itinerario"></td>
+                            <td><input type="number" step="0.1"></td>
+                            <td><input type="number" step="0.01"></td>
+                            <td><input type="text"></td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+                <div class="observacoes">
+
+                    <strong>Observações:</strong>
+
+                    <textarea></textarea>
+
+                </div>
+
+            </div>
+
+            <section class="resultado-final">
+
+                <h2>
+                    RESULTADO FINAL DO CURSO - ENSINO MÉDIO
+                </h2>
+
+                <div class="quadro-resultado">
+
+                    <label>
+                        Carga Horária da Formação Geral Básica (h/r):
+
+                        <input
+                            type="text"
+                            id="resultadoCargaFormacao"
+                            readonly
+                        >
+                    </label>
+
+                    <label>
+                        Carga Horária dos Itinerários Formativos (h/r):
+
+                        <input
+                            type="text"
+                            id="resultadoCargaItinerarios"
+                            readonly
+                        >
+                    </label>
+
+                    <label>
+                        Carga Horária TOTAL:
+
+                        <input
+                            type="text"
+                            id="resultadoCargaTotal"
+                            readonly
+                        >
+                    </label>
+
+                    <label class="espaco-resultado">
+                        <strong>
+                            Data da Conclusão do Curso:
+                        </strong>
+
+                        <input
+                            type="date"
+                            id="dataConclusao"
+                            name="dataConclusao"
+                        >
+                    </label>
+
+                    <label class="espaco-resultado">
+                        <strong>Resultado Final:</strong>
+
+                        <select
+                            id="resultadoFinal"
+                            name="resultadoFinal"
+                        >
+                            <option value=""></option>
+                            <option value="APROVADO">
+                                APROVADO
+                            </option>
+                            <option value="REPROVADO">
+                                REPROVADO
+                            </option>
+                            <option value="CURSANDO">
+                                CURSANDO
+                            </option>
+                            <option value="PROGRESSÃO PLENA">
+                                PROGRESSÃO PLENA
+                            </option>
+                        </select>
+                    </label>
+
+                </div>
+
+                <p class="legenda">
+                    Legenda: CH = Carga Horária;
+                    h/r = Hora/Relógio;
+                    - = Espaço não utilizado
+                </p>
+
+            </section>
+
+            <div class="local-data">
+
+                <input
+                    type="text"
+                    class="campo-local"
+                    value="Caruaru"
+                >
+
+                -
+
+                <input
+                    type="text"
+                    class="campo-estado"
+                    maxlength="2"
+                    value="PE"
+                >,
+
+                <input
+                    type="date"
+                    id="dataEmissao"
+                    name="dataEmissao"
+                >
+
+            </div>
+
+            <div class="assinaturas">
+
+                <div class="assinatura">
+
+                    <div class="linha-assinatura"></div>
+
+                    <input
+                        type="text"
+                        id="nomeSecretario"
+                        class="sincronizar-secretario"
+                        placeholder="NOME DO SECRETÁRIO"
+                    >
+
+                    <input
+                        type="text"
+                        id="matriculaSecretario"
+                        class="sincronizar-matricula-secretario"
+                        placeholder="MATRÍCULA Nº"
+                    >
+
+                    <span>Secretário Escolar</span>
+
+                </div>
+
+                <div class="assinatura">
+
+                    <div class="linha-assinatura"></div>
+
+                    <input
+                        type="text"
+                        id="nomeDiretor"
+                        class="sincronizar-diretor"
+                        placeholder="NOME DO DIRETOR"
+                    >
+
+                    <input
+                        type="text"
+                        id="matriculaDiretor"
+                        class="sincronizar-matricula-diretor"
+                        placeholder="MATRÍCULA Nº"
+                    >
+
+                    <span>Diretor Escolar</span>
+
+                </div>
+
+            </div>
+
+            <footer class="rodape-documento">
+
+                <span>
+                    SECRETÁRIO:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-secretario"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-secretario"
+                    >
+                </span>
+
+                <span>
+                    DIRETOR:
+
+                    <input
+                        type="text"
+                        class="rodape-nome sincronizar-diretor"
+                    >
+
+                    mat. nº
+
+                    <input
+                        type="text"
+                        class="rodape-matricula sincronizar-matricula-diretor"
+                    >
+                </span>
+
+            </footer>
+
+            <span class="numero-pagina">4</span>
+
+        </section>
+
+    </form>
+
+    <script>
+        const arquivoSiepe =
+            document.getElementById("arquivoSiepe");
+
+        const nomeArquivo =
+            document.getElementById("nomeArquivo");
+
+        /*
+            Esta parte apenas recebe o PDF e mostra o nome.
+
+            A leitura por scanner será conectada posteriormente
+            ao Flask/Python.
+        */
+        arquivoSiepe.addEventListener("change", function () {
+            const arquivo = this.files[0];
+
+            if (!arquivo) {
+                nomeArquivo.textContent =
+                    "Nenhum PDF selecionado";
+
+                return;
+            }
+
+            if (arquivo.type !== "application/pdf") {
+                alert("Selecione um arquivo no formato PDF.");
+
+                this.value = "";
+
+                nomeArquivo.textContent =
+                    "Nenhum PDF selecionado";
+
+                return;
+            }
+
+            nomeArquivo.textContent = arquivo.name;
+        });
+
+        document
+            .getElementById("botaoImprimir")
+            .addEventListener("click", function () {
+                window.print();
+            });
+
+        /*
+            Sincroniza campos repetidos em todas as páginas.
+        */
+        function sincronizarCampos(classe) {
+            const campos =
+                document.querySelectorAll("." + classe);
+
+            campos.forEach(function (campoAtual) {
+                campoAtual.addEventListener(
+                    "input",
+                    function () {
+                        campos.forEach(function (outroCampo) {
+                            if (outroCampo !== campoAtual) {
+                                outroCampo.value =
+                                    campoAtual.value;
+                            }
+                        });
+                    }
+                );
+            });
+        }
+
+        sincronizarCampos("sincronizar-nome");
+        sincronizarCampos("sincronizar-matricula");
+        sincronizarCampos("sincronizar-cadastro");
+        sincronizarCampos("sincronizar-secretario");
+        sincronizarCampos(
+            "sincronizar-matricula-secretario"
+        );
+        sincronizarCampos("sincronizar-diretor");
+        sincronizarCampos(
+            "sincronizar-matricula-diretor"
+        );
+
+        /*
+            Máscara simples para CPF.
+        */
+        document
+            .getElementById("cpf")
+            .addEventListener("input", function () {
+                let valor = this.value.replace(/\D/g, "");
+
+                valor = valor.slice(0, 11);
+
+                valor = valor.replace(
+                    /(\d{3})(\d)/,
+                    "$1.$2"
+                );
+
+                valor = valor.replace(
+                    /(\d{3})(\d)/,
+                    "$1.$2"
+                );
+
+                valor = valor.replace(
+                    /(\d{3})(\d{1,2})$/,
+                    "$1-$2"
+                );
+
+                this.value = valor;
+            });
+
+        /*
+            Calcula as cargas horárias da formação geral.
+        */
+        function numeroSeguro(valor) {
+            const numero = Number(valor);
+
+            if (Number.isNaN(numero)) {
+                return 0;
+            }
+
+            return numero;
+        }
+
+        function calcularCargas() {
+            let totalPrimeiro = 0;
+            let totalSegundo = 0;
+            let totalTerceiro = 0;
+            let totalItinerarios = 0;
+
+            const linhas =
+                document.querySelectorAll(
+                    "#tabelaFormacaoGeral tbody tr"
+                );
+
+            linhas.forEach(function (linha) {
+                const primeiro = numeroSeguro(
+                    linha.querySelector(
+                        ".ch-primeiro"
+                    ).value
+                );
+
+                const segundo = numeroSeguro(
+                    linha.querySelector(
+                        ".ch-segundo"
+                    ).value
+                );
+
+                const terceiro = numeroSeguro(
+                    linha.querySelector(
+                        ".ch-terceiro"
+                    ).value
+                );
+
+                const totalLinha =
+                    primeiro + segundo + terceiro;
+
+                linha.querySelector(
+                    ".ch-total-linha"
+                ).value = totalLinha || "";
+
+                totalPrimeiro += primeiro;
+                totalSegundo += segundo;
+                totalTerceiro += terceiro;
+            });
+
+            document
+                .querySelectorAll(".ch-itinerario")
+                .forEach(function (campo) {
+                    totalItinerarios +=
+                        numeroSeguro(campo.value);
+                });
+
+            const totalFormacao =
+                totalPrimeiro +
+                totalSegundo +
+                totalTerceiro;
+
+            const totalGeral =
+                totalFormacao +
+                totalItinerarios;
+
+            document.getElementById(
+                "totalPrimeiroAno"
+            ).value = totalPrimeiro || "";
+
+            document.getElementById(
+                "totalSegundoAno"
+            ).value = totalSegundo || "";
+
+            document.getElementById(
+                "totalTerceiroAno"
+            ).value = totalTerceiro || "";
+
+            document.getElementById(
+                "totalFormacaoGeral"
+            ).value = totalFormacao || "";
+
+            document.getElementById(
+                "resultadoCargaFormacao"
+            ).value = totalFormacao || "";
+
+            document.getElementById(
+                "resultadoCargaItinerarios"
+            ).value = totalItinerarios || "";
+
+            document.getElementById(
+                "resultadoCargaTotal"
+            ).value = totalGeral || "";
+        }
+
+        document
+            .querySelectorAll(
+                ".ch-primeiro, " +
+                ".ch-segundo, " +
+                ".ch-terceiro, " +
+                ".ch-itinerario"
+            )
+            .forEach(function (campo) {
+                campo.addEventListener(
+                    "input",
+                    calcularCargas
+                );
+            });
+
+        calcularCargas();
+    </script>
+
+    <script
+    src="{{ url_for('static', filename='scripts/ficha19.js') }}"
+></script>
+
+<img
+    src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"
+    alt="Brasão de Pernambuco"
+>
+
+</body>
+
+</html>

@@ -1,0 +1,1200 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #d9dde2;
+    color: #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    padding: 100px 15px 40px;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================================================
+   BARRA SUPERIOR DO EDOC
+   ========================================================= */
+
+.barra-edoc {
+    align-items: center;
+    background-color: #ffffff;
+    border-bottom: 1px solid #cfd5dc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    left: 0;
+    min-height: 75px;
+    padding: 14px 24px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+}
+
+.identidade-edoc {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 11px;
+}
+
+.icone-edoc {
+    align-items: center;
+    background-color: #17365d;
+    border-radius: 8px;
+    color: #ffffff;
+    display: flex;
+    font-size: 22px;
+    height: 45px;
+    justify-content: center;
+    width: 45px;
+}
+
+.identidade-edoc h1 {
+    color: #17365d;
+    font-size: 21px;
+    line-height: 1;
+}
+
+.identidade-edoc p {
+    color: #666666;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.acoes-edoc {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.botao-edoc,
+.rotulo-upload {
+    align-items: center;
+    border: none;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 12px;
+    font-weight: bold;
+    gap: 7px;
+    justify-content: center;
+    min-height: 38px;
+    padding: 10px 13px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.botao-edoc:hover,
+.rotulo-upload:hover {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+}
+
+.botao-voltar {
+    background-color: #58626e;
+}
+
+.rotulo-upload {
+    background-color: #1e5f9e;
+}
+
+.botao-imprimir {
+    background-color: #287248;
+}
+
+#arquivoSiepe {
+    display: none;
+}
+
+.nome-arquivo {
+    color: #555555;
+    display: inline-block;
+    font-size: 11px;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   FOLHAS A4
+   ========================================================= */
+
+.folha {
+    background-color: #ffffff;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto 30px;
+    min-height: 297mm;
+    overflow: hidden;
+    padding: 9mm 10mm 8mm;
+    position: relative;
+    width: 210mm;
+}
+
+.numero-pagina {
+    bottom: 5mm;
+    color: #777777;
+    font-size: 7px;
+    position: absolute;
+    right: 8mm;
+}
+/* =========================================================
+   CABEÇALHO OFICIAL DA FICHA 19
+   ========================================================= */
+
+.cabecalho-oficial {
+    display: block;
+    margin: 0 auto;
+    padding-top: 3mm;
+    width: 100%;
+}
+
+.brasao-oficial {
+    align-items: center;
+    display: flex;
+    height: 27mm;
+    justify-content: center;
+    width: 100%;
+}
+
+.brasao-oficial img {
+    display: block;
+    height: auto;
+    max-height: 24mm;
+    max-width: 25mm;
+    object-fit: contain;
+}
+
+.linha-superior {
+    border-top: 0.3mm solid #000000;
+    margin: 1.5mm 0 1mm;
+    width: 100%;
+}
+
+.nome-escola-oficial {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 4.2mm;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.endereco-escola-oficial {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.85mm;
+    line-height: 1.2;
+    margin: 1mm 0 0;
+    text-align: center;
+}
+
+.telefone-escola-oficial {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.85mm;
+    line-height: 1.2;
+    margin: 0.7mm 0 0;
+    text-align: center;
+}
+
+.telefone-escola-oficial input {
+    background: transparent;
+    border: none;
+    border-bottom: 0.2mm solid #000000;
+    font-size: 1.85mm;
+    height: 3mm;
+    padding: 0;
+    width: 32mm;
+}
+
+.quadro-autorizacao-oficial {
+    border: 1px solid #000000;
+    display: grid;
+    grid-template-columns: 1fr 150px;
+    align-items: center;
+    height: 20px;
+    margin-top: 12px;
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7px;
+}
+
+.autorizacao-esquerda,
+.autorizacao-direita {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    padding: 0 6px;
+}
+
+.autorizacao-direita {
+    border-left: 1px solid #000000;
+    justify-content: flex-start;
+}
+
+.autorizacao-esquerda strong,
+.autorizacao-direita strong {
+    margin-right: 4px;
+    white-space: nowrap;
+}
+
+.autorizacao-esquerda input,
+.autorizacao-direita input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000;
+    font-size: 7px;
+    height: 12px;
+    outline: none;
+    padding: 0 2px;
+}
+
+.autorizacao-esquerda input {
+    flex: 1;
+    min-width: 0;
+}
+
+.autorizacao-direita input {
+    width: 70px;
+}
+
+/* Cadastro Escolar */
+
+.quadro-cadastro-oficial {
+    align-items: center;
+    border: 1px solid #000000;
+    display: flex;
+    justify-content: center;
+    margin: 8px auto 0;
+    width: 250px; /* deixa realmente centralizado */
+    height: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7px;
+}
+
+.quadro-cadastro-oficial strong {
+    align-items: center;
+    border-right: 1px solid #000000;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    padding: 0 10px;
+    white-space: nowrap;
+}
+
+.quadro-cadastro-oficial input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #000000; /* barrinha para escrever */
+    font-size: 7px;
+    height: 12px;
+    margin: 0 8px;
+    outline: none;
+    padding: 0 2px;
+    text-align: center;
+    width: 110px;
+}
+
+.titulo-certificado-oficial {
+    align-items: center;
+    border: 0.3mm solid #000000;
+    display: flex;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.6mm;
+    font-weight: 700;
+    height: 7mm;
+    justify-content: center;
+    margin: 2.5mm 0 0;
+    padding: 0;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+/* Impressão */
+
+@media print {
+    .brasao-oficial img {
+        max-height: 24mm;
+        max-width: 25mm;
+    }
+
+    .telefone-escola-oficial input,
+    .quadro-autorizacao-oficial input,
+    .quadro-cadastro-oficial input {
+        background: transparent !important;
+        border: none !important;
+    }
+}
+
+/* =========================================================
+   CAMPOS
+   ========================================================= */
+
+input,
+select,
+textarea {
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    color: #000000;
+    outline: none;
+}
+
+input:hover,
+input:focus,
+select:hover,
+select:focus,
+textarea:hover,
+textarea:focus {
+    background-color: #fff9cf;
+}
+
+input[readonly] {
+    cursor: default;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #999999;
+    opacity: 1;
+}
+
+.campo-linha {
+    border-bottom: 1px solid #000000;
+    font-size: 9px;
+    min-height: 17px;
+    padding: 1px 3px;
+}
+
+/* =========================================================
+   PRIMEIRA PÁGINA
+   ========================================================= */
+
+.texto-certificado {
+    font-size: 9px;
+    line-height: 2;
+    margin-top: 10px;
+    text-align: justify;
+}
+
+.texto-certificado p {
+    margin-bottom: 5px;
+}
+
+.campo-nome {
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 320px;
+}
+
+.campo-filiacao {
+    text-transform: uppercase;
+    width: 225px;
+}
+
+.campo-data {
+    width: 110px;
+}
+
+.campo-cidade {
+    text-transform: uppercase;
+    width: 105px;
+}
+
+.campo-uf {
+    text-align: center;
+    text-transform: uppercase;
+    width: 32px;
+}
+
+.campo-nacionalidade {
+    text-transform: uppercase;
+    width: 115px;
+}
+
+.campo-rg {
+    width: 100px;
+}
+
+.campo-orgao {
+    text-transform: uppercase;
+    width: 80px;
+}
+
+.campo-cpf {
+    width: 125px;
+}
+
+.campo-conclusao {
+    text-transform: uppercase;
+    width: 115px;
+}
+
+.campo-modalidade {
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 120px;
+}
+
+/* =========================================================
+   INFORMAÇÕES COMPLEMENTARES
+   ========================================================= */
+
+.informacoes-complementares {
+    border: 1px solid #000000;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 7.5px;
+
+    line-height: 1.55;
+
+    margin-top: 8px;
+    padding: 6px 5px 7px;
+
+    text-align: justify;
+}
+
+.informacoes-complementares h2 {
+    font-size: 9px;
+    font-weight: 700;
+
+    margin: 0 0 5px;
+
+    text-align: center;
+}
+
+.informacoes-complementares ol {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.informacoes-complementares li {
+    margin: 0 0 5px;
+    padding: 0;
+
+    text-align: justify;
+}
+
+
+/* =========================================================
+   OBSERVAÇÕES
+   ========================================================= */
+
+.observacoes {
+    font-size: 8px;
+    margin-top: 10px;
+}
+
+.observacoes textarea {
+    border: 1px solid #000000;
+    display: block;
+    font-size: 8px;
+    height: 58px;
+    line-height: 1.4;
+    margin-top: 3px;
+    overflow: hidden;
+    padding: 4px;
+    resize: none;
+    width: 100%;
+}
+
+/* =========================================================
+   IDENTIFICAÇÃO DO ALUNO
+   ========================================================= */
+
+.identificacao-aluno {
+    font-size: 8px;
+    line-height: 1.55;
+    margin-bottom: 7px;
+}
+
+.identificacao-aluno > div {
+    min-height: 20px;
+}
+
+.campo-identificacao {
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 400px;
+}
+
+.campo-matricula {
+    width: 130px;
+}
+
+/* =========================================================
+   TABELAS
+   ========================================================= */
+
+.tabela-documento {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.tabela-documento th,
+.tabela-documento td {
+    border: 1px solid #000000;
+    font-size: 6.8px;
+    height: 20px;
+    line-height: 1.2;
+    padding: 1px 2px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabela-documento th {
+    font-weight: bold;
+}
+
+.tabela-documento input,
+.tabela-documento select {
+    font-size: 6.8px;
+    height: 16px;
+    max-width: 100%;
+    padding: 1px;
+    text-align: center;
+    width: 100%;
+}
+
+.tabela-documento .texto-esquerda {
+    text-align: left;
+}
+
+.tabela-documento .componente {
+    font-weight: bold;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+input.componente {
+    padding-left: 2px;
+}
+
+.campo-ano-tabela {
+    font-size: 7px;
+    font-weight: bold;
+    max-width: 44px;
+    text-align: center;
+}
+
+.coluna-componente {
+    width: 32%;
+}
+
+.coluna-nota {
+    width: 7%;
+}
+
+.coluna-ch {
+    width: 7%;
+}
+
+.coluna-total {
+    width: 9%;
+}
+
+.linha-resumo td {
+    font-size: 7px;
+    height: 19px;
+}
+
+.linha-resumo input {
+    font-weight: bold;
+}
+
+.legenda {
+    font-size: 7px;
+    line-height: 1.3;
+    margin-top: 3px;
+}
+
+/* =========================================================
+   RESULTADOS DOS ANOS
+   ========================================================= */
+
+.titulo-resultados {
+    font-size: 9px;
+    margin: 10px 0 3px;
+}
+
+.resultados-anos {
+    border: 1px solid #000000;
+}
+
+.resultado-ano {
+    border-bottom: 1px solid #000000;
+    display: grid;
+    font-size: 7px;
+    gap: 2px 8px;
+    grid-template-columns: 2fr 1fr;
+    min-height: 48px;
+    padding: 4px;
+}
+
+.resultado-ano:last-child {
+    border-bottom: none;
+}
+
+.resultado-ano label {
+    align-items: center;
+    display: flex;
+    min-height: 18px;
+}
+
+.resultado-ano input,
+.resultado-ano select {
+    border-bottom: 1px solid #000000;
+    flex: 1;
+    font-size: 7px;
+    margin-left: 3px;
+    min-width: 0;
+}
+
+/* =========================================================
+   ITINERÁRIO FORMATIVO
+   ========================================================= */
+
+.bloco-itinerario {
+    border: 1px solid #000000;
+    margin-bottom: 5px;
+}
+
+.dados-itinerario {
+    font-size: 7px;
+    line-height: 1.5;
+    padding: 3px 4px;
+}
+
+.dados-itinerario > label {
+    align-items: center;
+    display: flex;
+    min-height: 17px;
+}
+
+.linha-itinerario {
+    display: flex;
+    gap: 12px;
+}
+
+.linha-itinerario label {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+}
+
+.dados-itinerario input {
+    border-bottom: 1px solid #000000;
+    flex: 1;
+    font-size: 7px;
+    margin-left: 3px;
+    min-width: 0;
+}
+
+.tabela-itinerario th,
+.tabela-itinerario td {
+    font-size: 6.5px;
+}
+
+.tabela-itinerario th:nth-child(1),
+.tabela-itinerario td:nth-child(1) {
+    width: 19%;
+}
+
+.tabela-itinerario th:nth-child(2),
+.tabela-itinerario td:nth-child(2) {
+    text-align: left;
+    width: 30%;
+}
+
+.tabela-itinerario th:nth-child(3),
+.tabela-itinerario td:nth-child(3) {
+    width: 7%;
+}
+
+.tabela-itinerario th:nth-child(4),
+.tabela-itinerario td:nth-child(4) {
+    width: 12%;
+}
+
+.tabela-itinerario th:nth-child(5),
+.tabela-itinerario td:nth-child(5) {
+    width: 7%;
+}
+
+.tabela-itinerario th:nth-child(6),
+.tabela-itinerario td:nth-child(6) {
+    width: 7%;
+}
+
+.tabela-itinerario th:nth-child(7),
+.tabela-itinerario td:nth-child(7) {
+    width: 9%;
+}
+
+.tabela-itinerario th:nth-child(8),
+.tabela-itinerario td:nth-child(8) {
+    width: 10%;
+}
+
+/* =========================================================
+   RESULTADO FINAL
+   ========================================================= */
+
+.resultado-final {
+    margin-top: 16px;
+}
+
+.resultado-final h2 {
+    font-size: 11px;
+    line-height: 1.3;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.quadro-resultado {
+    border: 1px solid #000000;
+    display: flex;
+    flex-direction: column;
+    font-size: 8px;
+    gap: 7px;
+    min-height: 120px;
+    padding: 9px;
+}
+
+.quadro-resultado label {
+    align-items: center;
+    display: flex;
+    min-height: 18px;
+}
+
+.quadro-resultado input,
+.quadro-resultado select {
+    border-bottom: 1px solid #000000;
+    font-size: 8px;
+    margin-left: 6px;
+    min-width: 155px;
+}
+
+.espaco-resultado {
+    margin-top: 6px;
+}
+
+.local-data {
+    align-items: center;
+    display: flex;
+    font-size: 8px;
+    justify-content: flex-end;
+    margin-top: 28px;
+}
+
+.local-data input {
+    border-bottom: 1px solid #000000;
+    font-size: 8px;
+    margin: 0 3px;
+    text-align: center;
+}
+
+.campo-local {
+    width: 72px;
+}
+
+.campo-estado {
+    text-transform: uppercase;
+    width: 27px;
+}
+
+/* =========================================================
+   ASSINATURAS
+   ========================================================= */
+
+.assinaturas {
+    display: flex;
+    gap: 50px;
+    justify-content: space-between;
+    margin-top: 42px;
+}
+
+.assinatura {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    font-size: 8px;
+    min-width: 0;
+    text-align: center;
+}
+
+.linha-assinatura {
+    border-top: 1px solid #000000;
+    margin-bottom: 4px;
+    width: 100%;
+}
+
+.assinatura input {
+    font-size: 8px;
+    min-height: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+/* =========================================================
+   RODAPÉ
+   ========================================================= */
+
+.rodape-documento {
+    align-items: center;
+    display: flex;
+    font-size: 6.5px;
+    gap: 12px;
+    justify-content: center;
+    margin-top: auto;
+    padding-bottom: 3mm;
+    padding-top: 12px;
+    text-align: center;
+}
+
+.rodape-documento span {
+    white-space: nowrap;
+}
+
+.rodape-documento input {
+    border-bottom: 1px solid #000000;
+    font-size: 6.5px;
+}
+
+.rodape-nome {
+    text-transform: uppercase;
+    width: 140px;
+}
+
+.rodape-matricula {
+    width: 60px;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media screen and (max-width: 1100px) {
+    body {
+        padding-top: 145px;
+    }
+
+    .barra-edoc {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .acoes-edoc {
+        justify-content: flex-start;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    body {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .folha {
+        min-height: auto;
+        overflow-x: auto;
+        padding: 14px;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    body {
+        padding-top: 190px;
+    }
+
+    .botao-edoc,
+    .rotulo-upload {
+        flex: 1;
+    }
+
+    .nome-arquivo {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+}
+
+/* =========================================================
+   IMPRESSÃO
+   ========================================================= */
+
+@page {
+    margin: 0;
+    size: A4 portrait;
+}
+
+@media print {
+    html,
+    body {
+        background-color: #ffffff;
+        height: auto;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .barra-edoc {
+        display: none;
+    }
+
+    .folha {
+        box-shadow: none;
+        margin: 0;
+        min-height: 297mm;
+        page-break-after: always;
+        padding: 9mm 10mm 8mm;
+        width: 210mm;
+    }
+
+    .folha:last-child {
+        page-break-after: auto;
+    }
+
+    input,
+    select,
+    textarea {
+        background-color: transparent;
+        color: #000000;
+    }
+
+    select {
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: transparent;
+    }
+
+    .campo-linha,
+    .resultado-ano input,
+    .resultado-ano select,
+    .dados-itinerario input,
+    .quadro-resultado input,
+    .quadro-resultado select,
+    .local-data input,
+    .rodape-documento input {
+        border-bottom-color: transparent;
+    }
+
+    .observacoes textarea {
+        border: 1px solid #000000;
+    }
+}
+
+/* =========================================================
+   TEXTO DO CERTIFICADO IGUAL AO DOCUMENTO ORIGINAL
+   ========================================================= */
+
+.texto-certificado-original {
+    border: 1px solid #000000;
+    border-top: none;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8px;
+
+    line-height: 1.65;
+
+    margin: 0;
+    padding: 7px 5px 9px;
+
+    text-align: justify;
+
+    width: 100%;
+}
+
+.texto-certificado-original p {
+    display: block;
+
+    margin: 0;
+    padding: 0;
+
+    text-align: justify;
+}
+
+.campo-editavel {
+    display: inline;
+
+    margin: 0;
+    padding: 0;
+
+    min-width: 0;
+
+    background: transparent;
+    border: none;
+
+    outline: none;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: inherit;
+
+    line-height: inherit;
+
+    white-space: normal;
+}
+
+.campo-editavel.destaque {
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.campo-editavel:focus {
+    background: #fff6b5;
+    outline: 1px dotted #777777;
+}
+
+/* Faz o texto ficar realmente compacto */
+.texto-certificado-original br {
+    display: none;
+}
+
+/* =========================================================
+   BLOCO DE HISTÓRICO - MODELO DA IMAGEM
+   ========================================================= */
+
+.bloco-historico {
+    border: 1px solid #000000;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    margin-top: 12px;
+    width: 100%;
+}
+
+.topo-historico {
+    border-bottom: 1px solid #000000;
+    padding: 0;
+}
+
+.linha-topo {
+    display: grid;
+    grid-template-columns: 1fr 220px;
+    min-height: 20px;
+}
+
+.campo-topo {
+    padding: 2px 5px;
+    font-size: 11px;
+}
+
+.campo-topo.pequeno {
+    border-left: 1px solid #000000;
+}
+
+.campo-topo.grande {
+    border-left: none;
+}
+
+.linha-preenchimento {
+    border-bottom: 1px solid #000000;
+    display: inline-block;
+    height: 10px;
+    margin-left: 4px;
+    vertical-align: middle;
+    width: 95px;
+}
+
+/* tabela */
+
+.tabela-historico-modelo {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.tabela-historico-modelo th,
+.tabela-historico-modelo td {
+    border: 1px solid #000000;
+    font-size: 10px;
+    line-height: 1.15;
+    padding: 2px 3px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.tabela-historico-modelo th {
+    font-weight: bold;
+}
+
+.tabela-historico-modelo .col-vertical {
+    width: 18px;
+}
+
+.tabela-historico-modelo .col-tipo {
+    width: 130px;
+}
+
+.tabela-historico-modelo .col-unidade {
+    width: 170px;
+}
+
+.tabela-historico-modelo .col-ano {
+    width: 40px;
+}
+
+.tabela-historico-modelo .col-periodo {
+    width: 70px;
+}
+
+.tabela-historico-modelo .col-ch {
+    width: 45px;
+}
+
+.tabela-historico-modelo .col-nota {
+    width: 40px;
+}
+
+.tabela-historico-modelo .col-freq {
+    width: 60px;
+}
+
+.tabela-historico-modelo .col-resultado {
+    width: 70px;
+}
+
+.ano-vertical {
+    font-weight: bold;
+    padding: 0;
+    text-align: center;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+}
+
+.observacoes-historico {
+    border-top: 1px solid #000000;
+    font-size: 11px;
+    min-height: 22px;
+    padding: 3px 5px;
+}

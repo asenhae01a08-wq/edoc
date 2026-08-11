@@ -2,78 +2,257 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>eDOC - Acesso do Aluno</title>
+    <meta charset="UTF-8">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-  <!-- Ícones -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>eDOC - Acesso</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style2.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    >
 </head>
 
 <body>
 
-  <div class="container">
+    <div class="pagina">
 
-    <div class="logo">
-      <div class="logo-circle">
-        <i class="fa-regular fa-file-lines"></i>
-      </div>
-      <h2>eDOC</h2>
+        <!-- BANNER -->
+        <header class="banner">
+
+            <div class="marca">
+
+                <div class="espaco-logo">
+
+                    <img
+                        src="{{ url_for('static', filename='img/logo.png') }}"
+                        alt="Logo do eDOC"
+                    >
+
+                </div>
+
+                <div class="texto-logo">
+
+                    <h1>eDOC</h1>
+
+                    <p>
+                        Sistema de Gestão de Documentos Escolares
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- MENU -->
+        <nav class="menu">
+
+            <a href="#" class="ativo">
+                Início
+            </a>
+
+            <a href="suporte">
+                Contato
+            </a>
+
+        </nav>
+
+
+        <!-- CONTEÚDO -->
+        <main class="conteudo">
+
+            <section class="area-acesso">
+
+                <div class="titulo-pagina">
+
+                    <h2>Acesso ao eDOC</h2>
+
+                    <p>
+                        Entre como aluno ou profissional
+                    </p>
+
+                </div>
+
+
+                <div class="painel-login">
+
+                    <div class="cabecalho-painel">
+
+                        <h3>Identificação do usuário</h3>
+
+                        <p>
+                            Utilize sua matrícula ou seu e-mail para entrar
+                        </p>
+
+                    </div>
+
+
+                    <div class="corpo-painel">
+
+                        <div class="apresentacao">
+
+                            <div class="icone-usuario">
+
+                                <i class="fa-regular fa-user"></i>
+
+                            </div>
+
+                            <div class="texto-apresentacao">
+
+                                <h3>Bem-vindo ao eDOC</h3>
+
+                                <p>
+                                    Consulte documentos escolares, acompanhe
+                                    solicitações e acesse as funcionalidades
+                                    disponíveis para o seu perfil.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <form
+                            action="{{ url_for('login') }}"
+                            method="POST"
+                            id="loginForm"
+                            class="formulario"
+                        >
+
+                            <div class="grupo">
+
+                                <label for="identificacao">
+                                    Matrícula ou e-mail
+                                </label>
+
+                                <div class="campo">
+
+                                    <i class="fa-regular fa-user"></i>
+
+                                    <input
+                                        type="text"
+                                        name="email"
+                                        id="identificacao"
+                                        placeholder="Digite sua matrícula ou e-mail"
+                                        autocomplete="username"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="grupo">
+
+                                <label for="senha">
+                                    Senha
+                                </label>
+
+                                <div class="campo">
+
+                                    <i class="fa-solid fa-lock"></i>
+
+                                    <input
+                                        type="password"
+                                        name="senha"
+                                        id="senha"
+                                        placeholder="Digite sua senha"
+                                        autocomplete="current-password"
+                                        required
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="botao-olho"
+                                        id="toggleSenha"
+                                        aria-label="Mostrar ou esconder senha"
+                                    >
+
+                                        <i class="fa-regular fa-eye"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="acoes">
+
+                                <button
+                                    type="submit"
+                                    class="botao-entrar"
+                                >
+
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                                    Entrar
+
+                                </button>
+
+                                <a href="{{ url_for('esqueci') }}">
+                                    Esqueci minha senha
+                                </a>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                {% with messages = get_flashed_messages() %}
+
+                    {% if messages %}
+
+                        <div class="flash-messages">
+
+                            {% for message in messages %}
+
+                                <p>
+                                    <i class="fa-solid fa-circle-exclamation"></i>
+                                    {{ message }}
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
+
+                {% endwith %}
+
+            </section>
+
+        </main>
+
+
+        <footer class="rodape">
+
+            <p>
+                eDOC — Sistema de Gestão de Documentos Escolares
+            </p>
+
+        </footer>
+
     </div>
 
-    <div class="user-icon">
-      <i class="fa-regular fa-user"></i>
-    </div>
 
-    <h1>ACESSO</h1>
-
-    <form action="{{ url_for('login') }}" method="POST" id="loginForm">
-
-      <div class="input-box">
-        <i class="fa-regular fa-user"></i>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          placeholder="Digite seu e-mail"
-          required>
-      </div>
-
-      <div class="input-box">
-        <i class="fa-solid fa-lock"></i>
-        <input
-          type="password"
-          name="senha"
-          id="senha"
-          placeholder="Digite sua senha"
-          required>
-
-        <i class="fa-regular fa-eye" id="toggleSenha"></i>
-      </div>
-
-      <button type="submit">ENTRAR</button>
-
-      <div class="forgot">
-        <a href="{{ url_for('esqueci') }}">Esqueci minha senha</a>
-      </div>
-
-    </form>
-
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="flash-messages">
-          {% for message in messages %}
-            <p>{{ message }}</p>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
-
-  </div>
-
-  <script src="{{ url_for('static', filename='script/script2.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/script2.js') }}"></script>
 
 </body>
 

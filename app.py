@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from functools import wraps
 import models
@@ -48,8 +49,10 @@ def login():
             flash("E-mail ou senha inválidos.")
             return redirect(url_for("login"))
 
-        session["nivel"] = usuario["cargo_nivel"]
+        session["id"] = usuario["id"]
         session["nome"] = usuario["nome"]
+        session["email"] = usuario["email"]
+        session["nivel"] = usuario["cargo_nivel"]
 
         if session["nivel"] == "Profissional":
             return redirect(url_for("inicialp"))
@@ -65,12 +68,26 @@ def loginprofissional():
 @app.route("/iniciala")
 @login_required_aluno
 def iniciala():
-    return render_template("iniciala.html")
 
+    aluno = models.buscar_aluno(session["email"])
+
+    if aluno is None:
+        flash("Aluno não encontrado.")
+        return redirect(url_for("login"))
+
+    return render_template(
+        "iniciala.html",
+        aluno=aluno
+    )
 @app.route("/inicialp")
 @login_required_profissional
 def inicialp():
     return render_template("inicialp.html")
+
+@app.route("/telagerar")
+@login_required_profissional
+def telagerar():
+    return render_template("telagerar.html")
 
 @app.route("/preenchimento")
 def preenchimento():
@@ -80,28 +97,39 @@ def preenchimento():
 def esqueci():
     return render_template("esqueci.html")
 
-@app.route("/suorte")
-def suorte():
-    return render_template("suorte.html")
+@app.route("/suporte")
+def suporte():
+    return render_template("suporte.html")
 
-@app.route("/", methods=["GET", "POST"])
-def login1():
-    if request.method == "POST":
-        email = request.form.get("email")
-        senha = request.form.get("senha")
+@app.route("/consultar_documentos")
+def consultar():
+    return render_template("consultar.html")
 
-        usuario = models.verificarLogin(email, senha)
+@app.route("/turma_TDSA")
+def turma_TDSA():
+    alunos = models.buscar_alunos_por_turma(1)
 
-        if usuario is None:
-            flash("E-mail ou senha inválidos.")
-            return redirect(url_for("login"))
+    return render_template(
+        "turma_TDSA.html",
+        alunos=alunos
+    )
 
-        session["nivel"] = usuario["cargo_nivel"]
-        session["nome"] = usuario["nome"]
+@app.route("/")
+def index():
+    return redirect(url_for("login"))
 
-        if session["nivel"] == "Profissional":
-            return redirect(url_for("inicialp"))
 
-        return redirect(url_for("iniciala"))
+@app.route("/ficha19")
+def ficha19():
 
-    return render_template("login.html")
+    return render_template("ficha19.html")
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    flash("Você saiu da sua conta.")
+
+    return redirect(
+        url_for("login")
+    )
+

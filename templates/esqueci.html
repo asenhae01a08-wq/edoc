@@ -1,36 +1,103 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eDOC
-Recuperar Senha</title>
-  <link rel="stylesheet" href="{{url_for('static',filename='style8.css')}}">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Recuperar Senha</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style13.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 </head>
+
 <body>
 
-<div class="container">
+    <main class="container">
 
-<div class="logo"><logo class="png"></logo></div>
+        <section class="card">
 
-<button class="btn-voltar" onclick="history.back()">
-<a href="/index"> <- </a>
-</button>
+            <div class="logo">
+                <i class="fa-solid fa-key"></i>
+            </div>
 
-<h1>eDOC</h1>
+            <h1>Recuperar senha</h1>
 
-<h2>ESQUECEU SUA SENHA?</h2>
+            <p class="subtitulo">
+                Digite o seu e-mail cadastrado.
+                Enviaremos as instruções para redefinir sua senha.
+            </p>
 
-<p>
-Digite seu e-mail e enviaremos
-um link para redefinir sua senha.
-</p>
+            {% with mensagens = get_flashed_messages() %}
+                {% if mensagens %}
+                    {% for mensagem in mensagens %}
+                        <div class="mensagem">
+                            {{ mensagem }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-<div class="input-box">
-<span>✉</span>
-<input type="email" id="email" placeholder="Digite seu email">
-</div>
+            <form method="POST" action="{{ url_for('esqueci') }}">
 
-<button class="btn" onclick="enviarEmail()">
-ENVIAR
-</button>
+                <div class="grupo">
+
+                    <label for="email">
+                        E-mail
+                    </label>
+
+                    <div class="campo">
+
+                        <i class="fa-regular fa-envelope"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Digite seu e-mail"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Enviar instruções
+
+                </button>
+
+            </form>
+
+            <div class="voltar">
+
+                <a href="{{ url_for('login') }}">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Voltar para o login
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

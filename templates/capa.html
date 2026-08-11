@@ -1,0 +1,241 @@
+capa ficha 19 parte 1
+
+<div class="pagina">
+
+<!--========================= -->
+<!--CABEÇALHO -->
+<!--========================= -->
+<table class="cabecalho">
+<tr>
+
+<td class="logo" rowspan="5">
+
+<img src="{{ url_for('static', filename='img/logo_estado.png') }}">
+
+</td>
+
+<td class="titulo-governo">
+GOVERNO DO ESTADO DE PERNAMBUCO
+</td>
+
+</tr>
+
+<tr>
+
+<td class="secretaria">
+SECRETARIA DE EDUCAÇÃO E ESPORTES
+</td>
+
+</tr>
+
+<tr>
+
+<td class="escola">
+{{ escola.nome }}
+</td>
+
+</tr>
+
+<tr>
+
+<td class="dados-escola">
+{{ escola.endereco }}
+</td>
+
+</tr>
+
+<tr>
+
+<td class="dados-escola">
+Cadastro Escolar: {{ escola.cadastro }}
+</td>
+
+</tr>
+
+</table>
+
+
+
+<!
+-========================= -->
+<!
+-TÍTULO -->
+<!
+-========================= -->
+<table class="titulo-documento">
+
+<tr>
+
+<td>
+
+CERTIFICADO E HISTÓRICO ESCOLAR
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+DO ENSINO MÉDIO INTEGRAL
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+DE EDUCAÇÃO PROFISSIONAL
+
+</td>
+
+</tr>
+
+</table>
+
+
+
+<!
+-========================= -->
+<!
+-IDENTIFICAÇÃO -->
+<!
+-========================= -->
+<table class="identificacao">
+
+<tr>
+
+<th colspan="4">
+
+IDENTIFICAÇÃO DO ESTUDANTE
+
+</th>
+
+</tr>
+
+<tr>
+
+<td colspan="4">
+
+<strong>Nome:</strong>
+
+{{ aluno.nome }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2">
+
+<strong>Filiação (Mãe):</strong>
+
+{{ aluno.mae }}
+
+</td>
+
+<td colspan="2">
+
+<strong>Filiação (Pai):</strong>
+
+{{ aluno.pai }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>
+
+<strong>Data de Nascimento</strong><br>
+
+{{ aluno.nascimento }}
+
+</td>
+
+<td>
+
+<strong>RG</strong><br>
+
+{{ aluno.rg }}
+
+</td>
+
+<td>
+
+<strong>CPF</strong><br>
+
+{{ aluno.cpf }}
+
+</td>
+
+<td>
+
+<strong>Nacionalidade</strong><br>
+
+{{ aluno.nacionalidade }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td colspan="2">
+
+<strong>Naturalidade</strong><br>
+
+{{ aluno.naturalidade }}
+
+</td>
+
+<td>
+
+<strong>UF</strong><br>
+
+{{ aluno.uf }}
+
+</td>
+
+<td>
+
+<strong>Matrícula</strong><br>
+
+{{ aluno.matricula }}
+
+</td>
+
+</tr>
+
+</table>
+
+
+
+<!
+-========================= -->
+<!
+-TEXTO -->
+<!
+-========================= -->
+<div class="texto-certificado">
+
+<p>
+
+Certificamos que o(a) estudante
+
+<strong>{{ aluno.nome }}</strong>
+
+concluiu o Ensino Médio Integral de Educação Profissional,
+
+cumprindo todas as exigências previstas na legislação vigente,
+
+fazendo jus ao presente Certificado e Histórico Escolar.
+
+</p>
+
+</div>
