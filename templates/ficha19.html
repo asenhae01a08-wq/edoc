@@ -16,6 +16,11 @@
     href="{{ url_for('static', filename='ficha19.css') }}"
 >
 
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
     <style>
         * {
             box-sizing: border-box;
@@ -810,7 +815,12 @@
 
         </div>
 
-        <div class="acoes-edoc">
+        <form
+            class="acoes-edoc"
+            action="{{ url_for('importar_pdf_siepe') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
 
             <a
                 href="{{ url_for('inicialp') }}"
@@ -825,13 +835,15 @@
                 class="rotulo-upload"
             >
                 <i class="fa-solid fa-file-pdf"></i>
-                Importar PDF do SIEPE
+                Selecionar PDF do SIEPE
             </label>
 
             <input
                 type="file"
                 id="arquivoSiepe"
+                name="arquivoSiepe"
                 accept="application/pdf,.pdf"
+                required
             >
 
             <span
@@ -842,6 +854,14 @@
             </span>
 
             <button
+                type="submit"
+                class="botao-edoc rotulo-upload"
+            >
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                Ler PDF e gerar ficha
+            </button>
+
+            <button
                 type="button"
                 class="botao-edoc botao-imprimir"
                 id="botaoImprimir"
@@ -850,9 +870,21 @@
                 Imprimir ficha
             </button>
 
-        </div>
+        </form>
 
     </header>
+
+    {% with mensagens = get_flashed_messages() %}
+        {% if mensagens %}
+            <div style="max-width: 210mm; margin: 0 auto 15px;">
+                {% for mensagem in mensagens %}
+                    <div style="background:#fff3cd; border:1px solid #ffe69c; padding:10px 12px; margin-bottom:6px; border-radius:6px; font-size:13px;">
+                        {{ mensagem }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <form id="formFicha19">
 
@@ -2892,9 +2924,19 @@
         calcularCargas();
     </script>
 
+    {% if dados_ficha %}
+    <script>
+        window.dadosFichaEdoc = {{ dados_ficha | tojson }};
+    </script>
+    {% else %}
+    <script>
+        window.dadosFichaEdoc = null;
+    </script>
+    {% endif %}
+
     <script
-    src="{{ url_for('static', filename='scripts/ficha19.js') }}"
-></script>
+        src="{{ url_for('static', filename='scripts/ficha19.js') }}"
+    ></script>
 
 <img
     src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"

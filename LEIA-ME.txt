@@ -1,0 +1,25 @@
+ARQUIVOS CORRIGIDOS DO eDOC
+
+1. Substitua os arquivos do seu projeto pelos arquivos deste pacote, respeitando as pastas.
+2. NÃO altere o ENUM status_ficha19. O código usa:
+   - Em fabricação
+   - Pronta para emissão
+3. Garanta que o template da turma se chame exatamente:
+   templates/turma_TDSA.html
+4. Garanta que os JavaScripts estejam exatamente nestes caminhos:
+   static/script/script2.js
+   static/script5.js
+   static/scripts/ficha19.js
+5. Instale/atualize as dependências dentro da venv:
+   pip install -r requirements.txt
+6. Execute:
+   flask --app app run --debug
+
+FLUXO NOVO:
+Área profissional -> Gerar Ficha 19 -> ficha19.html -> selecionar PDF ->
+PyMuPDF/pdfplumber -> parser -> banco -> ficha preenchida -> consultar aluno.
+
+IMPORTANTE:
+O parser já tenta ler dados pessoais e tabelas de forma genérica. Para ficar 100% fiel
+às notas/tabelas do PDF do SIEPE, teste com um PDF real. Se algum campo não for reconhecido,
+o parser deverá ser calibrado usando aquele PDF específico, sem precisar refazer o restante do sistema.

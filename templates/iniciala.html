@@ -280,7 +280,11 @@
                                     </p>
                                 </div>
 
-                                {% set status = aluno["status_ficha19"] or "Não informado" %}
+                                {% if aluno.get("possui_ficha") %}
+                                    {% set status = aluno["status_ficha19"] or "Em fabricação" %}
+                                {% else %}
+                                    {% set status = "Não informado" %}
+                                {% endif %}
 
                                 <span
                                     class="status-documento

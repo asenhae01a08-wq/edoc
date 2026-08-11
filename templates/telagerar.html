@@ -1,85 +1,123 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Ficha 19
-eDOC</title>
-<link rel="stylesheet"
-href="{{ url_for('static', filename='css/ficha19.css') }}">
+    <title>
+        Ficha 19 - eDOC
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/ficha19.css') }}"
+    >
 
 </head>
 
 <body>
 
+
 <div class="viewer">
 
-<div class="topo">
 
-<a href="/consultar" class="btn-voltar">
-← Voltar
-</a>
-
-<h2>Ficha 19</h2>
-
-<div class="acoes">
-
-<button onclick="window.print()" class="btn">
-🖨 Imprimir
-</button>
-
-<button class="btn">
-📄 Gerar PDF
-</button>
-
-</div>
-
-</div>
+    <div class="topo">
 
 
-<div class="documento">
+        <a
+            href="{{ url_for('turma_3tdsa') }}"
+            class="btn-voltar"
+        >
 
-<!--========================= -->
-<!--Página 1 -->
-<!--========================= -->
-{% include 'gerarficha19/capa.html' %}
+            ← Voltar
 
-
-
-<!--========================= -->
-<!--Página 2 -->
-<!--========================= -->
-{% include 'gerarficha19/formacao_geral.html' %}
+        </a>
 
 
+        <h2>
 
-<!--========================= -->
-<!--Página 3 -->
-<!--========================= -->
-{% include 'gerarficha19/tecnica1.html' %}
+            Ficha 19
 
-
-
-<!---========================= -->
-<!--Página 4 -->
-<!--========================= -->
-{% include 'gerarficha19/tecnica2.html' %}
+        </h2>
 
 
+        <div class="acoes">
 
-<!--========================= -->
-<!--Página 5 -->
-<!--========================= -->
-{% include 'gerarficha19/tecnica3.html' %}
+
+            <button
+                onclick="window.print()"
+                class="btn"
+            >
+
+                🖨 Imprimir
+
+            </button>
+
+
+            <button
+                class="btn"
+            >
+
+                📄 Gerar PDF
+
+            </button>
+
 
         </div>
 
+
     </div>
+
+
+    <div class="documento">
+
+
+        <!-- ========================== -->
+        <!-- PÁGINA 1 -->
+        <!-- ========================== -->
+
+        {% include 'capa.html' %}
+
+
+        <!-- ========================== -->
+        <!-- PÁGINA 2 -->
+        <!-- ========================== -->
+
+        {% include 'formacao_geral.html' %}
+
+
+        <!-- ========================== -->
+        <!-- PÁGINA 3 -->
+        <!-- ========================== -->
+
+        {% include 'tecnica1.html' %}
+
+
+        <!-- ========================== -->
+        <!-- PÁGINA 4 -->
+        <!-- ========================== -->
+
+        {% include 'tecnica2.html' %}
+
+
+        <!-- ========================== -->
+        <!-- PÁGINA 5 -->
+        <!-- ========================== -->
+
+        {% include 'tecnica3.html' %}
+
+
+    </div>
+
+
+</div>
+
 
 </body>
 

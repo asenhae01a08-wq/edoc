@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,7 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>3º TDS A</title>
+    <title>
+        3º TDS A - eDOC
+    </title>
 
     <link
         rel="stylesheet"
@@ -19,35 +23,358 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
 </head>
 
 <body>
 
-    <div class="container">
 
-        <a href="{{ url_for('consultar') }}" class="voltar">
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
+<div class="container">
 
-        <div class="logo">
-            <div class="logo-circle">
-                <i class="fa-solid fa-graduation-cap"></i>
-            </div>
 
-            <h2>eDOC</h2>
+    <!-- VOLTAR -->
+
+    <a
+        href="{{ url_for('consultar') }}"
+        class="voltar"
+    >
+
+        <i class="fa-solid fa-arrow-left"></i>
+
+    </a>
+
+
+    <!-- LOGO -->
+
+    <div class="logo">
+
+
+        <div class="logo-circle">
+
+            <i class="fa-solid fa-graduation-cap"></i>
+
         </div>
 
-        <h1>Turma 3º TDS A</h1>
 
-        <p class="subtitulo">
-            Alunos - Consulta de Documentos
+        <h2>
+            eDOC
+        </h2>
+
+
+    </div>
+
+
+    <!-- TÍTULO -->
+
+    <h1>
+        Turma 3º TDS A
+    </h1>
+
+
+    <p class="subtitulo">
+
+        Alunos - Consulta de Documentos
+
+    </p>
+
+
+    <!-- PESQUISA -->
+
+    <div class="pesquisa">
+
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+
+        <input
+            type="text"
+            id="pesquisa"
+            placeholder="Buscar por nome ou matrícula..."
+            onkeyup="pesquisarAluno()"
+        >
+
+
+    </div>
+
+
+    <!-- LISTA -->
+
+    <div
+        class="lista-alunos"
+        id="listaAlunos"
+    >
+
+
+        {% for aluno in alunos %}
+
+
+            <div
+                class="aluno"
+                data-nome="{{ aluno.nome | lower }}"
+                data-matricula="{{ aluno.matricula }}"
+            >
+
+
+                <!-- DADOS -->
+
+                <div class="dados-aluno">
+
+
+                    <div class="icone-aluno">
+
+                        <i class="fa-regular fa-user"></i>
+
+                    </div>
+
+
+                    <div class="info-aluno">
+
+
+                        <h3>
+
+                            {{ aluno.nome }}
+
+                        </h3>
+
+
+                        <p>
+
+                            Matrícula:
+
+                            <strong>
+
+                                {{ aluno.matricula }}
+
+                            </strong>
+
+                        </p>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- AÇÕES -->
+
+                <div class="acoes-aluno">
+
+
+                    <!-- STATUS -->
+
+                    {% if not aluno.possui_ficha %}
+
+                        <span class="status sem-ficha">
+                            <i class="fa-solid fa-circle-minus"></i>
+                            Não importada
+                        </span>
+
+                    {% elif aluno.status_ficha19 == 'Pronta para emissão' %}
+
+                        <span class="status emitido">
+                            <i class="fa-solid fa-circle-check"></i>
+                            Pronta para emissão
+                        </span>
+
+                    {% else %}
+
+                        <span class="status andamento">
+                            <i class="fa-solid fa-clock"></i>
+                            Em fabricação
+                        </span>
+
+                    {% endif %}
+
+
+                    <!-- BOTÃO -->
+
+                    {% if aluno.possui_ficha %}
+
+
+                        <a
+                            href="{{ url_for('telagerar', id_aluno=aluno.id) }}"
+                            class="btn-ficha"
+                        >
+
+                            <i class="fa-regular fa-file-lines"></i>
+
+                            Visualizar Ficha
+
+                        </a>
+
+
+                    {% else %}
+
+
+                        <button
+                            class="btn-ficha desabilitado"
+                            disabled
+                        >
+
+                            <i class="fa-regular fa-file-lines"></i>
+
+                            Ficha não importada
+
+                        </button>
+
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="sem-alunos">
+
+
+                <i class="fa-solid fa-users-slash"></i>
+
+
+                <h3>
+                    Nenhum aluno cadastrado
+                </h3>
+
+
+                <p>
+                    Não existem alunos cadastrados
+                    no 3º TDS A.
+                </p>
+
+
+            </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+
+    <!-- SEM RESULTADO -->
+
+    <div
+        id="nenhumResultado"
+        class="nenhum-resultado"
+        style="display: none;"
+    >
+
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+
+        <p>
+            Nenhum aluno encontrado.
         </p>
 
-        <div class="pesquisa">
-            <i class="fa-solid fa-magnifying-glass"></i>
 
-            <input
-                type="text"
-                id="pesquisa"
-                placeholder="Buscar por nome ou matrícula..."
-                onkeyup="pesquisar
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+function pesquisarAluno() {
+
+
+    const pesquisa =
+        document
+            .getElementById("pesquisa")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const alunos =
+        document.querySelectorAll(
+            ".aluno"
+        );
+
+
+    const nenhumResultado =
+        document.getElementById(
+            "nenhumResultado"
+        );
+
+
+    let encontrou = false;
+
+
+    alunos.forEach(function(aluno) {
+
+
+        const nome =
+            aluno.dataset.nome || "";
+
+
+        const matricula =
+            aluno.dataset.matricula || "";
+
+
+        if (
+            nome.includes(pesquisa)
+            ||
+            matricula.includes(pesquisa)
+        ) {
+
+
+            aluno.style.display = "flex";
+
+            encontrou = true;
+
+
+        }
+
+        else {
+
+
+            aluno.style.display = "none";
+
+
+        }
+
+
+    });
+
+
+    if (
+        alunos.length > 0
+        &&
+        !encontrou
+    ) {
+
+
+        nenhumResultado.style.display =
+            "block";
+
+
+    }
+
+    else {
+
+
+        nenhumResultado.style.display =
+            "none";
+
+
+    }
+
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
