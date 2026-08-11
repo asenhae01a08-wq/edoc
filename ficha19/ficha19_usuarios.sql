@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `ficha19` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `ficha19`;
--- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.46, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ficha19
 -- ------------------------------------------------------
--- Server version	8.0.45
+-- Server version	8.0.46
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -36,7 +36,7 @@ CREATE TABLE `usuarios` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Caio Carvalho Campos','123.543.674-22','caiozin@gmail.com','caio1232026','Aluno','Ativo',NULL),(3,'Pedro Pereira Pierre','153.842.521-32','pedrozin@gmail.com','pedro1232026','Aluno','Ativo',NULL),(5,'Carlos Charles Cardoso','999.888.321-11','carlin@gmail.com','carlos1232026','Profissional','Ativo',NULL);
+INSERT INTO `usuarios` VALUES (1,'Carlos Charles Cardoso','999.888.321-11','carlin@gmail.com','carlos1232026','Profissional','Ativo',NULL),(2,'André Augusto Almeida','214.385.976-10','andrezin@gmail.com','andr1232026','Profissional','Ativo','2026-08-06 13:08:51'),(3,'Bruno Bento Barros','385.712.649-21','brunozin@gmail.com','brun1232026','Profissional','Ativo','2026-08-06 13:08:51'),(4,'Daniel Diego Duarte','472.831.590-43','danielzin@gmail.com','dani1232026','Profissional','Ativo','2026-08-06 13:08:51'),(5,'Eduardo Everton Esteves','563.914.287-65','eduardozin@gmail.com','edua1232026','Profissional','Ativo','2026-08-06 13:08:51'),(6,'Felipe Fabrício Ferreira','638.520.174-87','felipezin@gmail.com','feli1232026','Profissional','Ativo','2026-08-06 13:08:51'),(7,'Guilherme Gustavo Gomes','741.693.258-09','guilhermezin@gmail.com','guil1232026','Profissional','Ativo','2026-08-06 13:08:51'),(8,'Henrique Heitor Holanda','852.174.396-31','henriquezin@gmail.com','henr1232026','Profissional','Ativo','2026-08-06 13:08:51');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-08 10:46:52
+-- Dump completed on 2026-08-11 11:44:00
