@@ -25,7 +25,7 @@ def login_required_profissional(f):
         if session.get("nivel") != "Profissional":
             return redirect(url_for("login"))
         return f(*args, **kwargs)
-
+ 
     return decorated_function
 
 
