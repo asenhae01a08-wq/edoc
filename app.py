@@ -161,6 +161,7 @@ def importar_pdf_siepe():
         dados = extrair_dados_siepe(
             conteudo["texto"],
             conteudo["tabelas"],
+            conteudo.get("paginas"),
         )
 
         matricula = dados.get("aluno", {}).get("matricula")

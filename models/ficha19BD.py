@@ -1,3 +1,4 @@
+import json
 from datetime import date, datetime
 from decimal import Decimal
 
@@ -22,13 +23,57 @@ def _lista_segura(registros):
     return [_registro_seguro(registro) for registro in registros]
 
 
+def _json_padrao(valor):
+    if isinstance(valor, (date, datetime)):
+        return valor.isoformat()
+    if isinstance(valor, Decimal):
+        return float(valor)
+    raise TypeError(f"Tipo não serializável: {type(valor).__name__}")
+
+
 def _curso_id_por_texto(turma=None, curso=None):
     texto = f"{turma or ''} {curso or ''}".upper()
+
     if "TDS" in texto or "DESENVOLVIMENTO DE SISTEMAS" in texto:
         return 1
+
     if "MKT" in texto or "MARKETING" in texto:
         return 2
+
+    # O PDF oficial pode trazer apenas "ENSINO MÉDIO".
+    # Nesse caso NÃO substituímos o curso técnico que já existe no cadastro.
     return None
+
+
+def _coluna_existe(cursor, tabela, coluna):
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS total
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = %s
+          AND COLUMN_NAME = %s
+        """,
+        (tabela, coluna),
+    )
+    return cursor.fetchone()["total"] > 0
+
+
+def _validar_estrutura(cursor):
+    faltando = []
+
+    if not _coluna_existe(cursor, "alunos", "status_ficha19"):
+        faltando.append("alunos.status_ficha19")
+
+    if not _coluna_existe(cursor, "historico_escolar_geral", "dados_extras"):
+        faltando.append("historico_escolar_geral.dados_extras")
+
+    if faltando:
+        raise RuntimeError(
+            "O banco precisa da migração da Ficha 19 oficial. "
+            "Execute o arquivo migracao_ficha19_oficial.sql. "
+            "Campos ausentes: " + ", ".join(faltando)
+        )
 
 
 def _limpar_disciplinas_antigas(cursor, aluno_id, historico_id):
@@ -36,6 +81,7 @@ def _limpar_disciplinas_antigas(cursor, aluno_id, historico_id):
         "DELETE FROM historico_escolar_anual_base_comum WHERE historico_geral_id = %s",
         (historico_id,),
     )
+
     cursor.execute(
         "DELETE FROM historico_escolar_anual_itinerario_formativo WHERE historico_geral_id = %s",
         (historico_id,),
@@ -57,6 +103,7 @@ def _limpar_disciplinas_antigas(cursor, aluno_id, historico_id):
             "SELECT COUNT(*) AS total FROM aluno_disciplina_base_comum WHERE disciplina_id = %s",
             (disciplina_id,),
         )
+
         if cursor.fetchone()["total"] == 0:
             cursor.execute(
                 "DELETE FROM disciplinas_anuais_base_comum WHERE id = %s",
@@ -79,6 +126,7 @@ def _limpar_disciplinas_antigas(cursor, aluno_id, historico_id):
             "SELECT COUNT(*) AS total FROM aluno_disciplina_itinerario WHERE disciplina_id = %s",
             (disciplina_id,),
         )
+
         if cursor.fetchone()["total"] == 0:
             cursor.execute(
                 "DELETE FROM disciplinas_anuais_itinerario_formativo WHERE id = %s",
@@ -86,24 +134,90 @@ def _limpar_disciplinas_antigas(cursor, aluno_id, historico_id):
             )
 
 
+def _atualizar_escola(cursor, escola_pdf):
+    if not escola_pdf:
+        return 1
+
+    nome = escola_pdf.get("nome")
+    cidade = escola_pdf.get("cidade")
+    estado = escola_pdf.get("estado")
+
+    cursor.execute("SELECT id FROM escolas WHERE id = 1 LIMIT 1")
+    existe = cursor.fetchone()
+
+    if existe:
+        atualizacoes = []
+        valores = []
+
+        if nome:
+            atualizacoes.append("nome = %s")
+            valores.append(nome.title())
+
+        if cidade:
+            atualizacoes.append("cidade = %s")
+            valores.append(cidade.title())
+
+        if estado:
+            atualizacoes.append("estado = %s")
+            valores.append(estado)
+
+        if atualizacoes:
+            valores.append(1)
+            cursor.execute(
+                f"UPDATE escolas SET {', '.join(atualizacoes)} WHERE id = %s",
+                tuple(valores),
+            )
+
+        return 1
+
+    cursor.execute(
+        """
+        INSERT INTO escolas (nome, cidade, estado)
+        VALUES (%s, %s, %s)
+        """,
+        (
+            nome.title() if nome else None,
+            cidade.title() if cidade else None,
+            estado,
+        ),
+    )
+
+    return cursor.lastrowid
+
+
 def salvar_importacao_pdf(dados):
-    """Salva/atualiza aluno e histórico usando apenas as tabelas reais do banco."""
+    """
+    Salva o histórico oficial.
+
+    Os dados que já possuem colunas normalizadas continuam sendo gravados nas
+    tabelas existentes. Informações oficiais que não possuem coluna própria
+    (endereço/autorização da escola, resumo anual, trilhas, data/local etc.)
+    são preservadas integralmente em historico_escolar_geral.dados_extras.
+    """
     aluno_pdf = dados.get("aluno", {})
+    escola_pdf = dados.get("escola", {})
     historico = dados.get("historico", {})
     base_comum = dados.get("base_comum", [])
     itinerario = dados.get("itinerario", [])
+    extras = dados.get("extras", {})
 
     matricula = aluno_pdf.get("matricula")
+
     if not matricula:
-        raise ValueError("A matrícula não foi encontrada no PDF.")
+        raise ValueError("A matrícula não foi encontrada no PDF oficial.")
 
     conexao = conectar_mysql()
+
     if conexao is None:
         raise RuntimeError("Não foi possível conectar ao banco de dados.")
 
     cursor = conexao.cursor(dictionary=True)
 
     try:
+        _validar_estrutura(cursor)
+
+        escola_id = _atualizar_escola(cursor, escola_pdf)
+
         cursor.execute(
             "SELECT * FROM alunos WHERE matricula = %s LIMIT 1",
             (matricula,),
@@ -119,7 +233,6 @@ def salvar_importacao_pdf(dados):
             "nacionalidade": "nacionalidade",
             "nome_pai": "nome_pai",
             "nome_mae": "nome_mae",
-            "endereco": "endereco",
             "serie": "serie",
             "email": "email",
             "id_turma": "id_turma",
@@ -131,14 +244,21 @@ def salvar_importacao_pdf(dados):
 
             for chave_pdf, coluna in campos_permitidos.items():
                 valor = aluno_pdf.get(chave_pdf)
+
                 if valor not in (None, ""):
                     atualizacoes.append(f"{coluna} = %s")
                     valores.append(valor)
+
+            # O endereço presente no PDF oficial é o endereço da ESCOLA.
+            # Não sobrescrevemos alunos.endereco com ele.
+            atualizacoes.append("escola_id = %s")
+            valores.append(escola_id)
 
             curso_id = _curso_id_por_texto(
                 aluno_pdf.get("id_turma"),
                 aluno_pdf.get("curso"),
             )
+
             if curso_id:
                 atualizacoes.append("curso_id = %s")
                 valores.append(curso_id)
@@ -146,10 +266,12 @@ def salvar_importacao_pdf(dados):
             atualizacoes.append("status_ficha19 = 'Pronta para emissão'")
 
             valores.append(aluno_existente["id"])
+
             cursor.execute(
                 f"UPDATE alunos SET {', '.join(atualizacoes)} WHERE id = %s",
                 tuple(valores),
             )
+
             aluno_id = aluno_existente["id"]
 
         else:
@@ -157,6 +279,7 @@ def salvar_importacao_pdf(dados):
                 aluno_pdf.get("id_turma"),
                 aluno_pdf.get("curso"),
             )
+
             senha_inicial = matricula[::-1]
 
             cursor.execute(
@@ -183,7 +306,7 @@ def salvar_importacao_pdf(dados):
                 )
                 VALUES (
                     %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                    %s, %s, %s, 1, %s, 1, %s, %s,
+                    %s, NULL, %s, %s, %s, 1, %s, %s,
                     'Pronta para emissão'
                 )
                 """,
@@ -198,17 +321,16 @@ def salvar_importacao_pdf(dados):
                     aluno_pdf.get("nacionalidade") or "Brasileira",
                     aluno_pdf.get("nome_pai"),
                     aluno_pdf.get("nome_mae"),
-                    aluno_pdf.get("endereco"),
                     aluno_pdf.get("serie"),
+                    escola_id,
                     curso_id,
                     aluno_pdf.get("email"),
                     senha_inicial,
                 ),
             )
+
             aluno_id = cursor.lastrowid
 
-        # O registro em historico_escolar_geral também funciona como marcador
-        # de que houve uma importação real da Ficha 19 para esse aluno.
         cursor.execute(
             """
             SELECT id
@@ -221,27 +343,44 @@ def salvar_importacao_pdf(dados):
         )
         historico_existente = cursor.fetchone()
 
-        id_historico_escolar = historico.get("id_historico_escolar") or f"EDOC-{matricula}"
+        id_historico_escolar = (
+            historico.get("id_historico_escolar")
+            or f"EDOC-{matricula}"
+        )
+
         resultado_final = historico.get("resultado_final")
+        if resultado_final:
+            resultado_final = str(resultado_final).strip()[:30]
+
         data_conclusao = historico.get("data_conclusao")
+
+        dados_extras_json = json.dumps(
+            extras,
+            ensure_ascii=False,
+            default=_json_padrao,
+        )
 
         if historico_existente:
             historico_id = historico_existente["id"]
+
             cursor.execute(
                 """
                 UPDATE historico_escolar_geral
                 SET id_historico_escolar = %s,
                     resultado_final = %s,
-                    data_conclusao = %s
+                    data_conclusao = %s,
+                    dados_extras = %s
                 WHERE id = %s
                 """,
                 (
                     id_historico_escolar,
                     resultado_final,
                     data_conclusao,
+                    dados_extras_json,
                     historico_id,
                 ),
             )
+
         else:
             cursor.execute(
                 """
@@ -249,17 +388,20 @@ def salvar_importacao_pdf(dados):
                     aluno_id,
                     id_historico_escolar,
                     resultado_final,
-                    data_conclusao
+                    data_conclusao,
+                    dados_extras
                 )
-                VALUES (%s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s)
                 """,
                 (
                     aluno_id,
                     id_historico_escolar,
                     resultado_final,
                     data_conclusao,
+                    dados_extras_json,
                 ),
             )
+
             historico_id = cursor.lastrowid
 
         _limpar_disciplinas_antigas(cursor, aluno_id, historico_id)
@@ -267,6 +409,10 @@ def salvar_importacao_pdf(dados):
         for item in base_comum:
             if not item.get("nome"):
                 continue
+
+            resultado = item.get("resultado")
+            if resultado:
+                resultado = str(resultado).strip()[:30]
 
             cursor.execute(
                 """
@@ -286,19 +432,25 @@ def salvar_importacao_pdf(dados):
                     item.get("nome"),
                     item.get("nota"),
                     item.get("ano_letivo"),
-                    item.get("resultado"),
+                    resultado,
                     item.get("frequencia_percentual"),
                     item.get("carga_horaria_horas_aula"),
                     item.get("carga_horaria_relogio"),
                     item.get("carga_horaria_total_anual"),
                 ),
             )
+
             disciplina_id = cursor.lastrowid
 
             cursor.execute(
-                "INSERT INTO aluno_disciplina_base_comum (aluno_id, disciplina_id) VALUES (%s, %s)",
+                """
+                INSERT INTO aluno_disciplina_base_comum
+                    (aluno_id, disciplina_id)
+                VALUES (%s, %s)
+                """,
                 (aluno_id, disciplina_id),
             )
+
             cursor.execute(
                 """
                 INSERT INTO historico_escolar_anual_base_comum (
@@ -321,6 +473,10 @@ def salvar_importacao_pdf(dados):
             if not item.get("nome"):
                 continue
 
+            resultado = item.get("resultado_final")
+            if resultado:
+                resultado = str(resultado).strip()[:30]
+
             cursor.execute(
                 """
                 INSERT INTO disciplinas_anuais_itinerario_formativo (
@@ -342,20 +498,27 @@ def salvar_importacao_pdf(dados):
                     item.get("abreviacao"),
                     item.get("tipo"),
                     item.get("nota"),
-                    item.get("resultado_final"),
+                    resultado,
                     item.get("periodo_letivo"),
                     item.get("frequencia"),
                     item.get("carga_horaria"),
-                    item.get("carga_horaria_horas_aula") or item.get("carga_horaria"),
+                    item.get("carga_horaria_horas_aula")
+                    or item.get("carga_horaria"),
                     item.get("carga_horaria_relogio"),
                 ),
             )
+
             disciplina_id = cursor.lastrowid
 
             cursor.execute(
-                "INSERT INTO aluno_disciplina_itinerario (aluno_id, disciplina_id) VALUES (%s, %s)",
+                """
+                INSERT INTO aluno_disciplina_itinerario
+                    (aluno_id, disciplina_id)
+                VALUES (%s, %s)
+                """,
                 (aluno_id, disciplina_id),
             )
+
             cursor.execute(
                 """
                 INSERT INTO historico_escolar_anual_itinerario_formativo (
@@ -370,7 +533,8 @@ def salvar_importacao_pdf(dados):
                     historico_id,
                     disciplina_id,
                     item.get("frequencia"),
-                    item.get("carga_horaria_horas_aula") or item.get("carga_horaria"),
+                    item.get("carga_horaria_horas_aula")
+                    or item.get("carga_horaria"),
                 ),
             )
 
@@ -380,6 +544,7 @@ def salvar_importacao_pdf(dados):
     except Exception:
         conexao.rollback()
         raise
+
     finally:
         cursor.close()
         conexao.close()
@@ -387,6 +552,7 @@ def salvar_importacao_pdf(dados):
 
 def buscar_dados_ficha_por_aluno(aluno_id):
     conexao = conectar_mysql()
+
     if conexao is None:
         return None
 
@@ -402,13 +568,16 @@ def buscar_dados_ficha_por_aluno(aluno_id):
                 e.cidade AS escola_cidade,
                 e.estado AS escola_estado
             FROM alunos a
-            LEFT JOIN cursos c ON c.id = a.curso_id
-            LEFT JOIN escolas e ON e.id = a.escola_id
+            LEFT JOIN cursos c
+                ON c.id = a.curso_id
+            LEFT JOIN escolas e
+                ON e.id = a.escola_id
             WHERE a.id = %s
             LIMIT 1
             """,
             (aluno_id,),
         )
+
         aluno = cursor.fetchone()
 
         if aluno is None:
@@ -424,6 +593,7 @@ def buscar_dados_ficha_por_aluno(aluno_id):
             """,
             (aluno_id,),
         )
+
         historico = cursor.fetchone()
 
         cursor.execute(
@@ -437,6 +607,7 @@ def buscar_dados_ficha_por_aluno(aluno_id):
             """,
             (aluno_id,),
         )
+
         base_comum = cursor.fetchall()
 
         cursor.execute(
@@ -446,17 +617,40 @@ def buscar_dados_ficha_por_aluno(aluno_id):
             INNER JOIN aluno_disciplina_itinerario ad
                 ON ad.disciplina_id = d.id
             WHERE ad.aluno_id = %s
-            ORDER BY d.periodo_letivo, d.nome
+            ORDER BY d.periodo_letivo, d.id
             """,
             (aluno_id,),
         )
-        itinerario = cursor.fetchall()
+
+        itinerario_banco = cursor.fetchall()
+
+        extras = {}
+
+        if historico and historico.get("dados_extras"):
+            bruto = historico["dados_extras"]
+
+            if isinstance(bruto, str):
+                extras = json.loads(bruto)
+            elif isinstance(bruto, dict):
+                extras = bruto
+
+        # O JSON preserva o campo "Ano" do itinerário oficial, que não existe
+        # como coluna na tabela antiga. Usamos essa lista para a exibição.
+        itinerario_exibicao = extras.get("itinerario") or _lista_segura(
+            itinerario_banco
+        )
+
+        historico_seguro = _registro_seguro(historico)
+
+        if historico_seguro:
+            historico_seguro.pop("dados_extras", None)
 
         return {
             "aluno": _registro_seguro(aluno),
-            "historico": _registro_seguro(historico),
+            "historico": historico_seguro,
             "base_comum": _lista_segura(base_comum),
-            "itinerario": _lista_segura(itinerario),
+            "itinerario": itinerario_exibicao,
+            "extras": extras,
         }
 
     finally:
