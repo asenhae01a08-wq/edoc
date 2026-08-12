@@ -108,16 +108,29 @@ def gerar_fichas():
 
 
 @app.route("/consultar_documentos")
-@login_required_profissional
 def consultar():
     return render_template("consultar.html")
 
 
-@app.route("/turmaTDSA")
-@login_required_profissional
+@app.route("/turma_TDSA")
 def turma_3tdsa():
     alunos = models.buscar_alunos_por_turma("3º TDS A")
     return render_template("turma_TDSA.html", alunos=alunos)
+
+@app.route("/turma_TDSB")
+def turma_3tdsb():
+    alunos = models.buscar_alunos_por_turma("3º TDS B")
+    return render_template("turma_TDSB.html", alunos=alunos)
+
+@app.route("/turma_MKTA")
+def turma_3mkta():
+    alunos = models.buscar_alunos_por_turma("3º MKT A")
+    return render_template("turma_MKTA.html", alunos=alunos)
+
+@app.route("/turma_MKTB")
+def turma_3mktb():
+    alunos = models.buscar_alunos_por_turma("3º MKT B")
+    return render_template("turma_MKTB.html", alunos=alunos)
 
 
 @app.route("/ficha19")

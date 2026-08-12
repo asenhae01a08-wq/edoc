@@ -65,9 +65,9 @@
     </h1>
 
 
-    <p>
-        Selecione a turma para consultar
-    </p>
+    <p class="subtitulo">
+    Selecione a turma para consultar:
+</p>
 
 
     <div class="turmas">
@@ -103,7 +103,10 @@
 
         <!-- 3º TDS B -->
 
-        <div class="card">
+        <a
+            href="{{ url_for('turma_3tdsb') }}"
+            class="card"
+        >
 
 
             <div class="icone-card">
@@ -123,12 +126,15 @@
             </span>
 
 
-        </div>
+        </a>
 
 
         <!-- 3º MKT A -->
 
-        <div class="card">
+         <a
+            href="{{ url_for('turma_3mkta') }}"
+            class="card"
+        >
 
 
             <div class="icone-card">
@@ -144,16 +150,19 @@
 
 
             <span>
-                Técnico em Marketing
+                Técnico em Desenvolvimento de Sistemas
             </span>
 
 
-        </div>
+        </a>
 
 
         <!-- 3º MKT B -->
 
-        <div class="card">
+         <a
+            href="{{ url_for('turma_3mktb') }}"
+            class="card"
+        >
 
 
             <div class="icone-card">
@@ -169,16 +178,11 @@
 
 
             <span>
-                Técnico em Marketing
+                Técnico em Desenvolvimento de Sistemas
             </span>
 
 
-        </div>
-
-
-    </div>
-
-
+        </a>
 </div>
 
 

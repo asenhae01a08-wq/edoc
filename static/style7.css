@@ -126,9 +126,9 @@ body {
 }
 
 .subtitulo {
-    margin-bottom: 35px;
+    margin-bottom: 20px;
 
-    color: var(--texto-claro);
+    color: (--texto-claro);
 
     text-align: center;
     font-size: 15px;
