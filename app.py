@@ -172,7 +172,6 @@ def login():
 # ==========================================================
 
 @app.route("/iniciala")
-@login_required_aluno
 def iniciala():
 
     aluno_id = session.get(
@@ -206,7 +205,6 @@ def iniciala():
 # ==========================================================
 
 @app.route("/inicialp")
-@login_required_profissional
 def inicialp():
 
     return render_template(
@@ -941,6 +939,58 @@ def index():
         url_for("login")
     )
 
+@app.route("/capa")
+def capa():
+
+    escola = {
+        "nome": "ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA",
+        "endereco": "Rua Vereador João Avelino Sobrinho",
+        "complemento": "Loteamento Cidade Alta lote 41 a 43",
+        "cidade": "Caruaru",
+        "uf": "PE",
+        "autorizacao": "Decreto 44.071 de 30/01/2017",
+        "data_diario_oficial": "31/01/2017",
+        "cadastro_escolar": "26187051"
+    }
+
+    aluno = {
+        "nome": "NOME DO ALUNO",
+        "matricula": "",
+        "data_nascimento": "",
+        "naturalidade": "",
+        "cpf": "",
+        "curso": "",
+        "turma": ""
+    }
+
+    ficha = {
+        "classificacao": "",
+        "reclassificacao": "",
+        "serie": "",
+        "serie_progressao": "",
+        "disciplinas_progressao": "",
+        "ensino_religioso": "NÃO",
+        "base_legal_religioso": "",
+        "dispensa_educacao_fisica": "NÃO",
+        "base_legal_educacao_fisica": "",
+        "observacoes": ""
+    }
+
+    return render_template(
+        "capa.html",
+        escola=escola,
+        aluno=aluno,
+        ficha=ficha
+    )
+@app.route("/gerarficha")
+def gerarficha():
+
+    return render_template(
+        "gerarficha.html"
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 # ==========================================================
 # EXECUÇÃO

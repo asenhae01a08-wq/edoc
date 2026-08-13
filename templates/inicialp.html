@@ -29,9 +29,15 @@
 <body>
 
 
+<!-- ================================================= -->
+<!-- CABEÇALHO -->
+<!-- ================================================= -->
+
 <header class="cabecalho">
 
     <div class="topo">
+
+        <!-- LOGO -->
 
         <a
             href="{{ url_for('inicialp') }}"
@@ -62,24 +68,61 @@
         </a>
 
 
-        <div class="usuario">
+        <!-- PERFIL DO PROFISSIONAL -->
 
-            <div class="dados-usuario">
+        <div class="area-usuario">
 
-                <strong>
-                    {{ session.get('nome', 'Profissional') }}
-                </strong>
+            <button
+                type="button"
+                class="usuario"
+                id="botaoUsuario"
+                onclick="abrirMenuUsuario(event)"
+            >
 
-                <span>
-                    Profissional
-                </span>
+                <div class="dados-usuario">
 
-            </div>
+                    <strong>
+                        {{ session.get('nome', 'Profissional') }}
+                    </strong>
+
+                    <span>
+                        Profissional
+                    </span>
+
+                </div>
 
 
-            <div class="icone-usuario">
+                <div class="icone-usuario">
 
-                <i class="fa-regular fa-user"></i>
+                    <i class="fa-regular fa-user"></i>
+
+                </div>
+
+
+                <i
+                    class="fa-solid fa-chevron-down seta-usuario"
+                ></i>
+
+            </button>
+
+
+            <!-- MENU QUE ABRE AO CLICAR -->
+
+            <div
+                class="menu-usuario"
+                id="menuUsuario"
+            >
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="opcao-sair"
+                >
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Sair
+
+                </a>
 
             </div>
 
@@ -88,7 +131,9 @@
     </div>
 
 
+    <!-- ================================================= -->
     <!-- MENU SUPERIOR -->
+    <!-- ================================================= -->
 
     <nav class="menu-principal">
 
@@ -153,21 +198,15 @@
         </a>
 
 
-        <a
-            href="{{ url_for('logout') }}"
-            class="menu-item sair"
-        >
-
-            <i class="fa-solid fa-right-from-bracket"></i>
-
-            Sair
-
-        </a>
-
     </nav>
 
 </header>
 
+
+
+<!-- ================================================= -->
+<!-- ESTRUTURA PRINCIPAL -->
+<!-- ================================================= -->
 
 <main class="estrutura">
 
@@ -289,6 +328,7 @@
     </aside>
 
 
+
     <!-- ================================================= -->
     <!-- CONTEÚDO -->
     <!-- ================================================= -->
@@ -296,7 +336,9 @@
     <section class="conteudo">
 
 
+        <!-- ================================================= -->
         <!-- MENSAGENS -->
+        <!-- ================================================= -->
 
         {% with mensagens = get_flashed_messages() %}
 
@@ -317,7 +359,10 @@
         {% endwith %}
 
 
+
+        <!-- ================================================= -->
         <!-- BOAS VINDAS -->
+        <!-- ================================================= -->
 
         <div class="boas-vindas">
 
@@ -328,12 +373,14 @@
                     Área administrativa
                 </span>
 
+
                 <h1>
 
                     Bem-vindo(a),
                     {{ session.get('nome', 'Profissional') }}
 
                 </h1>
+
 
                 <p>
 
@@ -354,6 +401,7 @@
 
 
         </div>
+
 
 
         <!-- ================================================= -->
@@ -416,6 +464,7 @@
                 </div>
 
 
+
                 <div class="informacao">
 
 
@@ -449,6 +498,7 @@
         </section>
 
 
+
         <!-- ================================================= -->
         <!-- PRINCIPAIS FERRAMENTAS -->
         <!-- ================================================= -->
@@ -463,7 +513,7 @@
         <div class="grade-principal">
 
 
-            <!-- GERAR -->
+            <!-- GERAR FICHA -->
 
             <a
                 href="{{ url_for('gerar_fichas') }}"
@@ -518,7 +568,8 @@
             </a>
 
 
-            <!-- PREENCHER -->
+
+            <!-- PREENCHER FICHA -->
 
             <a
                 href="{{ url_for('preenchimento') }}"
@@ -574,6 +625,7 @@
 
 
         </div>
+
 
 
         <!-- ================================================= -->
@@ -638,6 +690,7 @@
             </a>
 
 
+
             <!-- DOCUMENTOS -->
 
             <a
@@ -684,6 +737,7 @@
 
 
             </a>
+
 
 
             <!-- SUPORTE -->
@@ -743,6 +797,11 @@
 </main>
 
 
+
+<!-- ================================================= -->
+<!-- RODAPÉ -->
+<!-- ================================================= -->
+
 <footer>
 
     <p>
@@ -752,6 +811,81 @@
 </footer>
 
 
+
+<!-- ================================================= -->
+<!-- MENU DO PERFIL -->
+<!-- ================================================= -->
+
+<script>
+
+function abrirMenuUsuario(event) {
+
+    event.stopPropagation();
+
+    const menu =
+        document.getElementById("menuUsuario");
+
+    const botao =
+        document.getElementById("botaoUsuario");
+
+
+    if (!menu || !botao) {
+        return;
+    }
+
+
+    menu.classList.toggle("aberto");
+
+    botao.classList.toggle("ativo");
+
+}
+
+
+document.addEventListener("click", function () {
+
+    const menu =
+        document.getElementById("menuUsuario");
+
+    const botao =
+        document.getElementById("botaoUsuario");
+
+
+    if (menu) {
+
+        menu.classList.remove("aberto");
+
+    }
+
+
+    if (botao) {
+
+        botao.classList.remove("ativo");
+
+    }
+
+});
+
+
+const menuUsuario =
+    document.getElementById("menuUsuario");
+
+
+if (menuUsuario) {
+
+    menuUsuario.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+        }
+    );
+
+}
+
+</script>
+
+
 </body>
 
-</html>
+</html>s

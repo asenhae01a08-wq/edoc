@@ -1,241 +1,501 @@
-capa ficha 19 parte 1
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-<div class="pagina">
+<head>
+    <meta charset="UTF-8">
 
-<!--========================= -->
-<!--CABEÇALHO -->
-<!--========================= -->
-<table class="cabecalho">
-<tr>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<td class="logo" rowspan="5">
+    <title>Capa da Ficha 19</title>
 
-<img src="{{ url_for('static', filename='img/logo_estado.png') }}">
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='capa.css') }}"
+    >
+</head>
 
-</td>
+<body>
 
-<td class="titulo-governo">
-GOVERNO DO ESTADO DE PERNAMBUCO
-</td>
+<main class="pagina-a4">
 
-</tr>
 
-<tr>
+    <!-- ================================================== -->
+    <!-- LOGO / CABEÇALHO -->
+    <!-- ================================================== -->
 
-<td class="secretaria">
-SECRETARIA DE EDUCAÇÃO E ESPORTES
-</td>
+    <header class="topo-documento">
 
-</tr>
+        <img
+            src="{{ url_for('static', filename='img/governo-pernambuco.png') }}"
+            alt="Governo de Pernambuco"
+            class="logo-governo"
+        >
 
-<tr>
+    </header>
 
-<td class="escola">
-{{ escola.nome }}
-</td>
 
-</tr>
+    <!-- ================================================== -->
+    <!-- NOME DA ESCOLA -->
+    <!-- ================================================== -->
 
-<tr>
+    <section class="identificacao-escola">
 
-<td class="dados-escola">
-{{ escola.endereco }}
-</td>
+        <h1>
+            {{ escola.nome }}
+        </h1>
 
-</tr>
+        <div class="linha-estabelecimento"></div>
 
-<tr>
+        <p>
+            Estabelecimento
+        </p>
 
-<td class="dados-escola">
-Cadastro Escolar: {{ escola.cadastro }}
-</td>
+    </section>
 
-</tr>
 
-</table>
+    <!-- ================================================== -->
+    <!-- ENDEREÇO / CIDADE / UF -->
+    <!-- ================================================== -->
 
+    <section class="linha-endereco">
 
+        <div class="caixa endereco">
 
-<!
--========================= -->
-<!
--TÍTULO -->
-<!
--========================= -->
-<table class="titulo-documento">
+            <strong>
+                Endereço: {{ escola.endereco }}
+            </strong>
 
-<tr>
+            {% if escola.complemento %}
 
-<td>
+                <br>
 
-CERTIFICADO E HISTÓRICO ESCOLAR
+                <strong>
+                    {{ escola.complemento }}
+                </strong>
 
-</td>
+            {% endif %}
 
-</tr>
+        </div>
 
-<tr>
 
-<td>
+        <div class="caixa cidade">
 
-DO ENSINO MÉDIO INTEGRAL
+            <strong>
+                Cidade: {{ escola.cidade }}
+            </strong>
 
-</td>
+            <strong>
+                UF: {{ escola.uf }}
+            </strong>
 
-</tr>
+        </div>
 
-<tr>
+    </section>
 
-<td>
 
-DE EDUCAÇÃO PROFISSIONAL
+    <!-- ================================================== -->
+    <!-- AUTORIZAÇÃO -->
+    <!-- ================================================== -->
 
-</td>
+    <section class="caixa autorizacao">
 
-</tr>
+        <strong>
+            Autorização de Funcionamento:
+            {{ escola.autorizacao }}
+        </strong>
 
-</table>
+        <strong>
+            D.O. de
+            {{ escola.data_diario_oficial }}
+        </strong>
 
+    </section>
 
 
-<!
--========================= -->
-<!
--IDENTIFICAÇÃO -->
-<!
--========================= -->
-<table class="identificacao">
+    <!-- ================================================== -->
+    <!-- CADASTRO ESCOLAR -->
+    <!-- ================================================== -->
 
-<tr>
+    <section class="cadastro-escolar">
 
-<th colspan="4">
+        <strong>
+            Cadastro Escolar:
+        </strong>
 
-IDENTIFICAÇÃO DO ESTUDANTE
+        {{ escola.cadastro_escolar }}
 
-</th>
+    </section>
 
-</tr>
 
-<tr>
+    <!-- ================================================== -->
+    <!-- CERTIFICADO -->
+    <!-- ================================================== -->
 
-<td colspan="4">
+    <section class="certificado">
 
-<strong>Nome:</strong>
+        <h2>
+            CERTIFICADO E HISTÓRICO ESCOLAR DO ENSINO MÉDIO
+            INTEGRAL DE EDUCAÇÃO PROFISSIONAL
+        </h2>
 
-{{ aluno.nome }}
 
-</td>
+        <p>
+            Pelo presente Histórico Escolar certificamos que
 
-</tr>
+            <strong class="maiusculo">
+                {{ aluno.nome }}
+            </strong>
+        </p>
 
-<tr>
 
-<td colspan="2">
+        <p>
+            Filho(a) de
 
-<strong>Filiação (Mãe):</strong>
+            <span class="maiusculo">
+                {{ aluno.nome_mae }}
+            </span>.
+        </p>
 
-{{ aluno.mae }}
 
-</td>
+        <div class="linha-nascimento">
 
-<td colspan="2">
+            <p>
+                Nascido(a) em
 
-<strong>Filiação (Pai):</strong>
+                <span>
+                    {{ aluno.data_nascimento }}
+                </span>
+            </p>
 
-{{ aluno.pai }}
 
-</td>
+            <p>
+                Cidade:
 
-</tr>
+                <span class="maiusculo">
+                    {{ aluno.cidade_nascimento }}
+                </span>
+            </p>
 
-<tr>
 
-<td>
+            <p>
+                UF:
 
-<strong>Data de Nascimento</strong><br>
+                <span>
+                    {{ aluno.uf_nascimento }}
+                </span>
+            </p>
 
-{{ aluno.nascimento }}
+        </div>
 
-</td>
 
-<td>
+        <div class="linha-documentos">
 
-<strong>RG</strong><br>
+            <p>
+                Nacionalidade:
 
-{{ aluno.rg }}
+                <span class="maiusculo">
+                    {{ aluno.nacionalidade }}
+                </span>.
+            </p>
 
-</td>
 
-<td>
+            <p>
+                RG:
 
-<strong>CPF</strong><br>
+                <span>
+                    {{ aluno.rg }}
+                </span>
+            </p>
 
-{{ aluno.cpf }}
 
-</td>
+            <p>
+                Órgão Expedidor:
 
-<td>
+                <span>
+                    {{ aluno.orgao_expedidor }}
+                </span>
+            </p>
 
-<strong>Nacionalidade</strong><br>
 
-{{ aluno.nacionalidade }}
+            <p>
+                CPF:
 
-</td>
+                <span>
+                    {{ aluno.cpf }}
+                </span>
+            </p>
 
-</tr>
+        </div>
 
-<tr>
 
-<td colspan="2">
+        <p class="texto-conclusao">
 
-<strong>Naturalidade</strong><br>
+            Concluiu o
 
-{{ aluno.naturalidade }}
+            <strong>
+                {{ aluno.ano_conclusao }}º Ano
+            </strong>
 
-</td>
+            do Ensino Médio Integrado do curso de
 
-<td>
+            <strong class="maiusculo">
+                {{ aluno.curso }}
+            </strong>
 
-<strong>UF</strong><br>
+            nos termos da Lei 9.394/96 e Lei 11.741/2008 e
+            Lei 11.714/2008 Resolução CNE/CEB 06/12 e 04/2012.
 
-{{ aluno.uf }}
+        </p>
 
-</td>
+    </section>
 
-<td>
 
-<strong>Matrícula</strong><br>
+    <!-- ================================================== -->
+    <!-- INFORMAÇÕES COMPLEMENTARES -->
+    <!-- ================================================== -->
 
-{{ aluno.matricula }}
+    <section class="informacoes-complementares">
 
-</td>
+        <h2>
+            INFORMAÇÕES COMPLEMENTARES
+        </h2>
 
-</tr>
 
-</table>
+        <!-- FORMA DE ACESSO -->
 
+        <div class="forma-acesso">
 
+            <span>
+                Forma de acesso:
+            </span>
 
-<!
--========================= -->
-<!
--TEXTO -->
-<!
--========================= -->
-<div class="texto-certificado">
 
-<p>
+            <span>
+                Classificação:
 
-Certificamos que o(a) estudante
+                <span class="linha-preenchimento medio">
+                    {{ ficha.classificacao or '' }}
+                </span>
+            </span>
 
-<strong>{{ aluno.nome }}</strong>
 
-concluiu o Ensino Médio Integral de Educação Profissional,
+            <span>
+                Reclassificação:
 
-cumprindo todas as exigências previstas na legislação vigente,
+                <span class="linha-preenchimento medio">
+                    {{ ficha.reclassificacao or '' }}
+                </span>
+            </span>
 
-fazendo jus ao presente Certificado e Histórico Escolar.
 
-</p>
+            <span>
+                Série:
 
-</div>
+                <span class="linha-preenchimento pequeno">
+                    {{ ficha.serie or '' }}
+                </span>
+            </span>
+
+        </div>
+
+
+        <ol>
+
+            <!-- ITEM 1 -->
+
+            <li>
+
+                O mínimo exigido para promoção é 6,0 e 75%
+                de frequência do total de horas letivas.
+
+            </li>
+
+
+            <!-- ITEM 2 -->
+
+            <li>
+
+                Em caso de Progressão Parcial informamos que o aluno na
+
+                <span class="linha-preenchimento pequeno">
+                    {{ ficha.serie_progressao or '' }}
+                </span>
+
+                série obteve Progressão Parcial nas disciplinas
+
+                <span class="linha-preenchimento grande">
+                    {{ ficha.disciplinas_progressao or '' }}
+                </span>
+
+                <br>
+
+                De acordo com o Regimento desta Escola que admite o
+                regime de Progressão Parcial em até 03 disciplinas.
+
+            </li>
+
+
+            <!-- ITEM 3 -->
+
+            <li>
+
+                <div class="titulo-item">
+
+                    Participação em Seminários de Ensino Religioso:
+
+                </div>
+
+
+                <div class="linha-opcoes">
+
+                    <label>
+
+                        <span class="quadrado">
+
+                            {% if ficha.ensino_religioso == 'SIM' %}
+                                X
+                            {% endif %}
+
+                        </span>
+
+                        SIM
+
+                    </label>
+
+
+                    <label>
+
+                        <span class="quadrado">
+
+                            {% if ficha.ensino_religioso == 'NÃO' %}
+                                X
+                            {% endif %}
+
+                        </span>
+
+                        NÃO
+
+                    </label>
+
+
+                    <span class="base-legal">
+
+                        Base Legal:
+
+                        <span class="linha-preenchimento base">
+                            {{ ficha.base_legal_religioso or '' }}
+                        </span>
+
+                    </span>
+
+                </div>
+
+            </li>
+
+
+            <!-- ITEM 4 -->
+
+            <li>
+
+                <div class="titulo-item">
+
+                    Dispensa de Educação Física:
+
+                </div>
+
+
+                <div class="linha-opcoes">
+
+                    <label>
+
+                        <span class="quadrado">
+
+                            {% if ficha.dispensa_educacao_fisica == 'SIM' %}
+                                X
+                            {% endif %}
+
+                        </span>
+
+                        SIM
+
+                    </label>
+
+
+                    <label>
+
+                        <span class="quadrado">
+
+                            {% if ficha.dispensa_educacao_fisica == 'NÃO' %}
+                                X
+                            {% endif %}
+
+                        </span>
+
+                        NÃO
+
+                    </label>
+
+
+                    <span class="base-legal">
+
+                        Base Legal:
+
+                        <span class="linha-preenchimento base">
+                            {{ ficha.base_legal_educacao_fisica or '' }}
+                        </span>
+
+                    </span>
+
+                </div>
+
+            </li>
+
+        </ol>
+
+    </section>
+
+
+    <!-- ================================================== -->
+    <!-- OBSERVAÇÕES -->
+    <!-- ================================================== -->
+
+    <section class="observacoes">
+
+        <h3>
+            OBSERVAÇÕES:
+        </h3>
+
+
+        {% if ficha.observacoes %}
+
+            <p class="texto-observacoes">
+                {{ ficha.observacoes }}
+            </p>
+
+        {% else %}
+
+            <div class="linha-observacao"></div>
+
+            <div class="linha-observacao"></div>
+
+            <div class="linha-observacao"></div>
+
+            <div class="linha-observacao"></div>
+
+            <div class="linha-observacao"></div>
+
+            <div class="linha-observacao"></div>
+
+        {% endif %}
+
+    </section>
+
+
+</main>
+
+</body>
+
+</html>

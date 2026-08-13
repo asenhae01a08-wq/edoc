@@ -1,0 +1,497 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    background: #d8d8d8;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    padding: 25px 0;
+}
+
+
+/* ==========================================
+   FOLHA A4
+========================================== */
+
+.pagina-a4 {
+    width: 210mm;
+    min-height: 297mm;
+
+    margin: 0 auto;
+    padding: 13mm 10mm 12mm;
+
+    background: #fff;
+
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.22);
+
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+
+/* ==========================================
+   TOPO / LOGO
+========================================== */
+
+.topo-documento {
+    width: 100%;
+    text-align: center;
+
+    margin-bottom: 14px;
+}
+
+.logo-governo {
+    display: block;
+
+    width: 145px;
+    max-height: 85px;
+
+    object-fit: contain;
+
+    margin: 0 auto;
+}
+
+
+/* ==========================================
+   IDENTIFICAÇÃO DA ESCOLA
+========================================== */
+
+.identificacao-escola {
+    text-align: center;
+
+    margin-top: 4px;
+    margin-bottom: 28px;
+}
+
+.identificacao-escola h1 {
+    font-size: 15px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    margin-bottom: 2px;
+}
+
+.linha-estabelecimento {
+    width: 96%;
+    height: 0;
+
+    margin: 0 auto;
+
+    border-bottom: 2px solid #000;
+}
+
+.identificacao-escola p {
+    margin-top: 2px;
+
+    font-size: 11px;
+}
+
+
+/* ==========================================
+   CAIXAS DE DADOS DA ESCOLA
+========================================== */
+
+.linha-endereco {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+
+    gap: 8.5%;
+
+    margin-bottom: 10px;
+}
+
+.caixa {
+    border: 2px solid #000;
+    background: #fff;
+}
+
+.endereco {
+    width: 54%;
+
+    min-height: 42px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 5px 8px;
+
+    font-size: 11px;
+}
+
+.cidade {
+    width: 39%;
+
+    min-height: 42px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 5px 8px;
+
+    font-size: 11px;
+}
+
+.autorizacao {
+    width: 91%;
+
+    min-height: 38px;
+
+    margin: 0 auto 12px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 5px 10px;
+
+    font-size: 11px;
+}
+
+.cadastro-escolar {
+    width: 42%;
+
+    min-height: 37px;
+
+    margin: 0 auto 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    border: 2px solid #000;
+
+    font-size: 11px;
+}
+
+
+/* ==========================================
+   CERTIFICADO
+========================================== */
+
+.certificado {
+    width: 100%;
+
+    border: 2px solid #000;
+
+    padding: 7px 9px 8px;
+
+    margin-bottom: 7px;
+}
+
+.certificado h2 {
+    text-align: center;
+
+    font-size: 12.5px;
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    margin-bottom: 13px;
+}
+
+.certificado p {
+    font-size: 11.8px;
+
+    margin-bottom: 10px;
+}
+
+.maiusculo {
+    text-transform: uppercase;
+}
+
+.linha-nascimento {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 1.5fr 0.9fr 0.5fr;
+
+    gap: 15px;
+
+    align-items: center;
+}
+
+.linha-nascimento p {
+    margin-bottom: 10px;
+}
+
+.linha-documentos {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 1.25fr 0.8fr 1fr 1fr;
+
+    gap: 8px;
+
+    align-items: center;
+}
+
+.linha-documentos p {
+    margin-bottom: 10px;
+
+    white-space: nowrap;
+}
+
+.texto-conclusao {
+    text-align: left;
+
+    line-height: 1.25;
+
+    margin-bottom: 0 !important;
+}
+
+
+/* ==========================================
+   INFORMAÇÕES COMPLEMENTARES
+========================================== */
+
+.informacoes-complementares {
+    width: 100%;
+
+    border: 2px solid #000;
+
+    padding: 7px 10px 9px;
+
+    margin-bottom: 26px;
+}
+
+.informacoes-complementares h2 {
+    text-align: center;
+
+    font-size: 12.5px;
+    font-weight: 700;
+
+    margin-bottom: 12px;
+}
+
+.forma-acesso {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 4px;
+
+    font-size: 11.5px;
+}
+
+
+/* ==========================================
+   LINHAS PARA CAMPOS VARIÁVEIS
+========================================== */
+
+.linha-preenchimento {
+    display: inline-block;
+
+    vertical-align: bottom;
+
+    min-height: 15px;
+
+    border-bottom: 1px solid #000;
+
+    padding: 0 3px;
+
+    text-align: center;
+}
+
+.linha-preenchimento.pequeno {
+    min-width: 55px;
+}
+
+.linha-preenchimento.medio {
+    min-width: 65px;
+}
+
+.linha-preenchimento.grande {
+    min-width: 310px;
+}
+
+.linha-preenchimento.base {
+    min-width: 220px;
+}
+
+
+/* ==========================================
+   LISTA
+========================================== */
+
+.informacoes-complementares ol {
+    padding-left: 31px;
+
+    margin: 0;
+}
+
+.informacoes-complementares li {
+    padding-left: 4px;
+
+    margin-bottom: 12px;
+
+    font-size: 11.3px;
+    line-height: 1.3;
+}
+
+.informacoes-complementares li:last-child {
+    margin-bottom: 0;
+}
+
+.titulo-item {
+    margin-bottom: 4px;
+}
+
+
+/* ==========================================
+   SIM / NÃO
+========================================== */
+
+.linha-opcoes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 22px;
+
+    margin-left: 27px;
+}
+
+.linha-opcoes label {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 6px;
+
+    font-size: 11.5px;
+}
+
+.quadrado {
+    width: 22px;
+    height: 22px;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 1.5px solid #000;
+
+    font-size: 10px;
+}
+
+.base-legal {
+    margin-left: 15px;
+}
+
+
+/* ==========================================
+   OBSERVAÇÕES
+========================================== */
+
+.observacoes {
+    width: 100%;
+
+    min-height: 136px;
+
+    border: 2px solid #000;
+
+    padding: 8px 10px 10px;
+}
+
+.observacoes h3 {
+    font-size: 11.5px;
+    font-weight: normal;
+
+    margin-bottom: 5px;
+}
+
+.linha-observacao {
+    height: 20px;
+
+    border-bottom: 1px solid #777;
+}
+
+.texto-observacoes {
+    min-height: 105px;
+
+    font-size: 11px;
+
+    line-height: 1.65;
+
+    white-space: pre-line;
+}
+
+
+/* ==========================================
+   RESPONSIVIDADE
+========================================== */
+
+@media screen and (max-width: 900px) {
+
+    body {
+        padding: 0;
+        background: #fff;
+    }
+
+    .pagina-a4 {
+        width: 100%;
+        min-height: auto;
+
+        padding: 20px;
+
+        box-shadow: none;
+    }
+}
+
+
+/* ==========================================
+   IMPRESSÃO
+========================================== */
+
+@media print {
+
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 210mm;
+        min-height: 297mm;
+
+        background: #fff;
+    }
+
+    body {
+        padding: 0;
+    }
+
+    .pagina-a4 {
+        width: 210mm;
+        min-height: 297mm;
+
+        margin: 0;
+
+        padding: 13mm 10mm 12mm;
+
+        box-shadow: none;
+    }
+}
