@@ -217,7 +217,6 @@ def inicialp():
 # ==========================================================
 
 @app.route("/gerar-fichas")
-@login_required_profissional
 def gerar_fichas():
 
     return redirect(
