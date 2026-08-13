@@ -688,8 +688,8 @@ footer {
 /* ESPAÇO RESERVADO PARA LOGO */
 
    .espaco-logo img {
-    width: 100%;
-    height: 100%;
+    width: 8%;
+    height: 7%;
     padding: 8px;
     object-fit: contain;
 }
@@ -706,43 +706,179 @@ footer {
     overflow: hidden;
 }
 
+.espaco-logo {
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f7f9fa;
+
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
 .espaco-logo img {
-    width: 100%;
-    height: 100%;
+    width: 58px;
+    height: 58px;
 
     display: block;
 
     object-fit: contain;
 
-    padding: 4px;
+    padding: 3px;
 }
-    .nome-sistema strong {
-        font-size: 24px;
-    }
 
-    .estrutura {
-        width: 92%;
-        margin-top: 18px;
-    }
+.nome-sistema strong {
+    font-size: 24px;
+}
+.boas-vindas {
+    min-height: auto;
+    padding: 24px 20px;
+}
 
-    .boas-vindas {
-        min-height: auto;
-        padding: 24px 20px;
-    }
+.boas-vindas h1 {
+    font-size: 21px;
+}
 
-    .boas-vindas h1 {
-        font-size: 21px;
-    }
+.icone-boas-vindas {
+    display: none;
+}
 
-    .icone-boas-vindas {
-        display: none;
-    }
+.grade-acoes {
+    grid-template-columns: 1fr;
+}
 
-    .grade-acoes {
-        grid-template-columns: 1fr;
-    }
+.card-acao {
+    min-height: 125px;
+}
 
-    .card-acao {
-        min-height: 125px;
-    }
+/* ==========================================
+   MENU DO PERFIL DO PROFISSIONAL
+========================================== */
+
+.area-usuario {
+    position: relative;
+}
+
+.usuario {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 6px 8px;
+
+    background: transparent;
+    border: none;
+
+    color: var(--texto);
+
+    cursor: pointer;
+
+    border-radius: 8px;
+
+    transition: 0.2s;
+}
+
+.usuario:hover {
+    background: #f4f8fb;
+}
+
+.seta-usuario {
+    margin-left: 2px;
+
+    color: #8a98a3;
+
+    font-size: 10px;
+
+    transition: 0.2s;
+}
+
+.usuario.ativo .seta-usuario {
+    transform: rotate(180deg);
+}
+
+
+/* MENU QUE APARECE AO CLICAR */
+
+.menu-usuario {
+    width: 210px;
+
+    position: absolute;
+
+    top: calc(100% + 8px);
+    right: 0;
+
+    display: none;
+
+    background: var(--branco);
+
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.13);
+
+    overflow: hidden;
+
+    z-index: 9999;
+}
+
+.menu-usuario.aberto {
+    display: block;
+}
+
+
+/* INFORMAÇÕES DENTRO DO MENU */
+
+.menu-usuario-info {
+    padding: 14px 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    border-bottom: 1px solid var(--borda);
+}
+
+.menu-usuario-info strong {
+    color: var(--texto);
+
+    font-size: 13px;
+}
+
+.menu-usuario-info span {
+    margin-top: 3px;
+
+    color: var(--texto-claro);
+
+    font-size: 11px;
+}
+
+
+/* OPÇÃO SAIR */
+
+.opcao-sair {
+    padding: 13px 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #b52b2b;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.opcao-sair:hover {
+    background: #fff1f1;
 }

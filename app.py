@@ -1,135 +1,1002 @@
+import os
 
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    flash,
+    session,
+    jsonify,
+    send_file,
+)
 from functools import wraps
+from werkzeug.utils import secure_filename
+
 import models
+from leitor_pdf import extrair_conteudo_pdf
+from parcer_siepe import extrair_dados_siepe
+
 
 app = Flask(__name__)
-app.secret_key ='12345678'
+app.secret_key = "12345678"
+app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
+
+
+# ==========================================================
+# PASTA ONDE AS FICHAS 19 GERADAS EM PDF SERÃO SALVAS
+# ==========================================================
+
+PASTA_PDFS_GERADOS = os.path.join(
+    app.root_path,
+    "pdfs_gerados",
+)
+
+os.makedirs(
+    PASTA_PDFS_GERADOS,
+    exist_ok=True,
+)
+
+app.config["PASTA_PDFS_GERADOS"] = PASTA_PDFS_GERADOS
+
+
+# ==========================================================
+# DECORADORES DE LOGIN
+# ==========================================================
 
 def login_required_profissional(f):
-    @wraps(f)  # Essential: Preserves function name and docstrings for Flask's routing
+    @wraps(f)
     def decorated_function(*args, **kwargs):
-        # 1. Pre-request logic (e.g., check headers, log data)
-        if 'nivel' not in session or session['nivel'] != 'Profissional':
-            return redirect(url_for('login'))
-            
-        # 2. Execute the actual route controller
-        response = f(*args, **kwargs)
-        
-        # 3. Post-request logic (e.g., modify response, log execution)
-        return response
-        
+        if session.get("nivel") != "Profissional":
+            return redirect(url_for("login"))
+
+        return f(*args, **kwargs)
+
     return decorated_function
 
 
 def login_required_aluno(f):
-    @wraps(f)  # Essential: Preserves function name and docstrings for Flask's routing
+    @wraps(f)
     def decorated_function(*args, **kwargs):
-        # 1. Pre-request logic (e.g., check headers, log data)
-        if 'nivel' not in session or session['nivel'] != 'Aluno':
-            return redirect(url_for('login'))
-            
-        # 2. Execute the actual route controller
-        response = f(*args, **kwargs)
-        
-        # 3. Post-request logic (e.g., modify response, log execution)
-        return response
-        
+        if session.get("nivel") != "Aluno":
+            return redirect(url_for("login"))
+
+        return f(*args, **kwargs)
+
     return decorated_function
+
+
+# ==========================================================
+# LOGIN
+# ==========================================================
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        senha = request.form.get("senha")
 
-        usuario = models.verificarLogin(email, senha)
+    if request.method == "POST":
+
+        identificacao = request.form.get(
+            "identificacao",
+            ""
+        ).strip()
+
+        senha = request.form.get(
+            "senha",
+            ""
+        )
+
+        usuario = models.verificarLogin(
+            identificacao,
+            senha
+        )
 
         if usuario is None:
-            flash("E-mail ou senha inválidos.")
-            return redirect(url_for("login"))
 
-        session["id"] = usuario["id"]
+            flash(
+                "Matrícula/e-mail ou senha inválidos."
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+        session.clear()
+
         session["nome"] = usuario["nome"]
-        session["email"] = usuario["email"]
-        session["nivel"] = usuario["cargo_nivel"]
 
-        if session["nivel"] == "Profissional":
-            return redirect(url_for("inicialp"))
+        session["email"] = usuario.get(
+            "email"
+        )
 
-        return redirect(url_for("iniciala"))
+        session["nivel"] = usuario[
+            "cargo_nivel"
+        ]
 
-    return render_template("login.html")
+        session["origem"] = usuario.get(
+            "origem"
+        )
 
-@app.route("/loginprofissional")
-def loginprofissional():
-    return render_template("loginprofissional.html")
+        if (
+            usuario["cargo_nivel"]
+            == "Profissional"
+        ):
+
+            session["id"] = usuario["id"]
+
+            return redirect(
+                url_for("inicialp")
+            )
+
+        if usuario.get("origem") == "aluno":
+
+            session["aluno_id"] = (
+                usuario["id"]
+            )
+
+            return redirect(
+                url_for("iniciala")
+            )
+
+        aluno = models.buscar_aluno_por_email(
+            usuario.get("email")
+        )
+
+        if aluno is None:
+
+            session.clear()
+
+            flash(
+                "O usuário aluno não possui "
+                "cadastro correspondente na "
+                "tabela alunos."
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+        session["aluno_id"] = aluno["id"]
+
+        return redirect(
+            url_for("iniciala")
+        )
+
+    return render_template(
+        "login.html"
+    )
+
+
+# ==========================================================
+# ÁREA DO ALUNO
+# ==========================================================
 
 @app.route("/iniciala")
-@login_required_aluno
 def iniciala():
 
-    aluno = models.buscar_aluno(session["email"])
+    aluno_id = session.get(
+        "aluno_id"
+    )
+
+    aluno = models.buscar_aluno_por_id(
+        aluno_id
+    )
 
     if aluno is None:
-        flash("Aluno não encontrado.")
-        return redirect(url_for("login"))
+
+        session.clear()
+
+        flash(
+            "Aluno não encontrado."
+        )
+
+        return redirect(
+            url_for("login")
+        )
 
     return render_template(
         "iniciala.html",
         aluno=aluno
     )
+
+
+# ==========================================================
+# ÁREA DO PROFISSIONAL
+# ==========================================================
+
 @app.route("/inicialp")
-@login_required_profissional
 def inicialp():
-    return render_template("inicialp.html")
 
-@app.route("/telagerar")
-@login_required_profissional
-def telagerar():
-    return render_template("telagerar.html")
+    return render_template(
+        "inicialp.html"
+    )
 
-@app.route("/preenchimento")
-def preenchimento():
-    return render_template("preenchimento.html")
 
-@app.route("/esqueci")
-def esqueci():
-    return render_template("esqueci.html")
+# ==========================================================
+# GERAR FICHAS
+# ==========================================================
 
-@app.route("/suporte")
-def suporte():
-    return render_template("suporte.html")
+@app.route("/gerar-fichas")
+def gerar_fichas():
+
+    return redirect(
+        url_for("ficha19")
+    )
+
+
+# ==========================================================
+# CONSULTAR DOCUMENTOS
+# ==========================================================
 
 @app.route("/consultar_documentos")
 def consultar():
-    return render_template("consultar.html")
+
+    return render_template(
+        "consultar.html"
+    )
+
+
+# ==========================================================
+# TURMA TDS A
+# ==========================================================
 
 @app.route("/turma_TDSA")
-def turma_TDSA():
-    alunos = models.buscar_alunos_por_turma(1)
+def turma_3tdsa():
+
+    alunos = (
+        models.buscar_alunos_por_turma(
+            "3º TDS A"
+        )
+    )
 
     return render_template(
         "turma_TDSA.html",
         alunos=alunos
     )
 
-@app.route("/")
-def index():
-    return redirect(url_for("login"))
 
+# ==========================================================
+# TURMA TDS B
+# ==========================================================
+
+@app.route("/turma_TDSB")
+def turma_3tdsb():
+
+    alunos = (
+        models.buscar_alunos_por_turma(
+            "3º TDS B"
+        )
+    )
+
+    return render_template(
+        "turma_TDSB.html",
+        alunos=alunos
+    )
+
+
+# ==========================================================
+# TURMA MKT A
+# ==========================================================
+
+@app.route("/turma_MKTA")
+def turma_3mkta():
+
+    alunos = (
+        models.buscar_alunos_por_turma(
+            "3º MKT A"
+        )
+    )
+
+    return render_template(
+        "turma_MKTA.html",
+        alunos=alunos
+    )
+
+
+# ==========================================================
+# TURMA MKT B
+# ==========================================================
+
+@app.route("/turma_MKTB")
+def turma_3mktb():
+
+    alunos = (
+        models.buscar_alunos_por_turma(
+            "3º MKT B"
+        )
+    )
+
+    return render_template(
+        "turma_MKTB.html",
+        alunos=alunos
+    )
+
+
+# ==========================================================
+# FICHA 19
+#
+# /ficha19
+# abre vazia
+#
+# /ficha19?aluno_id=12
+# abre preenchida
+# ==========================================================
 
 @app.route("/ficha19")
+@login_required_profissional
 def ficha19():
 
-    return render_template("ficha19.html")
+    aluno_id = request.args.get(
+        "aluno_id",
+        type=int
+    )
+
+    if aluno_id is None:
+
+        return render_template(
+            "ficha19.html",
+            dados_ficha=None,
+            aluno_id=None
+        )
+
+    aluno = models.buscar_aluno_por_id(
+        aluno_id
+    )
+
+    if aluno is None:
+
+        flash(
+            "Aluno não encontrado."
+        )
+
+        return redirect(
+            url_for("consultar")
+        )
+
+    try:
+
+        dados_ficha = (
+            models.buscar_dados_ficha_por_aluno(
+                aluno_id
+            )
+        )
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro ao buscar os dados "
+            "da Ficha 19"
+        )
+
+        flash(
+            f"Erro ao buscar a Ficha 19: "
+            f"{erro}"
+        )
+
+        return redirect(
+            url_for("consultar")
+        )
+
+    if not dados_ficha:
+
+        flash(
+            "Este aluno ainda não possui "
+            "dados de uma Ficha 19 importada."
+        )
+
+        return render_template(
+            "ficha19.html",
+            dados_ficha=None,
+            aluno_id=aluno_id
+        )
+
+    return render_template(
+        "ficha19.html",
+        dados_ficha=dados_ficha,
+        aluno_id=aluno_id
+    )
+
+
+# ==========================================================
+# IMPORTAR PDF DO SIEPE
+# ==========================================================
+
+@app.route(
+    "/ficha19/importar",
+    methods=["POST"]
+)
+@login_required_profissional
+def importar_pdf_siepe():
+
+    arquivo = request.files.get(
+        "arquivoSiepe"
+    )
+
+    if (
+        arquivo is None
+        or arquivo.filename == ""
+    ):
+
+        flash(
+            "Selecione um PDF do SIEPE."
+        )
+
+        return redirect(
+            url_for("ficha19")
+        )
+
+    if not arquivo.filename.lower().endswith(
+        ".pdf"
+    ):
+
+        flash(
+            "O arquivo selecionado "
+            "precisa ser um PDF."
+        )
+
+        return redirect(
+            url_for("ficha19")
+        )
+
+    try:
+
+        # ==========================================
+        # 1 - LÊ O PDF
+        # ==========================================
+
+        conteudo = extrair_conteudo_pdf(
+            arquivo
+        )
+
+        # ==========================================
+        # 2 - EXTRAI AS INFORMAÇÕES
+        # ==========================================
+
+        dados = extrair_dados_siepe(
+
+            conteudo["texto"],
+
+            conteudo["tabelas"],
+
+            conteudo.get("paginas")
+        )
+
+        matricula = (
+            dados
+            .get("aluno", {})
+            .get("matricula")
+        )
+
+        if not matricula:
+
+            flash(
+                "O PDF foi lido, mas a "
+                "matrícula não foi encontrada."
+            )
+
+            return redirect(
+                url_for("ficha19")
+            )
+
+        # ==========================================
+        # 3 - SALVA NO BANCO
+        # ==========================================
+
+        aluno_id = (
+            models.salvar_importacao_pdf(
+                dados
+            )
+        )
+
+        if not aluno_id:
+
+            raise ValueError(
+                "O PDF foi processado, "
+                "mas não foi possível obter "
+                "o ID do aluno salvo."
+            )
+
+        # ==========================================
+        # 4 - CONFERE O BANCO
+        # ==========================================
+
+        dados_salvos = (
+            models.buscar_dados_ficha_por_aluno(
+                aluno_id
+            )
+        )
+
+        if not dados_salvos:
+
+            raise ValueError(
+                "O PDF foi processado, "
+                "mas os dados não puderam "
+                "ser recuperados do banco."
+            )
+
+        flash(
+            "PDF importado com sucesso. "
+            "Os dados foram gravados no banco "
+            "e carregados na Ficha 19."
+        )
+
+        return redirect(
+            url_for(
+                "ficha19",
+                aluno_id=aluno_id
+            )
+        )
+
+    except ValueError as erro:
+
+        flash(
+            str(erro)
+        )
+
+        return redirect(
+            url_for("ficha19")
+        )
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro durante a importação "
+            "da Ficha 19"
+        )
+
+        flash(
+            f"Erro ao processar o PDF: "
+            f"{erro}"
+        )
+
+        return redirect(
+            url_for("ficha19")
+        )
+
+
+# ==========================================================
+# TELAGERAR
+# ==========================================================
+
+@app.route(
+    "/telagerar/<int:id_aluno>"
+)
+@login_required_profissional
+def telagerar(id_aluno):
+
+    return redirect(
+        url_for(
+            "ficha19",
+            aluno_id=id_aluno
+        )
+    )
+
+
+# ==========================================================
+# SALVAR FICHA GERADA EM PDF
+# ==========================================================
+
+@app.route(
+    "/ficha19/salvar-pdf/<int:id_aluno>",
+    methods=["POST"]
+)
+@login_required_profissional
+def salvar_pdf_ficha19(id_aluno):
+
+    aluno = models.buscar_aluno_por_id(
+        id_aluno
+    )
+
+    if aluno is None:
+
+        return jsonify({
+
+            "sucesso": False,
+
+            "mensagem":
+                "Aluno não encontrado."
+
+        }), 404
+
+    arquivo_pdf = request.files.get(
+        "arquivo_pdf"
+    )
+
+    if (
+        arquivo_pdf is None
+        or arquivo_pdf.filename == ""
+    ):
+
+        return jsonify({
+
+            "sucesso": False,
+
+            "mensagem":
+                "O arquivo PDF gerado "
+                "não foi recebido."
+
+        }), 400
+
+    if not arquivo_pdf.filename.lower().endswith(
+        ".pdf"
+    ):
+
+        return jsonify({
+
+            "sucesso": False,
+
+            "mensagem":
+                "O arquivo recebido "
+                "não é um PDF."
+
+        }), 400
+
+    matricula = str(
+        aluno.get("matricula")
+        or id_aluno
+    ).strip()
+
+    nome_arquivo = secure_filename(
+        f"ficha19_{matricula}.pdf"
+    )
+
+    caminho_pdf = os.path.join(
+
+        app.config[
+            "PASTA_PDFS_GERADOS"
+        ],
+
+        nome_arquivo
+    )
+
+    try:
+
+        arquivo_pdf.save(
+            caminho_pdf
+        )
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro ao salvar o PDF "
+            "da Ficha 19"
+        )
+
+        return jsonify({
+
+            "sucesso": False,
+
+            "mensagem":
+                f"Não foi possível "
+                f"salvar o PDF: {erro}"
+
+        }), 500
+
+    return jsonify({
+
+        "sucesso": True,
+
+        "mensagem":
+            "Ficha 19 salva em PDF "
+            "com sucesso.",
+
+        "nome_arquivo":
+            nome_arquivo,
+
+        "download_url":
+            url_for(
+                "baixar_pdf_ficha19",
+                id_aluno=id_aluno
+            )
+    })
+
+
+# ==========================================================
+# DOWNLOAD DO PDF SALVO
+# ==========================================================
+
+@app.route(
+    "/ficha19/download/<int:id_aluno>"
+)
+@login_required_profissional
+def baixar_pdf_ficha19(id_aluno):
+
+    aluno = models.buscar_aluno_por_id(
+        id_aluno
+    )
+
+    if aluno is None:
+
+        flash(
+            "Aluno não encontrado."
+        )
+
+        return redirect(
+            url_for("consultar")
+        )
+
+    matricula = str(
+        aluno.get("matricula")
+        or id_aluno
+    ).strip()
+
+    nome_arquivo = secure_filename(
+        f"ficha19_{matricula}.pdf"
+    )
+
+    caminho_pdf = os.path.join(
+
+        app.config[
+            "PASTA_PDFS_GERADOS"
+        ],
+
+        nome_arquivo
+    )
+
+    if not os.path.exists(
+        caminho_pdf
+    ):
+
+        flash(
+            "A Ficha 19 deste aluno "
+            "ainda não foi salva em PDF."
+        )
+
+        return redirect(
+            url_for(
+                "ficha19",
+                aluno_id=id_aluno
+            )
+        )
+
+    return send_file(
+
+        caminho_pdf,
+
+        as_attachment=True,
+
+        download_name=nome_arquivo,
+
+        mimetype="application/pdf"
+    )
+
+
+# ==========================================================
+# CADASTRO / PREENCHIMENTO
+# ==========================================================
+
+@app.route(
+    "/preenchimento",
+    methods=["GET", "POST"]
+)
+@login_required_profissional
+def preenchimento():
+
+    if request.method == "POST":
+
+        nome = request.form.get(
+            "nome",
+            ""
+        ).strip()
+
+        matricula = request.form.get(
+            "matricula",
+            ""
+        ).strip()
+
+        cpf = request.form.get(
+            "cpf",
+            ""
+        ).strip()
+
+        email = request.form.get(
+            "email",
+            ""
+        ).strip()
+
+        data_nascimento = request.form.get(
+            "data_nascimento",
+            ""
+        ).strip()
+
+        turma = request.form.get(
+            "id_turma",
+            ""
+        ).strip()
+
+        if not all(
+            [
+                nome,
+                matricula,
+                cpf,
+                email,
+                data_nascimento,
+                turma
+            ]
+        ):
+
+            flash(
+                "Preencha todos os campos.",
+                "error"
+            )
+
+            return redirect(
+                url_for("preenchimento")
+            )
+
+        (
+            sucesso,
+            mensagem,
+            senha_inicial
+        ) = models.cadastrar_aluno(
+
+            nome,
+
+            matricula,
+
+            cpf,
+
+            email,
+
+            data_nascimento,
+
+            turma
+        )
+
+        if not sucesso:
+
+            flash(
+                mensagem,
+                "error"
+            )
+
+            return redirect(
+                url_for("preenchimento")
+            )
+
+        flash(
+            f"{mensagem} "
+            f"Senha provisória: "
+            f"{senha_inicial}",
+            "success"
+        )
+
+        return redirect(
+            url_for("preenchimento")
+        )
+
+    return render_template(
+        "preenchimento.html"
+    )
+
+
+# ==========================================================
+# ESQUECI SENHA
+# ==========================================================
+
+@app.route(
+    "/esqueci",
+    methods=["GET", "POST"]
+)
+def esqueci():
+
+    if request.method == "POST":
+
+        flash(
+            "A recuperação automática "
+            "por e-mail ainda não foi "
+            "configurada no protótipo."
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    return render_template(
+        "esqueci.html"
+    )
+
+
+# ==========================================================
+# SUPORTE
+# ==========================================================
+
+@app.route("/suporte")
+def suporte():
+
+    return render_template(
+        "suporte.html"
+    )
+
+
+# ==========================================================
+# LOGOUT
+# ==========================================================
+
 @app.route("/logout")
 def logout():
+
     session.clear()
 
-    flash("Você saiu da sua conta.")
+    flash(
+        "Você saiu da sua conta."
+    )
 
     return redirect(
         url_for("login")
     )
 
+
+# ==========================================================
+# INÍCIO
+# ==========================================================
+
+@app.route("/")
+def index():
+
+    return redirect(
+        url_for("login")
+    )
+
+@app.route("/capa")
+def capa():
+
+    escola = {
+        "nome": "ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA",
+        "endereco": "Rua Vereador João Avelino Sobrinho",
+        "complemento": "Loteamento Cidade Alta lote 41 a 43",
+        "cidade": "Caruaru",
+        "uf": "PE",
+        "autorizacao": "Decreto 44.071 de 30/01/2017",
+        "data_diario_oficial": "31/01/2017",
+        "cadastro_escolar": "26187051"
+    }
+
+    aluno = {
+        "nome": "NOME DO ALUNO",
+        "matricula": "",
+        "data_nascimento": "",
+        "naturalidade": "",
+        "cpf": "",
+        "curso": "",
+        "turma": ""
+    }
+
+    ficha = {
+        "classificacao": "",
+        "reclassificacao": "",
+        "serie": "",
+        "serie_progressao": "",
+        "disciplinas_progressao": "",
+        "ensino_religioso": "NÃO",
+        "base_legal_religioso": "",
+        "dispensa_educacao_fisica": "NÃO",
+        "base_legal_educacao_fisica": "",
+        "observacoes": ""
+    }
+
+    return render_template(
+        "capa.html",
+        escola=escola,
+        aluno=aluno,
+        ficha=ficha
+    )
+@app.route("/gerarficha")
+def gerarficha():
+
+    return render_template(
+        "gerarficha.html"
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+# ==========================================================
+# EXECUÇÃO
+# ==========================================================
+
+if __name__ == "__main__":
+
+    app.run(
+        debug=True
+    )

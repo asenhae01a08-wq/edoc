@@ -16,6 +16,11 @@
     href="{{ url_for('static', filename='ficha19.css') }}"
 >
 
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
     <style>
         * {
             box-sizing: border-box;
@@ -810,7 +815,12 @@
 
         </div>
 
-        <div class="acoes-edoc">
+        <form
+            class="acoes-edoc"
+            action="{{ url_for('importar_pdf_siepe') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
 
             <a
                 href="{{ url_for('inicialp') }}"
@@ -825,13 +835,15 @@
                 class="rotulo-upload"
             >
                 <i class="fa-solid fa-file-pdf"></i>
-                Importar PDF do SIEPE
+                Selecionar PDF do SIEPE
             </label>
 
             <input
                 type="file"
                 id="arquivoSiepe"
+                name="arquivoSiepe"
                 accept="application/pdf,.pdf"
+                required
             >
 
             <span
@@ -842,6 +854,14 @@
             </span>
 
             <button
+                type="submit"
+                class="botao-edoc rotulo-upload"
+            >
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                Ler PDF e gerar ficha
+            </button>
+
+            <button
                 type="button"
                 class="botao-edoc botao-imprimir"
                 id="botaoImprimir"
@@ -850,9 +870,21 @@
                 Imprimir ficha
             </button>
 
-        </div>
+        </form>
 
     </header>
+
+    {% with mensagens = get_flashed_messages() %}
+        {% if mensagens %}
+            <div style="max-width: 210mm; margin: 0 auto 15px;">
+                {% for mensagem in mensagens %}
+                    <div style="background:#fff3cd; border:1px solid #ffe69c; padding:10px 12px; margin-bottom:6px; border-radius:6px; font-size:13px;">
+                        {{ mensagem }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <form id="formFicha19">
 
@@ -860,282 +892,312 @@
         <!-- PÁGINA 1                                         -->
         <!-- ================================================= -->
 
-        <section class="folha">
+                <section class="folha folha-capa">
 
-            <header class="cabecalho-oficial">
+            <!-- ================================================= -->
+            <!-- NOVA CAPA OFICIAL                                 -->
+            <!-- ================================================= -->
 
-    <div class="brasao-oficial">
-        <img
-            src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"
-            alt="Brasão do Estado de Pernambuco"
-        >
-    </div>
+            <header class="topo-capa">
+                <img
+                    src="{{ url_for('static', filename='img/governo-de-pernambuco-logo-png_seeklogo-548367.png') }}"
+                    alt="Governo de Pernambuco"
+                    class="logo-governo-capa"
+                >
+            </header>
 
-    <div class="linha-superior"></div>
+            <section class="identificacao-escola-capa">
+                <h1>ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA</h1>
+                <div class="linha-estabelecimento-capa"></div>
+                <p>Estabelecimento</p>
+            </section>
 
-    <h1 class="nome-escola-oficial">
-        ESCOLA TÉCNICA ESTADUAL MINISTRO FERNANDO LYRA
-    </h1>
+            <section class="linha-endereco-capa">
+                <div class="caixa-capa endereco-capa">
+                    <strong>Endereço:</strong>
+                    Rua Vereador João Avelino Sobrinho, s/n, Alameda, Cidade Alta
+                </div>
 
-    <p class="endereco-escola-oficial">
-        Rua Vereador João Avelino Sobrinho, s/n, Alameda,
-        Cidade Alta - Caruaru, PE - CEP: 55031-470
-    </p>
+                <div class="caixa-capa cidade-capa">
+                    <span><strong>Cidade:</strong> CARUARU</span>
+                    <span><strong>UF:</strong> PE</span>
+                </div>
+            </section>
 
-    <p class="telefone-escola-oficial">
-        Telefone:
-        <input
-            type="text"
-            id="telefoneEscola"
-            name="telefoneEscola"
-        >
-    </p>
+            <section class="caixa-capa autorizacao-capa">
+                <label>
+                    <strong>Autorização de Funcionamento:</strong>
+                    <input
+                        type="text"
+                        id="autorizacaoFuncionamento"
+                        name="autorizacaoFuncionamento"
+                        value="Portaria 856"
+                    >
+                </label>
 
-    <div class="quadro-autorizacao-oficial">
+                <label>
+                    <strong>D.O. de</strong>
+                    <input
+                        type="text"
+                        id="dataDoe"
+                        name="dataDoe"
+                        value="02/02/2017"
+                    >
+                </label>
+            </section>
 
-        <div class="autorizacao-esquerda">
-            <strong>Autorização de Funcionamento:</strong>
+            <section class="cadastro-escolar-capa">
+                <strong>Cadastro Escolar:</strong>
+                <input
+                    type="text"
+                    id="cadastroEscolar"
+                    name="cadastroEscolar"
+                    class="sincronizar-cadastro"
+                >
+            </section>
 
-            <input
-                type="text"
-                id="autorizacaoFuncionamento"
-                name="autorizacaoFuncionamento"
-                value="Portaria 856"
-            >
-        </div>
+            <section class="certificado-capa">
+                <h2>
+                    CERTIFICADO E HISTÓRICO ESCOLAR DO ENSINO MÉDIO
+                    INTEGRAL DE EDUCAÇÃO PROFISSIONAL
+                </h2>
 
-        <div class="autorizacao-direita">
-            <strong>D.O.E/PE de</strong>
+                <div class="texto-certificado-capa">
+                    <p>
+                        Pelo presente Histórico Escolar certificamos que
+                        <input
+                            type="text"
+                            id="nomeAluno"
+                            name="nomeAluno"
+                            class="campo-capa campo-nome-capa sincronizar-nome"
+                            placeholder="NOME COMPLETO DO ESTUDANTE"
+                        >.
+                    </p>
 
-            <input
-                type="text"
-                id="dataDoe"
-                name="dataDoe"
-                value="02/02/2017"
-            >
-        </div>
+                    <p>
+                        Filho(a) de
+                        <input
+                            type="text"
+                            id="nomeMae"
+                            name="nomeMae"
+                            class="campo-capa campo-filiacao-capa"
+                            placeholder="NOME DA MÃE"
+                        >
+                        e
+                        <input
+                            type="text"
+                            id="nomePai"
+                            name="nomePai"
+                            class="campo-capa campo-filiacao-capa"
+                            placeholder="NOME DO PAI"
+                        >.
+                    </p>
 
-    </div>
+                    <p>
+                        Nascido(a) em
+                        <input
+                            type="text"
+                            id="dataNascimento"
+                            name="dataNascimento"
+                            class="campo-capa campo-data-capa"
+                            placeholder="DD/MM/AAAA"
+                        >,
+                        Cidade:
+                        <input
+                            type="text"
+                            id="cidadeNascimento"
+                            name="cidadeNascimento"
+                            class="campo-capa campo-cidade-capa"
+                            placeholder="CIDADE"
+                        >
+                        UF:
+                        <input
+                            type="text"
+                            id="ufNascimento"
+                            name="ufNascimento"
+                            class="campo-capa campo-uf-capa"
+                            value="PE"
+                        >.
+                    </p>
 
-    <div class="quadro-cadastro-oficial">
+                    <p>
+                        Nacionalidade:
+                        <input
+                            type="text"
+                            id="nacionalidade"
+                            name="nacionalidade"
+                            class="campo-capa campo-nacionalidade-capa"
+                            value="BRASILEIRA"
+                        >.
+                        RG:
+                        <input
+                            type="text"
+                            id="rg"
+                            name="rg"
+                            class="campo-capa campo-rg-capa"
+                            placeholder="0000000"
+                        >
+                        Órgão Expedidor:
+                        <input
+                            type="text"
+                            id="orgaoExpedidor"
+                            name="orgaoExpedidor"
+                            class="campo-capa campo-orgao-capa"
+                            placeholder="SDS/PE"
+                        >
+                        CPF:
+                        <input
+                            type="text"
+                            id="cpf"
+                            name="cpf"
+                            class="campo-capa campo-cpf-capa"
+                            placeholder="000.000.000-00"
+                        >.
+                    </p>
 
-        <strong>Cadastro Escolar -</strong>
+                    <p class="texto-conclusao-capa">
+                        Concluiu o
+                        <input
+                            type="text"
+                            id="anoConcluido"
+                            name="anoConcluido"
+                            class="campo-capa campo-conclusao-capa"
+                            placeholder="3º ANO"
+                        >
+                        do Ensino Médio Integrado do curso de
+                        <input
+                            type="text"
+                            id="modalidadeEnsino"
+                            name="modalidadeEnsino"
+                            class="campo-capa campo-curso-capa"
+                            placeholder="CURSO"
+                        >
+                        nos termos da Lei 9.394/96 e Lei 11.741/2008 e
+                        Lei 11.714/2008, Resoluções CNE/CEB 06/12 e 04/2012.
+                    </p>
+                </div>
+            </section>
 
-        <input
-            type="text"
-            id="cadastroEscolar"
-            name="cadastroEscolar"
-            class="sincronizar-cadastro"
-        >
-
-    </div>
-
-</header>
-
-<h1 class="titulo-certificado-oficial">
-    CERTIFICADO E HISTÓRICO ESCOLAR DO ENSINO MÉDIO /
-    ENSINO REGULAR
-</h1>
-                  
-
-          <div class="texto-certificado-original">
-
-    <p>
-        Pelo presente Histórico Escolar certificamos que
-
-        <span
-            id="nomeAluno"
-            class="campo-editavel destaque sincronizar-nome"
-            contenteditable="true"
-        >
-            NOME COMPLETO DO ESTUDANTE
-        </span>
-
-        Filho(a) de
-
-        <span
-            id="nomeMae"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            NOME DA MÃE
-        </span>
-
-        e
-
-        <span
-            id="nomePai"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            NOME DO PAI
-        </span>.
-
-        Nascido(a) em
-
-        <span
-            id="dataNascimento"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            DD/MM/AAAA
-        </span>.
-
-        Cidade:
-
-        <span
-            id="cidadeNascimento"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            CIDADE
-        </span>
-
-        UF:
-
-        <span
-            id="ufNascimento"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            PE
-        </span>.
-
-        Nacionalidade:
-
-        <span
-            id="nacionalidade"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            BRASILEIRA
-        </span>.
-
-        RG:
-
-        <span
-            id="rg"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            0000000
-        </span>
-
-        Órgão Expedidor:
-
-        <span
-            id="orgaoExpedidor"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            SDS/PE
-        </span>
-
-        CPF:
-
-        <span
-            id="cpf"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            000.000.000-00
-        </span>.
-
-        Concluiu o(a)
-
-        <span
-            id="anoConcluido"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            3º ANO - ENSINO MÉDIO
-        </span>
-
-        do
-
-        <span
-            id="modalidadeEnsino"
-            class="campo-editavel destaque"
-            contenteditable="true"
-        >
-            ENSINO MÉDIO
-        </span>
-
-        nos termos da Lei nº 9.394/96, publicada no D.O.U de
-        23.12.1996.
-    </p>
-
-</div>
-
-            <section class="informacoes-complementares">
-
+            <section class="informacoes-complementares-capa">
                 <h2>INFORMAÇÕES COMPLEMENTARES</h2>
+
+                <div class="forma-acesso-capa">
+                    <strong>Forma de acesso:</strong>
+
+                    <label>
+                        Classificação:
+                        <input type="text" id="classificacao" name="classificacao">
+                    </label>
+
+                    <label>
+                        Reclassificação:
+                        <input type="text" id="reclassificacao" name="reclassificacao">
+                    </label>
+
+                    <label>
+                        Série:
+                        <input type="text" id="serieAcesso" name="serieAcesso">
+                    </label>
+                </div>
 
                 <ol>
                     <li>
-                        O mínimo exigido para promoção é a média 6,0
-                        (seis) e 75% de frequência do total de horas
-                        letivas. Após a recuperação final, o índice
-                        de aproveitamento é 6,0, em observância à
-                        Instrução Normativa de Avaliação vigente e
-                        Art. 24, Inciso IV, da Lei Federal nº 9.394/96.
+                        O mínimo exigido para promoção é 6,0 e 75% de frequência
+                        do total de horas letivas.
                     </li>
 
                     <li>
-                        O(a) estudante optou por não vivenciar o
-                        componente curricular Ensino Religioso, em
-                        observância à Lei nº 9.475/97, de 22/07/1997.
-                    </li>
-
-                    <li>
-                        Estudante
-
-                        <select
-                            id="situacaoEducacaoFisica"
-                            name="situacaoEducacaoFisica"
-                            class="campo-linha"
+                        Em caso de Progressão Parcial informamos que o aluno na
+                        <input
+                            type="text"
+                            id="serieProgressao"
+                            name="serieProgressao"
+                            class="linha-curta-capa"
                         >
-                            <option value=""></option>
+                        série obteve Progressão Parcial nas disciplinas
+                        <input
+                            type="text"
+                            id="disciplinasProgressao"
+                            name="disciplinasProgressao"
+                            class="linha-longa-capa"
+                        >.
+                        <br>
+                        De acordo com o Regimento desta Escola que admite o regime
+                        de Progressão Parcial em até 03 disciplinas.
+                    </li>
 
-                            <option value="não dispensado(a)">
-                                não dispensado(a)
-                            </option>
+                    <li>
+                        <div class="titulo-item-capa">
+                            Participação em Seminários de Ensino Religioso:
+                        </div>
 
-                            <option value="dispensado(a)">
-                                dispensado(a)
-                            </option>
-                        </select>
+                        <div class="linha-opcoes-capa">
+                            <label>
+                                <input type="radio" name="ensinoReligioso" value="SIM">
+                                SIM
+                            </label>
 
-                        da prática de Educação Física em observância
-                        à Lei Federal nº 9.394/96, art. 26, §3º.
+                            <label>
+                                <input type="radio" name="ensinoReligioso" value="NÃO" checked>
+                                NÃO
+                            </label>
+
+                            <label class="base-legal-capa">
+                                Base Legal:
+                                <input
+                                    type="text"
+                                    id="baseLegalReligioso"
+                                    name="baseLegalReligioso"
+                                >
+                            </label>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="titulo-item-capa">
+                            Dispensa de Educação Física:
+                        </div>
+
+                        <div class="linha-opcoes-capa">
+                            <label>
+                                <input type="radio" name="dispensaEducacaoFisica" value="SIM">
+                                SIM
+                            </label>
+
+                            <label>
+                                <input type="radio" name="dispensaEducacaoFisica" value="NÃO" checked>
+                                NÃO
+                            </label>
+
+                            <label class="base-legal-capa">
+                                Base Legal:
+                                <input
+                                    type="text"
+                                    id="baseLegalEducacaoFisica"
+                                    name="baseLegalEducacaoFisica"
+                                >
+                            </label>
+                        </div>
                     </li>
                 </ol>
-
             </section>
 
-            <div class="observacoes">
-
+            <section class="observacoes-capa">
                 <strong>OBSERVAÇÕES:</strong>
-
                 <textarea
                     id="observacoesCertificado"
                     name="observacoesCertificado"
                 ></textarea>
+            </section>
 
-            </div>
-
-            <footer class="rodape-documento">
-
+            <footer class="rodape-documento rodape-capa">
                 <span>
                     SECRETÁRIO:
-
                     <input
                         type="text"
                         class="rodape-nome sincronizar-secretario"
                     >
-
                     mat. nº
-
                     <input
                         type="text"
                         class="rodape-matricula sincronizar-matricula-secretario"
@@ -1144,27 +1206,23 @@
 
                 <span>
                     DIRETOR:
-
                     <input
                         type="text"
                         class="rodape-nome sincronizar-diretor"
                     >
-
                     mat. nº
-
                     <input
                         type="text"
                         class="rodape-matricula sincronizar-matricula-diretor"
                     >
                 </span>
-
             </footer>
 
             <span class="numero-pagina">1</span>
 
         </section>
 
-        <!-- ================================================= -->
+
         <!-- PÁGINA 2                                         -->
         <!-- ================================================= -->
 
@@ -2892,10 +2950,22 @@
         calcularCargas();
     </script>
 
-    <script
-    src="{{ url_for('static', filename='scripts/ficha19.js') }}"
-></script>
+    {% if dados_ficha %}
+    <script>
+        window.dadosFichaEdoc = {{ dados_ficha | tojson }};
+    </script>
+    {% else %}
+    <script>
+        window.dadosFichaEdoc = null;
+    </script>
+    {% endif %}
 
+    <script
+        src="{{ url_for('static', filename='scripts/ficha19.js') }}"
+    ></script>
+    <script
+    src="{{ url_for('static', filename='scripts/pdf_ficha19.js') }}"
+    ></script>
 <img
     src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"
     alt="Brasão de Pernambuco"

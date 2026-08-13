@@ -76,26 +76,27 @@
 
                 <div class="titulo-pagina">
 
-                    <h2>Acesso ao eDOC</h2>
+        <span class="tag-acesso">ACESSO SEGURO</span>
 
-                    <p>
-                        Entre como aluno ou profissional
-                    </p>
+        <h2>Acesso ao eDOC</h2>
+
+        <p>
+             Entre com sua matrícula ou e-mail para acessar o sistema.
+        </p>
 
                 </div>
 
 
                 <div class="painel-login">
 
-                    <div class="cabecalho-painel">
+                  <div class="cabecalho-painel">
 
-                        <h3>Identificação do usuário</h3>
+    <div class="cabecalho-painel">
 
-                        <p>
-                            Utilize sua matrícula ou seu e-mail para entrar
-                        </p>
+    <h3>Entrar no sistema</h3>
 
-                    </div>
+</div>
+</div>
 
 
                     <div class="corpo-painel">
@@ -130,6 +131,7 @@
                             class="formulario"
                         >
 
+                            <!-- MATRÍCULA / E-MAIL -->
                             <div class="grupo">
 
                                 <label for="identificacao">
@@ -142,7 +144,7 @@
 
                                     <input
                                         type="text"
-                                        name="email"
+                                        name="identificacao"
                                         id="identificacao"
                                         placeholder="Digite sua matrícula ou e-mail"
                                         autocomplete="username"
@@ -154,6 +156,7 @@
                             </div>
 
 
+                            <!-- SENHA -->
                             <div class="grupo">
 
                                 <label for="senha">
@@ -177,10 +180,14 @@
                                         type="button"
                                         class="botao-olho"
                                         id="toggleSenha"
+                                        onclick="mostrarSenha()"
                                         aria-label="Mostrar ou esconder senha"
                                     >
 
-                                        <i class="fa-regular fa-eye"></i>
+                                        <i
+                                            class="fa-regular fa-eye"
+                                            id="iconeSenha"
+                                        ></i>
 
                                     </button>
 
@@ -189,6 +196,7 @@
                             </div>
 
 
+                            <!-- AÇÕES -->
                             <div class="acoes">
 
                                 <button
@@ -215,6 +223,7 @@
                 </div>
 
 
+                <!-- MENSAGENS DO FLASK -->
                 {% with messages = get_flashed_messages() %}
 
                     {% if messages %}
@@ -252,7 +261,37 @@
     </div>
 
 
-    <script src="{{ url_for('static', filename='script/script2.js') }}"></script>
+    <!-- MOSTRAR / ESCONDER SENHA -->
+    <script>
+
+        function mostrarSenha() {
+
+            const campoSenha =
+                document.getElementById("senha");
+
+            const iconeSenha =
+                document.getElementById("iconeSenha");
+
+
+            if (campoSenha.type === "password") {
+
+                campoSenha.type = "text";
+
+                iconeSenha.classList.remove("fa-eye");
+                iconeSenha.classList.add("fa-eye-slash");
+
+            } else {
+
+                campoSenha.type = "password";
+
+                iconeSenha.classList.remove("fa-eye-slash");
+                iconeSenha.classList.add("fa-eye");
+
+            }
+
+        }
+
+    </script>
 
 </body>
 

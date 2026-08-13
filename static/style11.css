@@ -1,235 +1,430 @@
-
-CSS
-
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-
-    min-height:100vh;
-
-    display:flex;
-    justify-content:center;
-
-    background:linear-gradient(
-        180deg,
-        #08153d,
-        #0d56da,
-        #38b6ff
-    );
-
-    color:white;
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f1f4f8;
+    color: #102f4f;
 }
 
-.container{
 
-    width:90%;
-    max-width:700px;
+/* ==========================================
+   PÁGINA
+========================================== */
 
-    text-align:center;
+.pagina {
+    min-height: 100vh;
 
-    padding:50px 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 22px;
 }
 
-.voltar{
 
-    position:absolute;
+/* ==========================================
+   PAINEL PRINCIPAL
+========================================== */
 
-    top:40px;
-    left:40px;
+.painel {
+    width: 100%;
+    max-width: 900px;
+    min-height: 760px;
 
-    width:55px;
-    height:55px;
+    background: #ffffff;
 
-    border-radius:50%;
+    border: 1px solid #dbe3ec;
+    border-radius: 8px;
 
-    border:2px solid rgba(255,255,255,.5);
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.08);
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    position: relative;
 
-    color:white;
-    text-decoration:none;
+    padding:
+        32px
+        30px
+        55px;
 }
 
-.logo{
 
-    margin-bottom:20px;
+/* ==========================================
+   BOTÃO VOLTAR
+========================================== */
+
+.botao-voltar {
+    position: absolute;
+
+    top: 25px;
+    left: 28px;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid #cbdbea;
+    border-radius: 7px;
+
+    background: #eaf4fb;
+
+    color: #0c527c;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    transition: 0.2s;
 }
 
-.logo-circle{
+.botao-voltar:hover {
+    background: #dcecf7;
 
-    width:80px;
-    height:80px;
-
-    margin:auto;
-
-    border-radius:50%;
-
-    background:white;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    transform:
+        translateX(-2px);
 }
 
-.logo-circle i{
 
-    color:#2558d7;
-    font-size:35px;
+/* ==========================================
+   IDENTIDADE
+========================================== */
+
+.identidade {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin-bottom: 16px;
 }
 
-.logo h2{
+.icone-logo {
+    width: 58px;
+    height: 58px;
 
-    margin-top:12px;
-    font-size:34px;
+    border-radius: 12px;
+
+    background: #0b4f78;
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 26px;
+
+    box-shadow:
+        0 3px 8px rgba(11, 79, 120, 0.20);
 }
 
-h1{
+.identidade h2 {
+    margin-top: 8px;
 
-    margin-top:20px;
-    font-size:40px;
+    font-size: 25px;
+
+    color: #063e67;
 }
 
-.subtitulo{
 
-    margin-top:8px;
-    margin-bottom:30px;
+/* ==========================================
+   CABEÇALHO
+========================================== */
 
-    color:#e8e8e8;
+.cabecalho {
+    text-align: center;
+
+    margin-bottom: 24px;
 }
 
-.pesquisa{
+.cabecalho h1 {
+    color: #142e49;
 
-    width:100%;
-    height:55px;
+    font-size: 27px;
 
-    background:white;
-
-    border-radius:30px;
-
-    display:flex;
-    align-items:center;
-
-    padding:0 20px;
-
-    margin-bottom:25px;
+    margin-bottom: 6px;
 }
 
-.pesquisa i{
+.cabecalho p {
+    color: #697a8c;
 
-    color:#2455d6;
+    font-size: 14px;
 }
 
-.pesquisa input{
 
-    flex:1;
+/* ==========================================
+   PESQUISA
+========================================== */
 
-    border:none;
-    outline:none;
+.pesquisa {
+    width: 100%;
+    max-width: 590px;
 
-    margin-left:10px;
+    height: 52px;
 
-    font-size:17px;
+    margin:
+        0 auto
+        20px;
+
+    border: 1px solid #cbd7e3;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 17px;
+
+    transition: 0.2s;
 }
 
-.lista-alunos{
+.pesquisa:focus-within {
+    border-color: #0b527d;
 
-    background:rgba(255,255,255,.12);
-
-    border:2px solid rgba(255,255,255,.4);
-
-    border-radius:25px;
-
-    padding:10px 20px;
-
-    backdrop-filter:blur(8px);
+    box-shadow:
+        0 0 0 3px rgba(11, 82, 125, 0.08);
 }
 
-.aluno{
+.pesquisa i {
+    color: #0b527d;
 
-    display:flex;
+    font-size: 17px;
 
-    align-items:center;
-
-    padding:18px 0;
+    margin-right: 12px;
 }
 
-.aluno:not(:last-child){
+.pesquisa input {
+    width: 100%;
 
-    border-bottom:1px solid rgba(255,255,255,.2);
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #18364f;
+
+    font-size: 14px;
 }
 
-.foto{
-
-    width:55px;
-    height:55px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.25);
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    font-size:22px;
-    font-weight:bold;
+.pesquisa input::placeholder {
+    color: #9aa9b8;
 }
 
-.informacoes{
 
-    flex:1;
+/* ==========================================
+   LISTA DE ALUNOS
+========================================== */
 
-    text-align:left;
+.lista-alunos {
+    width: 100%;
+    max-width: 590px;
 
-    margin-left:18px;
+    margin: auto;
+
+    border: 1px solid #d4dee8;
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background: #ffffff;
 }
 
-.informacoes h3{
 
-    font-size:18px;
+/* ==========================================
+   ALUNO
+========================================== */
+
+.aluno-card {
+    min-height: 82px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 14px 18px;
+
+    border-bottom: 1px solid #e1e7ed;
+
+    transition: 0.2s;
 }
 
-.informacoes p{
-
-    margin-top:5px;
-
-    color:#ececec;
+.aluno-card:last-child {
+    border-bottom: none;
 }
 
-.btn-ficha{
-
-    width:150px;
-    height:45px;
-
-    border:none;
-
-    border-radius:25px;
-
-    background:white;
-
-    color:#2b55d5;
-
-    cursor:pointer;
-
-    font-size:15px;
-
-    transition:.3s;
+.aluno-card:hover {
+    background: #f7fafd;
 }
 
-.btn-ficha:hover{
 
-    transform:scale(1.05);
+/* ==========================================
+   DADOS DO ALUNO
+========================================== */
+
+.informacoes-aluno {
+    display: flex;
+    align-items: center;
+
+    min-width: 0;
 }
 
-.btn-ficha i{
+.avatar {
+    width: 48px;
+    height: 48px;
 
-    margin-right:8px;
+    min-width: 48px;
+
+    border-radius: 50%;
+
+    background: #e2eff8;
+
+    color: #0b527d;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+
+    font-size: 17px;
+
+    margin-right: 14px;
+}
+
+.dados {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.dados strong {
+    color: #153b5c;
+
+    font-size: 15px;
+}
+
+.dados span {
+    color: #718395;
+
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   GERAR FICHA
+========================================== */
+
+.botao-gerar {
+    min-width: 130px;
+    height: 40px;
+
+    padding: 0 16px;
+
+    border: 1px solid #0b527d;
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    color: #0b527d;
+
+    background: #ffffff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.botao-gerar:hover {
+    background: #0b527d;
+
+    color: #ffffff;
+}
+
+
+/* ==========================================
+   SEM RESULTADOS
+========================================== */
+
+.nenhum-resultado {
+    display: none;
+
+    flex-direction: column;
+    align-items: center;
+
+    gap: 10px;
+
+    color: #8796a5;
+
+    margin-top: 35px;
+}
+
+.nenhum-resultado i {
+    font-size: 25px;
+}
+
+.sem-alunos {
+    min-height: 150px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    color: #8796a5;
+}
+
+.sem-alunos i {
+    font-size: 28px;
+}
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (max-width: 700px) {
+
+    .pagina {
+        padding: 10px;
+    }
+
+    .painel {
+        padding:
+            75px
+            16px
+            35px;
+    }
+
+    .botao-voltar {
+        left: 16px;
+        top: 18px;
+    }
+
+    .aluno-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .botao-gerar {
+        width: 100%;
+    }
+
 }

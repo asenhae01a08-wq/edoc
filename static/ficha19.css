@@ -1198,3 +1198,385 @@ input.componente {
     min-height: 22px;
     padding: 3px 5px;
 }
+/* =========================================================
+   NOVA CAPA DA FICHA 19 - EDOC
+   ========================================================= */
+
+.folha-capa {
+    padding: 10mm 12mm 8mm;
+}
+
+.topo-capa {
+    align-items: flex-start;
+    display: flex;
+    justify-content: flex-start;
+    min-height: 24mm;
+    width: 100%;
+}
+
+.logo-governo-capa {
+    display: block;
+    height: auto;
+    max-height: 22mm;
+    max-width: 48mm;
+    object-fit: contain;
+}
+
+.identificacao-escola-capa {
+    margin-top: 2mm;
+    text-align: center;
+    width: 100%;
+}
+
+.identificacao-escola-capa h1 {
+    font-size: 3.4mm;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.linha-estabelecimento-capa {
+    border-bottom: 0.25mm solid #000000;
+    margin-top: 3mm;
+    width: 100%;
+}
+
+.identificacao-escola-capa p {
+    font-size: 1.8mm;
+    margin-top: 0.5mm;
+    text-align: left;
+}
+
+.linha-endereco-capa {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    margin-top: 2mm;
+    width: 100%;
+}
+
+.caixa-capa {
+    border: 0.25mm solid #000000;
+    font-size: 2mm;
+    line-height: 1.35;
+    min-height: 9mm;
+    padding: 1.5mm 2mm;
+}
+
+.endereco-capa {
+    border-right: none;
+}
+
+.cidade-capa {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5mm;
+    justify-content: center;
+}
+
+.autorizacao-capa {
+    align-items: stretch;
+    border-top: none;
+    display: grid;
+    grid-template-columns: 1fr 52mm;
+    min-height: 8mm;
+    padding: 0;
+}
+
+.autorizacao-capa label {
+    align-items: center;
+    display: flex;
+    gap: 1mm;
+    min-width: 0;
+    padding: 1.5mm 2mm;
+}
+
+.autorizacao-capa label:last-child {
+    border-left: 0.25mm solid #000000;
+}
+
+.autorizacao-capa input,
+.cadastro-escolar-capa input {
+    border-bottom: 0.2mm solid #000000;
+    flex: 1;
+    font-size: 2mm;
+    min-width: 0;
+}
+
+.cadastro-escolar-capa {
+    align-items: center;
+    border: 0.25mm solid #000000;
+    border-top: none;
+    display: flex;
+    font-size: 2mm;
+    justify-content: center;
+    min-height: 7mm;
+    padding: 1mm 2mm;
+}
+
+.cadastro-escolar-capa strong {
+    margin-right: 2mm;
+}
+
+.cadastro-escolar-capa input {
+    flex: 0 0 42mm;
+    text-align: center;
+}
+
+.certificado-capa {
+    border: 0.25mm solid #000000;
+    margin-top: 3mm;
+    width: 100%;
+}
+
+.certificado-capa h2 {
+    border-bottom: 0.25mm solid #000000;
+    font-size: 2.7mm;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0;
+    padding: 2mm;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.texto-certificado-capa {
+    font-size: 2.15mm;
+    line-height: 1.75;
+    padding: 2mm;
+    text-align: justify;
+}
+
+.texto-certificado-capa p {
+    margin: 0 0 1mm;
+}
+
+.campo-capa {
+    border-bottom: 0.2mm solid #000000;
+    font-size: inherit;
+    font-weight: 700;
+    height: 4mm;
+    padding: 0 0.5mm;
+    text-transform: uppercase;
+    vertical-align: baseline;
+}
+
+.campo-nome-capa {
+    width: 79mm;
+}
+
+.campo-filiacao-capa {
+    width: 56mm;
+}
+
+.campo-data-capa {
+    font-weight: 400;
+    text-transform: none;
+    width: 24mm;
+}
+
+.campo-cidade-capa {
+    width: 31mm;
+}
+
+.campo-uf-capa {
+    text-align: center;
+    width: 10mm;
+}
+
+.campo-nacionalidade-capa {
+    width: 29mm;
+}
+
+.campo-rg-capa {
+    font-weight: 400;
+    text-transform: none;
+    width: 26mm;
+}
+
+.campo-orgao-capa {
+    width: 20mm;
+}
+
+.campo-cpf-capa {
+    font-weight: 400;
+    text-transform: none;
+    width: 31mm;
+}
+
+.campo-conclusao-capa {
+    width: 24mm;
+}
+
+.campo-curso-capa {
+    width: 55mm;
+}
+
+.informacoes-complementares-capa {
+    border: 0.25mm solid #000000;
+    border-top: none;
+    font-size: 2mm;
+    line-height: 1.45;
+    padding: 2mm;
+    text-align: justify;
+    width: 100%;
+}
+
+.informacoes-complementares-capa h2 {
+    font-size: 2.4mm;
+    font-weight: 700;
+    margin: 0 0 1.5mm;
+    text-align: center;
+}
+
+.forma-acesso-capa {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1mm 3mm;
+    margin-bottom: 2mm;
+}
+
+.forma-acesso-capa label {
+    align-items: center;
+    display: inline-flex;
+    gap: 1mm;
+}
+
+.forma-acesso-capa input,
+.linha-curta-capa,
+.linha-longa-capa,
+.base-legal-capa input {
+    border-bottom: 0.2mm solid #000000;
+    font-size: 2mm;
+    height: 3.5mm;
+}
+
+.forma-acesso-capa input {
+    width: 19mm;
+}
+
+.forma-acesso-capa label:last-child input {
+    width: 11mm;
+}
+
+.linha-curta-capa {
+    width: 13mm;
+}
+
+.linha-longa-capa {
+    width: 52mm;
+}
+
+.informacoes-complementares-capa ol {
+    margin: 0;
+    padding-left: 5mm;
+}
+
+.informacoes-complementares-capa li {
+    margin-bottom: 1.5mm;
+    padding-left: 1mm;
+}
+
+.titulo-item-capa {
+    margin-bottom: 1mm;
+}
+
+.linha-opcoes-capa {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2mm 5mm;
+}
+
+.linha-opcoes-capa label {
+    align-items: center;
+    display: inline-flex;
+    gap: 1mm;
+    white-space: nowrap;
+}
+
+.linha-opcoes-capa input[type="radio"] {
+    height: 3mm;
+    margin: 0;
+    width: 3mm;
+}
+
+.base-legal-capa {
+    flex: 1;
+}
+
+.base-legal-capa input {
+    flex: 1;
+    min-width: 30mm;
+}
+
+.observacoes-capa {
+    border: 0.25mm solid #000000;
+    border-top: none;
+    font-size: 2mm;
+    min-height: 22mm;
+    padding: 2mm;
+}
+
+.observacoes-capa textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 0.2mm solid #000000;
+    display: block;
+    font-size: 2mm;
+    height: 15mm;
+    line-height: 4mm;
+    margin-top: 1mm;
+    overflow: hidden;
+    padding: 0;
+    resize: none;
+    width: 100%;
+}
+
+.rodape-capa {
+    margin-top: auto;
+    padding-bottom: 2mm;
+    padding-top: 4mm;
+}
+
+@media screen and (max-width: 900px) {
+    .linha-endereco-capa,
+    .autorizacao-capa {
+        grid-template-columns: 1fr;
+    }
+
+    .endereco-capa {
+        border-right: 0.25mm solid #000000;
+    }
+
+    .cidade-capa,
+    .autorizacao-capa label:last-child {
+        border-left: 0;
+        border-top: 0;
+    }
+}
+
+@media print {
+    .folha-capa {
+        box-shadow: none;
+        min-height: 297mm;
+        padding: 10mm 12mm 8mm;
+        width: 210mm;
+    }
+
+    .folha-capa input,
+    .folha-capa textarea {
+        background: transparent !important;
+    }
+
+    .folha-capa input::placeholder,
+    .folha-capa textarea::placeholder {
+        color: transparent !important;
+    }
+
+    .rodape-capa input {
+        border-bottom-color: #000000 !important;
+    }
+}
