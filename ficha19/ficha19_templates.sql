@@ -18,34 +18,31 @@ USE `ficha19`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `disciplinas_anuais_base_comum`
+-- Table structure for table `templates`
 --
 
-DROP TABLE IF EXISTS `disciplinas_anuais_base_comum`;
+DROP TABLE IF EXISTS `templates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `disciplinas_anuais_base_comum` (
+CREATE TABLE `templates` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(150) NOT NULL,
-  `nota` decimal(4,2) DEFAULT NULL,
-  `ano_letivo` int DEFAULT NULL,
-  `resultado` varchar(50) DEFAULT NULL,
-  `frequencia_percentual` decimal(5,2) DEFAULT NULL,
-  `carga_horaria_horas_aula` int DEFAULT NULL,
-  `carga_horaria_relogio` int DEFAULT NULL,
-  `carga_horaria_total_anual` int DEFAULT NULL,
+  `nome` varchar(100) NOT NULL,
+  `modelo_ficha19` text,
+  `modelo_certificado_conclusao` text,
+  `modelo_declaracao` text,
+  `estrutura` json DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `disciplinas_anuais_base_comum`
+-- Dumping data for table `templates`
 --
 
-LOCK TABLES `disciplinas_anuais_base_comum` WRITE;
-/*!40000 ALTER TABLE `disciplinas_anuais_base_comum` DISABLE KEYS */;
-/*!40000 ALTER TABLE `disciplinas_anuais_base_comum` ENABLE KEYS */;
+LOCK TABLES `templates` WRITE;
+/*!40000 ALTER TABLE `templates` DISABLE KEYS */;
+/*!40000 ALTER TABLE `templates` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

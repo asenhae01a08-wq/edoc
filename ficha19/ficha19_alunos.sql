@@ -31,13 +31,13 @@ CREATE TABLE `alunos` (
   `data_nascimento` date DEFAULT NULL,
   `id_turma` varchar(50) DEFAULT NULL,
   `cpf` varchar(14) DEFAULT NULL,
-  `rg` varchar(20) DEFAULT NULL,
-  `orgao_expedidor` varchar(20) DEFAULT NULL,
+  `rg` varchar(50) DEFAULT NULL,
+  `orgao_expedidor` varchar(50) DEFAULT NULL,
   `nacionalidade` varchar(50) DEFAULT 'Brasileira',
   `nome_pai` varchar(100) DEFAULT NULL,
   `nome_mae` varchar(100) DEFAULT NULL,
   `endereco` varchar(255) DEFAULT NULL,
-  `serie` varchar(20) DEFAULT NULL,
+  `serie` varchar(50) DEFAULT NULL,
   `escola_id` int DEFAULT NULL,
   `curso_id` int DEFAULT NULL,
   `primeiro_login` date DEFAULT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE `alunos` (
   `email` varchar(100) DEFAULT NULL,
   `senha` varchar(255) DEFAULT NULL,
   `status_ficha19` enum('Pronta para emissão','Em fabricação') DEFAULT 'Em fabricação',
-  `cargo_nivel` varchar(20) NOT NULL DEFAULT 'Aluno',
+  `cargo_nivel` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_alunos_matricula` (`matricula`),
   UNIQUE KEY `cpf` (`cpf`),
@@ -76,4 +76,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-08-14 14:45:46
+-- Dump completed on 2026-08-14 20:48:39
