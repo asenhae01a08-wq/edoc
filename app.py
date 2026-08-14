@@ -358,6 +358,7 @@ def iniciala():
 # ==========================================================
 
 @app.route("/inicialp")
+@login_required_profissional
 def inicialp():
 
     return render_template(
@@ -370,6 +371,7 @@ def inicialp():
 # ==========================================================
 
 @app.route("/gerar-fichas")
+@login_required_profissional
 def gerar_fichas():
 
     return redirect(
@@ -382,6 +384,7 @@ def gerar_fichas():
 # ==========================================================
 
 @app.route("/consultar_documentos")
+@login_required_profissional
 def consultar():
 
     return render_template(
@@ -394,6 +397,7 @@ def consultar():
 # ==========================================================
 
 @app.route("/turma_TDSA")
+@login_required_profissional
 def turma_3tdsa():
 
     alunos = (
@@ -413,6 +417,7 @@ def turma_3tdsa():
 # ==========================================================
 
 @app.route("/turma_TDSB")
+@login_required_profissional
 def turma_3tdsb():
 
     alunos = (
@@ -432,6 +437,7 @@ def turma_3tdsb():
 # ==========================================================
 
 @app.route("/turma_MKTA")
+@login_required_profissional
 def turma_3mkta():
 
     alunos = (
@@ -451,6 +457,7 @@ def turma_3mkta():
 # ==========================================================
 
 @app.route("/turma_MKTB")
+@login_required_profissional
 def turma_3mktb():
 
     alunos = (
@@ -618,6 +625,13 @@ def importar_pdf_siepe():
             dados
             .get("aluno", {})
             .get("matricula")
+        )
+
+        app.logger.info(
+            "Ficha 19 lida: matricula=%s, base_comum=%s, itinerario=%s",
+            matricula,
+            len(dados.get("base_comum", [])),
+            len(dados.get("itinerario", [])),
         )
 
         if not matricula:
@@ -1141,15 +1155,9 @@ def gerarficha():
         "gerarficha.html"
     )
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
 # ==========================================================
 # EXECUÇÃO
 # ==========================================================
 
 if __name__ == "__main__":
-
-    app.run(
-        debug=True
-    )
+    app.run(debug=True)

@@ -1206,6 +1206,35 @@ input.componente {
     padding: 10mm 12mm 8mm;
 }
 
+<<<<<<< HEAD
+/* LOGO GOVERNO DE PERNAMBUCO */
+
+.topo-capa {
+    width: 100%;
+    min-height: 24mm;
+
+    display: flex;
+    align-items: flex-start;
+
+    /* joga a logo para mais da metade da página */
+    justify-content: flex-start;
+
+    /* controla a posição horizontal */
+    padding-left: 52%;
+}
+
+.logo-governo-capa {
+    width: 42mm;
+    height: auto;
+    max-height: 1200mm;
+
+    object-fit: contain;
+    display: block;
+
+    /* traz um pouco de volta para ficar
+       posicionada em torno do centro-direita */
+    transform: translateX(-50%);
+=======
 .topo-capa {
     align-items: flex-start;
     display: flex;
@@ -1220,6 +1249,7 @@ input.componente {
     max-height: 22mm;
     max-width: 48mm;
     object-fit: contain;
+>>>>>>> d02366f6eaf7180303eda12beaba8928f1c21c2f
 }
 
 .identificacao-escola-capa {
