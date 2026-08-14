@@ -4,220 +4,388 @@
     box-sizing: border-box;
 }
 
+:root {
+    --azul-principal: #0c4770;
+    --azul-escuro: #073450;
+    --azul-claro: #e9f3fa;
+
+    --branco: #ffffff;
+    --fundo: #f1f4f7;
+
+    --texto: #26333d;
+    --texto-claro: #667580;
+
+    --borda: #d8e0e6;
+
+    --sombra:
+        0 10px 30px rgba(16, 51, 75, 0.12);
+}
+
 body {
     min-height: 100vh;
-    background: #f4f6f8;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background:
+        linear-gradient(
+            135deg,
+            #f4f7f9,
+            #e9f1f5
+        );
 
-    font-family: Arial, Helvetica, sans-serif;
+    color: var(--texto);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 }
 
-.container {
-    position: relative;
 
+/* =========================
+   PÁGINA
+========================= */
+
+.pagina-suporte {
+    min-height: 100vh;
+
+    padding: 50px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================
+   CARD PRINCIPAL
+========================= */
+
+.card-suporte {
     width: 100%;
-    max-width: 430px;
+    max-width: 620px;
 
-    background: #ffffff;
+    padding: 45px 48px 38px;
 
-    padding: 45px 35px;
+    background: var(--branco);
 
+    border: 1px solid var(--borda);
     border-radius: 18px;
 
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-
-    text-align: center;
+    box-shadow: var(--sombra);
 }
 
-.btn-voltar {
-    position: absolute;
-    top: 30px;
-    left: 20px;
 
-    width: 42px;
-    height: 42px;
+/* =========================
+   ESPAÇO DA LOGO
+========================= */
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: #0c4770;
-    color: #ffffff;
-
-    text-decoration: none;
-
-    border-radius: 50%;
-
-    font-size: 24px;
-    font-weight: bold;
-
-    transition: 0.2s;
-}
-
-.btn-voltar:hover {
-    background: #174a78;
-    transform: translateX(-2px);
-}
-
-.logo {
-    margin-bottom: 8px;
-}
-
-.logo img {
+.espaco-logo {
     width: 82px;
     height: 82px;
 
-    object-fit: contain;
-}
-
-h1 {
-    color: #1f5f99;
-
-    font-size: 34px;
-
-    margin-bottom: 20px;
-}
-
-h2 {
-    color: #222222;
-
-    font-size: 21px;
-
-    margin-bottom: 12px;
-}
-
-.descricao {
-    max-width: 320px;
-
-    margin: 0 auto 28px;
-
-    color: #666666;
-
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.card {
-    width: 100%;
+    margin: 0 auto 20px;
 
     display: flex;
-    flex-direction: column;
-    gap: 14px;
+    align-items: center;
+    justify-content: center;
 
-    background: transparent;
+    background: #f8fafb;
 
-    border: none;
+    border: 2px dashed #b8c8d3;
+    border-radius: 14px;
 
-    padding: 0;
+    overflow: hidden;
 }
 
-.card h3 {
-    display: none;
-}
 
-.linha {
-    display: none;
-}
+/* Quando você colocar a imagem */
 
-.info-box {
+.espaco-logo img {
     width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    padding: 5px;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.cabecalho-suporte {
+    text-align: center;
+}
+
+
+.nome-sistema {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--azul-principal);
+
+    font-size: 16px;
+    font-weight: 600;
+}
+
+
+.cabecalho-suporte h1 {
+    margin-bottom: 10px;
+
+    color: var(--texto);
+
+    font-size: 30px;
+    font-weight: 700;
+
+    text-transform: none;
+}
+
+
+.cabecalho-suporte p {
+    max-width: 430px;
+
+    margin: 0 auto;
+
+    color: var(--texto-claro);
+
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   TÍTULO CONTATO
+========================= */
+
+.titulo-contato {
+    margin: 28px 0 15px;
+
+    color: var(--texto);
+
+    text-align: center;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+
+/* =========================
+   CONTATOS
+========================= */
+
+.lista-contatos {
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+
+.contato {
+    min-height: 82px;
+
+    padding: 16px 18px;
 
     display: flex;
     align-items: center;
 
-    padding: 15px 16px;
+    gap: 15px;
 
-    background: #f8fafc;
+    background: var(--branco);
 
-    border: 1px solid #dce3e9;
-    border-radius: 12px;
-
-    text-align: left;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
 
     transition: 0.2s;
 }
 
-.info-box:hover {
-    border-color: #0c4770;
-    transform: translateY(-1px);
+
+.contato:hover {
+    border-color: #a9c9dc;
+
+    box-shadow:
+        0 4px 12px
+        rgba(12, 71, 112, 0.08);
 }
 
-.icone {
-    width: 44px;
-    height: 44px;
 
-    min-width: 44px;
+/* ÍCONE */
+
+.icone-contato {
+    width: 46px;
+    height: 46px;
+
+    min-width: 46px;
 
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 
-    margin-right: 14px;
+    background: var(--azul-claro);
 
-    background: #1f5f99;
-    color: #ffffff;
+    color: var(--azul-principal);
 
-    border-radius: 50%;
+    border-radius: 10px;
 
     font-size: 19px;
 }
 
-.info {
+
+/* TEXTOS */
+
+.dados-contato {
     display: flex;
     flex-direction: column;
+
+    gap: 4px;
 }
 
-.info small {
-    color: #777777;
 
-    font-size: 12px;
+.dados-contato span {
+    color: var(--texto-claro);
 
-    margin-bottom: 4px;
+    font-size: 13px;
 }
 
-.info strong {
-    color: #222222;
 
-    font-size: 14px;
+.dados-contato strong {
+    color: var(--texto);
+
+    font-size: 16px;
     font-weight: 600;
 }
 
-.texto-final {
-    margin-top: 10px;
 
-    color: #666666;
+/* =========================
+   MENSAGEM
+========================= */
 
-    font-size: 13px;
-    line-height: 1.5;
+.mensagem-ajuda {
+    max-width: 470px;
+
+    margin: 27px auto;
+
+    color: var(--texto-claro);
 
     text-align: center;
+
+    font-size: 14px;
+    line-height: 1.6;
 }
 
-@media (max-width: 500px) {
-    body {
-        align-items: flex-start;
 
-        padding: 20px;
+/* =========================
+   BOTÃO
+========================= */
+
+.btn-contato {
+    width: 100%;
+    min-height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    background: var(--azul-principal);
+
+    color: var(--branco);
+
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: 0.2s;
+}
+
+
+.btn-contato:hover {
+    background: var(--azul-escuro);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   VOLTAR
+========================= */
+
+.voltar {
+    width: fit-content;
+
+    margin: 24px auto 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    color: var(--azul-principal);
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+
+.voltar:hover {
+    color: var(--azul-escuro);
+}
+
+
+.voltar i {
+    font-size: 12px;
+}
+
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 650px) {
+
+    .pagina-suporte {
+        padding: 25px 15px;
     }
 
-    .container {
-        margin-top: 30px;
 
-        padding: 42px 24px;
+    .card-suporte {
+        padding: 32px 22px;
     }
 
-    h1 {
-        font-size: 30px;
+
+    .espaco-logo {
+        width: 70px;
+        height: 70px;
     }
 
-    h2 {
-        font-size: 19px;
+
+    .cabecalho-suporte h1 {
+        font-size: 25px;
     }
 
-    .info strong {
-        font-size: 13px;
+
+    .contato {
+        min-height: 76px;
+
+        padding: 14px;
     }
+
+
+    .dados-contato strong {
+        font-size: 14px;
+    }
+
 }

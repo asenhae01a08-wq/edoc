@@ -1,64 +1,139 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>eDOC
-Suporte</title>
-  <link rel="stylesheet" href="{{url_for('static',filename='style9.css')}}">
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Suporte</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style9.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
 </head>
+
 <body>
-<div class="container">
-<a
-            href="{{ url_for('login') }}"
-            class="btn-voltar"
-            aria-label="Voltar para o login"
-        >
-            ←
-        </a>
-<div class="logo"></div>
 
-<div class="title">eDOC</div>
+    <main class="pagina-suporte">
 
-<div class="subtitle">SUPORTE</div>
+        <section class="card-suporte">
 
-<p class="text">Entre em contato conosco:</p>
+            <!-- ESPAÇO PARA VOCÊ COLOCAR SUA LOGO -->
+            <div class="espaco-logo">
+                
 
-<div class="card">
+                 <img
+                        src="{{ url_for('static', filename='img/logo.png') }}"
+                        alt="Logo do eDOC"
+                    >
 
-<div class="card-title">CONTATO</div>
+             
+            </div>
+
+            <div class="cabecalho-suporte">
+
+                <span class="nome-sistema">
+                    eDOC
+                </span>
+
+                <h1>Suporte</h1>
+
+                <p>
+                    Entre em contato conosco.
+                    Estamos disponíveis para ajudar.
+                </p>
+
+            </div>
 
 
-<div class="divider"></div>
+            <h2 class="titulo-contato">
+                Contato
+            </h2>
 
-<div class="info-box">
-<div class="icon"></div>
-<div class="info">
-<small>Email</small>
-<p>suporte@gmail.com</p>
-<strong></strong>
-</div>
-</div>
 
-<div class="info-box">
-<div class="icon"></div>
-<div class="info">
-<small>Telefone</small>
-<p>(81) 7400.0000</p>
-<strong></strong>
-</div>
-</div>
+            <div class="lista-contatos">
 
-<div class="divider"></div>
+                <!-- EMAIL -->
+                <div class="contato">
 
-<p class="footer-text">
-Estamos disponíveis para ajudar você com qualquer dúvida
-ou problema relacionado aos seus documentos.
-</p>
+                    <div class="icone-contato">
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
 
-</div>
-<link rel="stylesheet" href="script9.js">
-</div>
+                    <div class="dados-contato">
+
+                        <span>Email</span>
+
+                        <strong>
+                            suporte@gmail.com
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TELEFONE -->
+                <div class="contato">
+
+                    <div class="icone-contato">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+
+                    <div class="dados-contato">
+
+                        <span>Telefone</span>
+
+                        <strong>
+                            (81) 7400.0000
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <p class="mensagem-ajuda">
+                Estamos disponíveis para ajudar você com qualquer
+                dúvida ou problema relacionado aos seus documentos.
+            </p>
+
+
+            <!-- BOTÃO PRINCIPAL -->
+            <a
+                href="mailto:suporte@gmail.com"
+                class="btn-contato"
+            >
+                <i class="fa-solid fa-paper-plane"></i>
+                Enviar mensagem
+            </a>
+
+
+            <!-- VOLTAR IGUAL AO ESQUECI A SENHA -->
+            <a
+                href="{{ url_for('login') }}"
+                class="voltar"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Voltar para o login
+            </a>
+
+        </section>
+
+    </main>
 
 </body>
+
 </html>

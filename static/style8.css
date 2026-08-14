@@ -401,484 +401,205 @@ body {
     box-shadow: 0 2px 9px rgba(20, 55, 80, 0.06);
 }
 
-.cabecalho-painel {
-    padding: 18px 20px;
+./* =========================
+   CABEÇALHO PADRÃO eDOC
+========================= */
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.cabecalho {
+    width: 100%;
+
+    background: var(--branco);
 
     border-bottom: 1px solid var(--borda);
 }
 
-.cabecalho-painel h2 {
-    font-size: 17px;
+
+/* TOPO */
+
+.topo {
+    width: min(1180px, 94%);
+    min-height: 90px;
+
+    margin: 0 auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.cabecalho-painel p {
-    margin-top: 4px;
+
+/* MARCA */
+
+.marca {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    color: inherit;
+
+    text-decoration: none;
+}
+
+
+/* ESPAÇO PARA LOGO */
+
+.espaco-logo {
+    width: 58px;
+    height: 58px;
+
+    min-width: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f7f9fa;
+
+    border: 1px solid var(--borda);
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+
+/* QUANDO A LOGO FOR COLOCADA */
+
+.espaco-logo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 5px;
+}
+
+
+/* NOME DO SISTEMA */
+
+.nome-sistema {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.nome-sistema strong {
+    color: var(--azul-principal);
+
+    font-size: 28px;
+
+    line-height: 1;
+}
+
+
+.nome-sistema span {
+    margin-top: 6px;
 
     color: var(--texto-claro);
+
     font-size: 12px;
 }
 
-.cabecalho-painel > i {
-    color: var(--azul-principal);
-    font-size: 20px;
-}
 
-.lista-informacoes {
-    padding: 8px 20px;
-}
+/* USUÁRIO */
 
-.informacao {
-    padding: 15px 0;
-
+.usuario {
     display: flex;
-    align-items: flex-start;
-    gap: 13px;
+    align-items: center;
 
-    border-bottom: 1px solid #edf1f4;
+    gap: 12px;
 }
 
-.informacao:last-child {
-    border-bottom: none;
+
+.dados-usuario {
+    display: flex;
+    flex-direction: column;
+
+    text-align: right;
 }
 
-.informacao-icon {
-    width: 38px;
-    height: 38px;
-    min-width: 38px;
+
+.dados-usuario strong {
+    color: var(--texto);
+
+    font-size: 14px;
+}
+
+
+.dados-usuario span {
+    margin-top: 3px;
+
+    color: var(--texto-claro);
+
+    font-size: 12px;
+}
+
+
+/* ÍCONE DO USUÁRIO */
+
+.icone-usuario {
+    width: 44px;
+    height: 44px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     background: var(--azul-claro);
+
     color: var(--azul-principal);
 
+    border: 1px solid #c9ddea;
     border-radius: 50%;
-}
-
-.informacao strong {
-    font-size: 13px;
-}
-
-.informacao p {
-    margin-top: 4px;
-
-    color: var(--texto-claro);
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-footer {
-    min-height: 65px;
-    margin-top: 35px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: var(--branco);
-    color: var(--texto-claro);
-
-    border-top: 1px solid var(--borda);
-    font-size: 12px;
-}
-/* INFORMAÇÕES NO TOPO */
-
-.painel-superior {
-    margin-top: 22px;
-}
-
-
-/* PRINCIPAIS FERRAMENTAS */
-
-.grade-principal {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-}
-
-.card-principal {
-    min-height: 210px;
-
-    padding: 26px;
-
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-
-    position: relative;
-
-    background:
-        linear-gradient(
-            135deg,
-            #ffffff,
-            #f5fafd
-        );
-
-    color: var(--texto);
-
-    text-decoration: none;
-
-    border: 2px solid #d2e4ef;
-    border-radius: 12px;
-
-    box-shadow:
-        0 4px 15px
-        rgba(16, 51, 75, 0.08);
-
-    transition: 0.2s;
-}
-
-.card-principal:hover {
-    border-color: var(--azul-principal);
-
-    box-shadow:
-        0 9px 24px
-        rgba(12, 71, 112, 0.15);
-
-    transform: translateY(-4px);
-}
-
-.icone-principal {
-    width: 64px;
-    height: 64px;
-    min-width: 64px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: var(--azul-principal);
-
-    color: var(--branco);
-
-    border-radius: 14px;
-
-    font-size: 27px;
-}
-
-.conteudo-principal {
-    min-width: 0;
-}
-
-.etiqueta {
-    display: inline-block;
-
-    margin-bottom: 7px;
-
-    color: var(--azul-principal);
-
-    font-size: 10px;
-    font-weight: bold;
-
-    letter-spacing: 0.7px;
-
-    text-transform: uppercase;
-}
-
-.conteudo-principal h2 {
-    margin-bottom: 8px;
-
-    color: var(--texto);
 
     font-size: 19px;
 }
 
-.conteudo-principal p {
-    min-height: 55px;
 
-    color: var(--texto-claro);
+/* SETINHA */
 
-    font-size: 13px;
-    line-height: 1.5;
-}
+.seta-usuario {
+    margin-left: 2px;
 
-.botao-acessar {
-    margin-top: 16px;
+    color: #8796a1;
 
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    color: var(--azul-principal);
-
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.card-principal:hover .botao-acessar {
-    color: var(--azul-hover);
-}
-
-.titulo-secundario {
-    margin-top: 30px;
+    font-size: 10px;
 }
 
 
-/* OUTROS ACESSOS COM 3 CARDS */
-
-.grade-acoes {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-
-    gap: 16px;
-}
-
-@media (max-width: 900px ) {
-    .grade-principal {
-    grid-template-columns: 1fr;
-}
-
-.grade-acoes {
-    grid-template-columns: 1fr;
-}
-    .menu-principal {
-        overflow-x: auto;
-        padding: 0;
-    }
-
-    .menu-item {
-        min-width: max-content;
-    }
-
-    .estrutura {
-        grid-template-columns: 1fr;
-    }
-
-    .barra-lateral {
-        display: none;
-    }
-}
+/* RESPONSIVO */
 
 @media (max-width: 650px) {
+
     .topo {
         min-height: 76px;
     }
+
+
+    .espaco-logo {
+        width: 48px;
+        height: 48px;
+
+        min-width: 48px;
+    }
+
+
+    .nome-sistema strong {
+        font-size: 24px;
+    }
+
 
     .nome-sistema span,
     .dados-usuario {
         display: none;
     }
 
-    .logo-circle {
-    width: 55px;
-    height: 55px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    .icone-usuario {
+        width: 40px;
+        height: 40px;
+    }
 
-    background: var(--branco);
-
-    border: 1px solid var(--borda);
-    border-radius: 14px;
-
-    overflow: hidden;
-}
-
-/* ESPAÇO RESERVADO PARA LOGO */
-
-   .espaco-logo img {
-    width: 8%;
-    height: 7%;
-    padding: 8px;
-    object-fit: contain;
-}
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #f7f9fa;
-
-    border: 2px dashed #b8c8d3;
-    border-radius: 12px;
-
-    overflow: hidden;
-}
-
-.espaco-logo {
-    width: 70px;
-    height: 70px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: #f7f9fa;
-
-    border: 1px solid var(--borda);
-    border-radius: 12px;
-
-    overflow: hidden;
-}
-
-.espaco-logo img {
-    width: 58px;
-    height: 58px;
-
-    display: block;
-
-    object-fit: contain;
-
-    padding: 3px;
-}
-
-.nome-sistema strong {
-    font-size: 24px;
-}
-.boas-vindas {
-    min-height: auto;
-    padding: 24px 20px;
-}
-
-.boas-vindas h1 {
-    font-size: 21px;
-}
-
-.icone-boas-vindas {
-    display: none;
-}
-
-.grade-acoes {
-    grid-template-columns: 1fr;
-}
-
-.card-acao {
-    min-height: 125px;
-}
-
-/* ==========================================
-   MENU DO PERFIL DO PROFISSIONAL
-========================================== */
-
-.area-usuario {
-    position: relative;
-}
-
-.usuario {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 6px 8px;
-
-    background: transparent;
-    border: none;
-
-    color: var(--texto);
-
-    cursor: pointer;
-
-    border-radius: 8px;
-
-    transition: 0.2s;
-}
-
-.usuario:hover {
-    background: #f4f8fb;
-}
-
-.seta-usuario {
-    margin-left: 2px;
-
-    color: #8a98a3;
-
-    font-size: 10px;
-
-    transition: 0.2s;
-}
-
-.usuario.ativo .seta-usuario {
-    transform: rotate(180deg);
-}
-
-
-/* MENU QUE APARECE AO CLICAR */
-
-.menu-usuario {
-    width: 210px;
-
-    position: absolute;
-
-    top: calc(100% + 8px);
-    right: 0;
-
-    display: none;
-
-    background: var(--branco);
-
-    border: 1px solid var(--borda);
-    border-radius: 9px;
-
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.13);
-
-    overflow: hidden;
-
-    z-index: 9999;
-}
-
-.menu-usuario.aberto {
-    display: block;
-}
-
-
-/* INFORMAÇÕES DENTRO DO MENU */
-
-.menu-usuario-info {
-    padding: 14px 16px;
-
-    display: flex;
-    flex-direction: column;
-
-    border-bottom: 1px solid var(--borda);
-}
-
-.menu-usuario-info strong {
-    color: var(--texto);
-
-    font-size: 13px;
-}
-
-.menu-usuario-info span {
-    margin-top: 3px;
-
-    color: var(--texto-claro);
-
-    font-size: 11px;
-}
-
-
-/* OPÇÃO SAIR */
-
-.opcao-sair {
-    padding: 13px 16px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 9px;
-
-    color: #b52b2b;
-
-    text-decoration: none;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    transition: 0.2s;
-}
-
-.opcao-sair:hover {
-    background: #fff1f1;
 }

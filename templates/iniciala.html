@@ -2,6 +2,15 @@
 <html lang="pt-BR">
 
 <head>
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style8.css') }}"
+>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+>
     <meta charset="UTF-8">
 
     <meta
@@ -31,43 +40,66 @@
 <body>
 
 
-    <!-- ========================================== -->
-    <!-- CABEÇALHO -->
-    <!-- ========================================== -->
+ <header class="cabecalho">
 
-    <header class="cabecalho">
+    <div class="topo">
 
-        <div class="topo">
+        <a
+            href="{{ url_for('iniciala') }}"
+            class="marca"
+        >
 
+            <div class="espaco-logo">
 
-            <!-- LOGO -->
+            
+                <img
+                    src="{{ url_for('static', filename='img/logo.png') }}"
+                    alt="Logo do eDOC"
+                >
+             
 
-            <a
-                href="{{ url_for('iniciala') }}"
-                class="marca"
-            >
+            </div>
 
-                <div class="logo-circle">
+            <div class="nome-sistema">
 
-                    <i class="fa-solid fa-graduation-cap"></i>
+                <strong>
+                    eDOC
+                </strong>
 
-                </div>
+                <span>
+                    Gestão Documental Escolar
+                </span>
 
-                <div class="nome-sistema">
+            </div>
 
-                    <strong>
-                        eDOC
-                    </strong>
-
-                    <span>
-                        Gestão de Documentos Escolares
-                    </span>
-
-                </div>
-
-            </a>
+        </a>
 
 
+        <div class="usuario">
+
+            <div class="dados-usuario">
+
+                <strong>
+                    {{ aluno["nome"] }}
+                </strong>
+
+                <span>
+                    Aluno
+                </span>
+
+            </div>
+
+            <div class="icone-usuario">
+                <i class="fa-regular fa-user"></i>
+            </div>
+
+            <i class="fa-solid fa-chevron-down seta-usuario"></i>
+
+        </div>
+
+    </div>
+
+</header>
 
             <!-- ========================================== -->
             <!-- PERFIL DO ALUNO -->
