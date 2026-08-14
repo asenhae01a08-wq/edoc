@@ -569,3 +569,1230 @@ def extrair_dados_siepe(texto, tabelas=None, paginas=None):
         "itinerario": itinerario,
         "extras": extras,
     }
+
+# ============================================================
+# CAMADA ADAPTATIVA EDOC
+# ============================================================
+# O parser original acima é mantido como fallback para o layout
+# oficial maior. A partir daqui, as funções públicas são
+# redefinidas para também reconhecer o PDF compacto de 4 páginas
+# usado no eDOC.
+# ============================================================
+
+PARSER_VERSION = "EDOC-2026-08-14-UNIFICADO-V1"
+
+_extrair_pagina1_legado = _extrair_pagina1
+_extrair_pagina2_legado = _extrair_pagina2
+_extrair_meta_direita_p3_legado = _extrair_meta_direita_p3
+_extrair_itinerario_pagina_legado = _extrair_itinerario_pagina
+_extrair_resultado_curso_legado = _extrair_resultado_curso
+
+
+def _nota_validada(valor, contexto=""):
+    nota = _decimal(valor)
+
+    if nota is None:
+        return None
+
+    if nota < 0 or nota > 10:
+        detalhe = f" em {contexto}" if contexto else ""
+        raise ValueError(
+            f"Nota fora da faixa de 0 a 10{detalhe}: {nota}. "
+            "O PDF não corresponde ao layout esperado ou uma coluna "
+            "foi interpretada incorretamente."
+        )
+
+    return round(nota, 2)
+
+
+def _percentual_validado(valor, contexto=""):
+    percentual = _decimal(valor)
+
+    if percentual is None:
+        return None
+
+    if percentual < 0 or percentual > 100:
+        detalhe = f" em {contexto}" if contexto else ""
+        raise ValueError(
+            f"Percentual fora da faixa de 0 a 100{detalhe}: {percentual}."
+        )
+
+    return round(percentual, 2)
+
+
+def _layout_compacto(pagina):
+    largura = float(pagina.get("largura") or 0)
+    return 0 < largura < 1000
+
+
+def _extrair_turma_da_etapa(etapa):
+    etapa = _limpar(etapa)
+
+    if not etapa:
+        return None
+
+    m = re.search(r"\(([^()]+)\)", etapa)
+
+    if m:
+        turma = _limpar(m.group(1))
+        if turma and (
+            "TDS" in _normalizar(turma)
+            or "MKT" in _normalizar(turma)
+        ):
+            return turma
+
+    m = re.search(
+        r"\b([123])\s*[ºo°]?\s*(TDS|MKT)\s*([AB])\b",
+        etapa,
+        re.I,
+    )
+
+    if m:
+        return f"{m.group(1)}º {m.group(2).upper()} {m.group(3).upper()}"
+
+    return None
+
+
+def _extrair_serie_da_etapa(etapa):
+    etapa = _limpar(etapa)
+
+    if not etapa:
+        return None
+
+    m = re.search(r"\b([123])\s*[ºo°]?\s*ANO\b", etapa, re.I)
+
+    if m:
+        return f"{m.group(1)}º Ano"
+
+    return etapa[:20]
+
+
+def _cidade_uf_do_endereco(endereco):
+    endereco = _limpar(endereco)
+
+    if not endereco:
+        return None, None
+
+    # Ex.: "... - Caruaru, PE - CEP: ..."
+    m = re.search(
+        r"-\s*([^,-]+?)\s*,\s*([A-Z]{2})\b",
+        endereco,
+        re.I,
+    )
+
+    if m:
+        return _limpar(m.group(1)), m.group(2).upper()
+
+    return None, None
+
+
+def _extrair_pagina1_compacta(pagina):
+    palavras = _words(pagina)
+    x_valor = 170
+
+    def valor(rotulo, tolerancia=4):
+        return _valor_rotulo(
+            palavras,
+            rotulo,
+            x_valor=x_valor,
+            tolerancia_y=tolerancia,
+        )
+
+    escola = valor("Escola")
+    nome = valor("Nome do estudante")
+    nome_mae = valor("Filiação - mãe")
+    nome_pai = valor("Filiação - pai")
+    data_nascimento = valor("Data de nascimento")
+    cidade_nascimento = valor("Cidade de nascimento")
+    uf_nascimento = valor("UF")
+    nacionalidade = valor("Nacionalidade")
+    rg = valor("RG")
+    orgao = valor("Órgão expedidor")
+    cpf = valor("CPF")
+    matricula = valor("Matrícula")
+    etapa_completa = valor("Etapa concluída")
+    curso_documento = valor("Curso")
+    autorizacao_completa = valor("Autorização de Funcionamento")
+
+    # Fallback por texto: útil quando o PDF desloca poucos pontos.
+    texto = pagina.get("texto", "")
+
+    if not matricula:
+        m = re.search(
+            r"Matr[ií]cula\s*[:\-]?\s*(\d{5,15})",
+            texto,
+            re.I,
+        )
+        matricula = m.group(1) if m else None
+
+    y_endereco = _achar_rotulo(
+        palavras,
+        "Endereço",
+        x1=x_valor,
+    )
+
+    endereco_escola = None
+    if y_endereco is not None:
+        endereco_escola = _texto_area(
+            palavras,
+            x0=x_valor,
+            y0=y_endereco - 10,
+            y1=y_endereco + 18,
+        )
+
+    autorizacao = None
+    data_doe = None
+
+    if autorizacao_completa:
+        m = re.search(
+            r"(.+?)\s+D\.?O\.?E/?PE\s+de\s+(\d{2}/\d{2}/\d{4})",
+            autorizacao_completa,
+            re.I,
+        )
+
+        if m:
+            autorizacao = _limpar(m.group(1))
+            data_doe = m.group(2)
+        else:
+            autorizacao = autorizacao_completa
+
+    def responsavel(rotulo):
+        bruto = valor(rotulo)
+
+        if not bruto:
+            return {
+                "nome": None,
+                "matricula": None,
+            }
+
+        m = re.search(
+            r"(.+?),?\s+mat\.?\s*n[ºo°]?\s*(\d+)",
+            bruto,
+            re.I,
+        )
+
+        if m:
+            return {
+                "nome": _limpar(m.group(1).rstrip(",")),
+                "matricula": m.group(2),
+            }
+
+        return {
+            "nome": bruto,
+            "matricula": None,
+        }
+
+    secretario = responsavel("Secretário")
+    diretor = responsavel("Diretor")
+
+    item1 = _texto_area(
+        palavras,
+        x0=x_valor,
+        y0=385,
+        y1=440,
+    )
+    item2 = _texto_area(
+        palavras,
+        x0=x_valor,
+        y0=440,
+        y1=485,
+    )
+    item3 = _texto_area(
+        palavras,
+        x0=x_valor,
+        y0=485,
+        y1=520,
+    )
+
+    ensino_religioso = None
+    if "OPTOU POR NAO VIVENCIAR" in _normalizar(item2):
+        ensino_religioso = "não vivenciado"
+
+    situacao_ed_fisica = None
+    normal_item3 = _normalizar(item3)
+
+    if "NAO DISPENSADO" in normal_item3:
+        situacao_ed_fisica = "não dispensado(a)"
+    elif "DISPENSADO" in normal_item3:
+        situacao_ed_fisica = "dispensado(a)"
+
+    turma = _extrair_turma_da_etapa(etapa_completa)
+    serie = _extrair_serie_da_etapa(etapa_completa)
+
+    cidade_escola, uf_escola = _cidade_uf_do_endereco(
+        endereco_escola
+    )
+
+    aluno = {
+        "nome": nome,
+        "matricula": matricula,
+        "data_nascimento": _data_br(data_nascimento),
+        "cpf": cpf,
+        "rg": rg,
+        "orgao_expedidor": orgao,
+        "nacionalidade": nacionalidade,
+        "nome_pai": nome_pai,
+        "nome_mae": nome_mae,
+        "serie": serie,
+        "curso": curso_documento,
+        "cidade_nascimento": cidade_nascimento,
+        "uf_nascimento": uf_nascimento,
+        "id_turma": turma,
+        "email": None,
+        "endereco": None,
+    }
+
+    escola_info = {
+        "nome": escola,
+        "endereco": endereco_escola,
+        "autorizacao_funcionamento": autorizacao,
+        "data_doe": data_doe,
+        "telefone": None,
+        "cadastro_escolar": None,
+        "cidade": cidade_escola,
+        "estado": uf_escola,
+        "secretario_nome": secretario["nome"],
+        "secretario_matricula": secretario["matricula"],
+        "diretor_nome": diretor["nome"],
+        "diretor_matricula": diretor["matricula"],
+    }
+
+    complementares = {
+        "item_1": item1,
+        "item_2": item2,
+        "item_3": item3,
+        "ensino_religioso": ensino_religioso,
+        "situacao_educacao_fisica": situacao_ed_fisica,
+        "etapa_concluida_original": etapa_completa,
+    }
+
+    return aluno, escola_info, complementares
+
+
+def _extrair_pagina1(pagina):
+    if _layout_compacto(pagina):
+        return _extrair_pagina1_compacta(pagina)
+
+    aluno, escola, complementares = _extrair_pagina1_legado(
+        pagina
+    )
+
+    # Mesmo no layout legado, normaliza o que vai para colunas curtas.
+    etapa_original = aluno.get("serie")
+    aluno["id_turma"] = (
+        aluno.get("id_turma")
+        or _extrair_turma_da_etapa(etapa_original)
+    )
+    aluno["serie"] = _extrair_serie_da_etapa(etapa_original)
+
+    if complementares is not None:
+        complementares.setdefault(
+            "etapa_concluida_original",
+            etapa_original,
+        )
+
+    return aluno, escola, complementares
+
+
+def _extrair_pagina2_compacta(pagina):
+    palavras = _words(pagina)
+
+    indicadores = [
+        {
+            "serie": "1º Ano",
+            "ano_letivo": None,
+            "carga_horaria_total": None,
+            "carga_horaria_relogio": None,
+            "frequencia_percentual": None,
+        },
+        {
+            "serie": "2º Ano",
+            "ano_letivo": None,
+            "carga_horaria_total": None,
+            "carga_horaria_relogio": None,
+            "frequencia_percentual": None,
+        },
+        {
+            "serie": "3º Ano",
+            "ano_letivo": None,
+            "carga_horaria_total": None,
+            "carga_horaria_relogio": None,
+            "frequencia_percentual": None,
+        },
+    ]
+
+    faixas_anos = [
+        (110, 195),
+        (195, 280),
+        (280, 365),
+    ]
+
+    # Indicadores anuais.
+    for _, linha in _linhas_por_y(
+        palavras,
+        220,
+        275,
+    ):
+        texto_linha = _normalizar(
+            " ".join(w["texto"] for w in linha)
+        )
+
+        if "CARGA HORARIA TOTAL" in texto_linha:
+            for indice, (x0, x1) in enumerate(
+                faixas_anos
+            ):
+                indicadores[indice][
+                    "carga_horaria_total"
+                ] = _inteiro(
+                    _texto_area(
+                        linha,
+                        x0=x0,
+                        x1=x1,
+                    )
+                )
+
+        elif (
+            "CARGA HORARIA EM HORAS/RELOGIO"
+            in texto_linha
+        ):
+            for indice, (x0, x1) in enumerate(
+                faixas_anos
+            ):
+                valor = _texto_area(
+                    linha,
+                    x0=x0,
+                    x1=x1,
+                )
+
+                indicadores[indice][
+                    "carga_horaria_relogio"
+                ] = (
+                    None
+                    if valor == "-"
+                    else valor
+                )
+
+        elif any("%" in w["texto"] for w in linha):
+            for indice, (x0, x1) in enumerate(
+                faixas_anos
+            ):
+                indicadores[indice][
+                    "frequencia_percentual"
+                ] = _percentual_validado(
+                    _texto_area(
+                        linha,
+                        x0=x0,
+                        x1=x1,
+                    ),
+                    f"frequência do {indice + 1}º ano",
+                )
+
+    # Histórico por ano.
+    anchors = []
+
+    for y, linha in _linhas_por_y(
+        palavras,
+        280,
+        455,
+    ):
+        esquerda = _texto_area(
+            linha,
+            x0=15,
+            x1=110,
+        )
+
+        if not esquerda:
+            continue
+
+        m = re.search(
+            r"(20\d{2})\s*-\s*([123][ºo°]\s*Ano)",
+            esquerda,
+            re.I,
+        )
+
+        if m:
+            anchors.append(
+                (
+                    y,
+                    int(m.group(1)),
+                    m.group(2),
+                )
+            )
+
+    for indice, (
+        y,
+        ano,
+        serie,
+    ) in enumerate(anchors[:3]):
+        faixa = [
+            w
+            for w in palavras
+            if y - 28 <= w["y0"] < y + 28
+        ]
+
+        estabelecimento = _texto_area(
+            faixa,
+            x0=110,
+            x1=165,
+        )
+        cidade_estado = _texto_area(
+            faixa,
+            x0=165,
+            x1=205,
+        )
+        resultado = _texto_area(
+            faixa,
+            x0=205,
+            x1=300,
+        )
+
+        indicadores[indice].update(
+            {
+                "ano_letivo": ano,
+                "serie": serie,
+                "estabelecimento": estabelecimento,
+                "cidade_estado": cidade_estado,
+                "resultado": resultado,
+            }
+        )
+
+    # Formação Geral Básica.
+    colunas = {
+        "nome": (15, 110),
+        "1_nota": (110, 180),
+        "1_ch": (180, 220),
+        "2_nota": (220, 265),
+        "2_ch": (265, 310),
+        "3_nota": (310, 350),
+        "3_ch": (350, 390),
+        "ch_total": (390, 445),
+    }
+
+    disciplinas = []
+
+    for _, linha in _linhas_por_y(
+        palavras,
+        98,
+        218,
+    ):
+        nome = _texto_area(
+            linha,
+            x0=colunas["nome"][0],
+            x1=colunas["nome"][1],
+        )
+
+        if not nome:
+            continue
+
+        if "COMPONENTE CURRICULAR" in _normalizar(nome):
+            continue
+
+        # A linha de disciplina precisa possuir ao menos
+        # um token numérico ou hífen depois da coluna do nome.
+        if not any(
+            (
+                re.search(r"\d", w["texto"])
+                or w["texto"] == "-"
+            )
+            for w in linha
+            if w["x0"] >= 110
+        ):
+            continue
+
+        registro = {
+            "nome": nome,
+        }
+
+        for chave, (x0, x1) in colunas.items():
+            if chave == "nome":
+                continue
+
+            registro[chave] = _texto_area(
+                linha,
+                x0=x0,
+                x1=x1,
+            )
+
+        disciplinas.append(registro)
+
+    base_comum = []
+
+    for disciplina in disciplinas:
+        for indice in range(3):
+            nota = _nota_validada(
+                disciplina[f"{indice + 1}_nota"],
+                (
+                    f"{disciplina['nome']} "
+                    f"{indice + 1}º ano"
+                ),
+            )
+            carga = _inteiro(
+                disciplina[f"{indice + 1}_ch"]
+            )
+
+            if nota is None and carga is None:
+                continue
+
+            resumo = indicadores[indice]
+
+            base_comum.append(
+                {
+                    "nome": disciplina["nome"],
+                    "nota": nota,
+                    "ano_letivo": resumo.get(
+                        "ano_letivo"
+                    ),
+                    "serie": resumo.get("serie"),
+                    "resultado": resumo.get(
+                        "resultado"
+                    ),
+                    "frequencia_percentual":
+                        resumo.get(
+                            "frequencia_percentual"
+                        ),
+                    "carga_horaria_horas_aula":
+                        carga,
+                    "carga_horaria_relogio": None,
+                    "carga_horaria_total_anual":
+                        resumo.get(
+                            "carga_horaria_total"
+                        ),
+                    "carga_horaria_total_componente":
+                        _inteiro(
+                            disciplina["ch_total"]
+                        ),
+                }
+            )
+
+    totais = {}
+
+    for _, linha in _linhas_por_y(
+        palavras,
+        220,
+        275,
+    ):
+        texto_linha = _normalizar(
+            " ".join(w["texto"] for w in linha)
+        )
+
+        if "CARGA HORARIA TOTAL" in texto_linha:
+            totais[
+                "carga_horaria_total"
+            ] = _inteiro(
+                _texto_area(
+                    linha,
+                    x0=365,
+                    x1=445,
+                )
+            )
+
+        elif (
+            "CARGA HORARIA EM HORAS/RELOGIO"
+            in texto_linha
+        ):
+            totais[
+                "carga_horaria_relogio"
+            ] = _texto_area(
+                linha,
+                x0=365,
+                x1=445,
+            )
+
+    return base_comum, indicadores, totais
+
+
+def _extrair_pagina2(pagina):
+    if _layout_compacto(pagina):
+        return _extrair_pagina2_compacta(pagina)
+
+    base, resumo, totais = _extrair_pagina2_legado(
+        pagina
+    )
+
+    # Validação defensiva: impede que carga horária chegue
+    # ao banco como se fosse nota.
+    for item in base:
+        item["nota"] = _nota_validada(
+            item.get("nota"),
+            item.get("nome") or "Formação Geral Básica",
+        )
+
+        item[
+            "frequencia_percentual"
+        ] = _percentual_validado(
+            item.get("frequencia_percentual"),
+            item.get("nome") or "Formação Geral Básica",
+        )
+
+    return base, resumo, totais
+
+
+def _extrair_meta_direita_p3_compacta(palavras):
+    return {
+        "estabelecimento": _texto_area(
+            palavras,
+            x0=630,
+            y0=55,
+            y1=78,
+        ),
+        "cidade": _texto_area(
+            palavras,
+            x0=630,
+            y0=72,
+            y1=88,
+        ),
+        "estado": _texto_area(
+            palavras,
+            x0=630,
+            y0=84,
+            y1=100,
+        ),
+        "itinerarios": _texto_area(
+            palavras,
+            x0=630,
+            y0=95,
+            y1=124,
+        ),
+        "trilhas": _texto_area(
+            palavras,
+            x0=630,
+            y0=123,
+            y1=151,
+        ),
+        "observacoes": _texto_area(
+            palavras,
+            x0=630,
+            y0=150,
+            y1=172,
+        ),
+    }
+
+
+def _extrair_meta_direita_p3(palavras):
+    if not palavras:
+        return _extrair_meta_direita_p3_legado(
+            palavras
+        )
+
+    largura_aproximada = max(
+        w.get("x1", 0)
+        for w in palavras
+    )
+
+    if largura_aproximada < 900:
+        return _extrair_meta_direita_p3_compacta(
+            palavras
+        )
+
+    return _extrair_meta_direita_p3_legado(
+        palavras
+    )
+
+
+def _extrair_itinerario_compacto(
+    pagina,
+    numero,
+):
+    palavras = _words(pagina)
+
+    if numero == 3:
+        x_tipo = (15, 110)
+        x_unidade = (110, 265)
+        x_ano = (265, 295)
+        x_periodo = (295, 370)
+        x_ch = (370, 405)
+        x_nota = (405, 424)
+        x_frequencia = (424, 470)
+        x_resultado = (470, 550)
+        y_min = 125
+        y_max = 405
+        ano_esperado = "1"
+
+    else:
+        x_tipo = (15, 145)
+        x_unidade = (145, 340)
+        x_ano = (340, 375)
+        x_periodo = (375, 455)
+        x_ch = (455, 500)
+        x_nota = (500, 550)
+        x_frequencia = (550, 568)
+        x_resultado = (568, 680)
+        y_min = 65
+        y_max = 245
+        ano_esperado = "2"
+
+    anchors = []
+
+    for palavra in palavras:
+        if not (
+            y_min
+            <= palavra["y0"]
+            < y_max
+        ):
+            continue
+
+        if not (
+            x_ano[0]
+            <= palavra["x0"]
+            < x_ano[1]
+        ):
+            continue
+
+        if re.fullmatch(
+            rf"{ano_esperado}[ºo°]",
+            palavra["texto"],
+            re.I,
+        ):
+            anchors.append(
+                palavra["y0"]
+            )
+
+    ys = []
+
+    for y in sorted(anchors):
+        if (
+            not ys
+            or abs(y - ys[-1]) > 2
+        ):
+            ys.append(y)
+
+    registros = []
+
+    for indice, y in enumerate(ys):
+        inicio = (
+            y_min
+            if indice == 0
+            else (
+                ys[indice - 1] + y
+            ) / 2
+        )
+
+        fim = (
+            y_max
+            if indice == len(ys) - 1
+            else (
+                y + ys[indice + 1]
+            ) / 2
+        )
+
+        faixa = [
+            w
+            for w in palavras
+            if inicio <= w["y0"] < fim
+        ]
+
+        tipo = _texto_area(
+            faixa,
+            x0=x_tipo[0],
+            x1=x_tipo[1],
+        )
+        nome = _texto_area(
+            faixa,
+            x0=x_unidade[0],
+            x1=x_unidade[1],
+        )
+        ano = _texto_area(
+            faixa,
+            x0=x_ano[0],
+            x1=x_ano[1],
+        )
+        periodo = _texto_area(
+            faixa,
+            x0=x_periodo[0],
+            x1=x_periodo[1],
+        )
+        ch_txt = _texto_area(
+            faixa,
+            x0=x_ch[0],
+            x1=x_ch[1],
+        )
+        nota_txt = _texto_area(
+            faixa,
+            x0=x_nota[0],
+            x1=x_nota[1],
+        )
+        frequencia_txt = _texto_area(
+            faixa,
+            x0=x_frequencia[0],
+            x1=x_frequencia[1],
+        )
+        resultado = _texto_area(
+            faixa,
+            x0=x_resultado[0],
+            x1=x_resultado[1],
+        )
+
+        if not nome or not periodo:
+            continue
+
+        nota = _nota_validada(
+            nota_txt,
+            nome,
+        )
+        frequencia = _percentual_validado(
+            frequencia_txt,
+            nome,
+        )
+        carga = _inteiro(ch_txt)
+
+        registros.append(
+            {
+                "nome": nome,
+                "abreviacao": None,
+                "tipo": tipo,
+                "ano": ano,
+                "nota": nota,
+                "resultado_final": resultado,
+                "periodo_letivo": periodo,
+                "frequencia": frequencia,
+                "carga_horaria": carga,
+                "carga_horaria_horas_aula": carga,
+                "carga_horaria_relogio": None,
+            }
+        )
+
+    return registros
+
+
+def _extrair_itinerario_pagina(
+    pagina,
+    numero,
+):
+    if _layout_compacto(pagina):
+        return _extrair_itinerario_compacto(
+            pagina,
+            numero,
+        )
+
+    registros = _extrair_itinerario_pagina_legado(
+        pagina,
+        numero,
+    )
+
+    for item in registros:
+        item["nota"] = _nota_validada(
+            item.get("nota"),
+            item.get("nome") or "Itinerário Formativo",
+        )
+        item["frequencia"] = _percentual_validado(
+            item.get("frequencia"),
+            item.get("nome") or "Itinerário Formativo",
+        )
+
+    return registros
+
+
+def _extrair_resultado_curso_compacto(pagina):
+    palavras = _words(pagina)
+
+    def valor_proximo(
+        rotulo,
+        tolerancia=12,
+    ):
+        y = _achar_rotulo(
+            palavras,
+            rotulo,
+            x1=145,
+        )
+
+        if y is None:
+            return None
+
+        valores = [
+            w
+            for w in palavras
+            if (
+                140 <= w["x0"] < 360
+                and abs(w["y0"] - y)
+                <= tolerancia
+            )
+        ]
+
+        valores.sort(
+            key=lambda w: (
+                w["y0"],
+                w["x0"],
+            )
+        )
+
+        texto = _limpar(
+            " ".join(
+                w["texto"]
+                for w in valores
+            )
+        )
+
+        return (
+            None
+            if texto == "-"
+            else texto
+        )
+
+    fgb = valor_proximo(
+        "Carga Horária da Formação Geral",
+        15,
+    )
+    itinerarios = valor_proximo(
+        "Carga Horária dos Itinerários",
+        15,
+    )
+    total = valor_proximo(
+        "Carga Horária TOTAL",
+        5,
+    )
+    conclusao_texto = valor_proximo(
+        "Data da Conclusão do Curso",
+        5,
+    )
+    resultado = valor_proximo(
+        "Resultado Final",
+        5,
+    )
+    data_local = valor_proximo(
+        "Data/Local",
+        5,
+    )
+
+    data_conclusao = _data_br(
+        conclusao_texto
+    )
+
+    ano_conclusao = None
+
+    if (
+        data_conclusao is None
+        and conclusao_texto
+        and re.fullmatch(
+            r"\d{4}",
+            conclusao_texto,
+        )
+    ):
+        ano_conclusao = int(
+            conclusao_texto
+        )
+
+    data_emissao = _data_extenso_pt(
+        data_local
+    )
+
+    cidade = None
+    uf = None
+
+    if data_local:
+        m = re.match(
+            r"(.+?)\s*-\s*([A-Z]{2}),",
+            data_local,
+            re.I,
+        )
+
+        if m:
+            cidade = _limpar(
+                m.group(1)
+            )
+            uf = m.group(2).upper()
+
+    return {
+        "carga_horaria_formacao_geral_relogio":
+            fgb,
+        "carga_horaria_itinerarios_relogio":
+            itinerarios,
+        "carga_horaria_total_relogio":
+            total,
+        "data_conclusao":
+            data_conclusao,
+        "data_conclusao_texto":
+            conclusao_texto,
+        "ano_conclusao":
+            ano_conclusao,
+        "resultado_final":
+            resultado,
+        "data_local":
+            data_local,
+        "cidade_emissao":
+            cidade,
+        "uf_emissao":
+            uf,
+        "data_emissao":
+            data_emissao,
+    }
+
+
+def _extrair_resultado_curso(pagina):
+    if _layout_compacto(pagina):
+        return _extrair_resultado_curso_compacto(
+            pagina
+        )
+
+    return _extrair_resultado_curso_legado(
+        pagina
+    )
+
+
+def _validar_dados_extraidos(dados):
+    aluno = dados.get("aluno") or {}
+
+    if not aluno.get("matricula"):
+        raise ValueError(
+            "O PDF foi lido, mas a matrícula não foi encontrada."
+        )
+
+    matricula = str(
+        aluno["matricula"]
+    ).strip()
+
+    if not re.fullmatch(
+        r"\d{5,15}",
+        matricula,
+    ):
+        raise ValueError(
+            f"Matrícula extraída inválida: {matricula!r}."
+        )
+
+    for item in dados.get(
+        "base_comum",
+        [],
+    ):
+        _nota_validada(
+            item.get("nota"),
+            item.get("nome") or "Formação Geral Básica",
+        )
+        _percentual_validado(
+            item.get("frequencia_percentual"),
+            item.get("nome") or "Formação Geral Básica",
+        )
+
+    for item in dados.get(
+        "itinerario",
+        [],
+    ):
+        _nota_validada(
+            item.get("nota"),
+            item.get("nome") or "Itinerário Formativo",
+        )
+        _percentual_validado(
+            item.get("frequencia"),
+            item.get("nome") or "Itinerário Formativo",
+        )
+
+    return dados
+
+
+def extrair_dados_siepe(
+    texto,
+    tabelas=None,
+    paginas=None,
+):
+    paginas = paginas or []
+
+    if len(paginas) < 4:
+        raise ValueError(
+            "O histórico escolar esperado possui 4 páginas. "
+            "Não foi possível identificar todas as páginas do documento."
+        )
+
+    aluno, escola, complementares = _extrair_pagina1(
+        paginas[0]
+    )
+
+    base_comum, resumo_base, totais_base = _extrair_pagina2(
+        paginas[1]
+    )
+
+    itinerario_2024 = _extrair_itinerario_pagina(
+        paginas[2],
+        3,
+    )
+
+    itinerario_2025 = _extrair_itinerario_pagina(
+        paginas[3],
+        4,
+    )
+
+    meta_2024 = _extrair_meta_direita_p3(
+        _words(paginas[2])
+    )
+
+    resultado_curso = _extrair_resultado_curso(
+        paginas[3]
+    )
+
+    etapa_original = (
+        (complementares or {}).get(
+            "etapa_concluida_original"
+        )
+        or aluno.get("serie")
+    )
+
+    historico = {
+        "id_historico_escolar": (
+            f"EDOC-{aluno.get('matricula')}"
+            if aluno.get("matricula")
+            else None
+        ),
+        "resultado_final":
+            resultado_curso.get(
+                "resultado_final"
+            ),
+        "data_conclusao":
+            resultado_curso.get(
+                "data_conclusao"
+            ),
+    }
+
+    itinerario = (
+        itinerario_2024
+        + itinerario_2025
+    )
+
+    extras = {
+        "parser_version":
+            PARSER_VERSION,
+        "escola":
+            escola,
+        "aluno_oficial": {
+            "cidade_nascimento":
+                aluno.get(
+                    "cidade_nascimento"
+                ),
+            "uf_nascimento":
+                aluno.get(
+                    "uf_nascimento"
+                ),
+            "etapa_concluida":
+                _extrair_serie_da_etapa(
+                    etapa_original
+                ),
+            "etapa_concluida_original":
+                etapa_original,
+            "curso_documento":
+                aluno.get("curso"),
+            "turma_documento":
+                aluno.get("id_turma"),
+        },
+        "informacoes_complementares":
+            complementares,
+        "resumo_base_comum":
+            resumo_base,
+        "totais_base_comum":
+            totais_base,
+        "itinerario_metadados": {
+            "2024": meta_2024,
+        },
+        "itinerario":
+            itinerario,
+        "resultado_curso":
+            resultado_curso,
+    }
+
+    dados = {
+        "aluno": aluno,
+        "escola": escola,
+        "historico": historico,
+        "base_comum": base_comum,
+        "itinerario": itinerario,
+        "extras": extras,
+    }
+
+    return _validar_dados_extraidos(
+        dados
+    )

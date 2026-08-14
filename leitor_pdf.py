@@ -1,3 +1,5 @@
+LEITOR_PDF_VERSION = "EDOC-2026-08-14-V1"
+
 from io import BytesIO
 
 import pymupdf
