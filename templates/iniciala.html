@@ -1,30 +1,283 @@
-  ao aluno e aos profissionais autorizados.
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Área do Aluno</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style3.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <script
+        src="{{ url_for('static', filename='script/script3.js') }}"
+        defer
+    ></script>
+
+</head>
+
+<body>
+
+
+    <!-- ========================================== -->
+    <!-- CABEÇALHO -->
+    <!-- ========================================== -->
+
+    <header class="cabecalho">
+
+        <div class="topo">
+
+
+            <!-- LOGO -->
+
+            <a
+                href="{{ url_for('iniciala') }}"
+                class="marca"
+            >
+
+                <div class="logo-circle">
+
+                    <i class="fa-solid fa-graduation-cap"></i>
+
+                </div>
+
+                <div class="nome-sistema">
+
+                    <strong>
+                        eDOC
+                    </strong>
+
+                    <span>
+                        Gestão de Documentos Escolares
+                    </span>
+
+                </div>
+
+            </a>
+
+
+
+            <!-- ========================================== -->
+            <!-- PERFIL DO ALUNO -->
+            <!-- ========================================== -->
+
+            <div class="area-usuario">
+
+                <button
+                    type="button"
+                    class="usuario"
+                    id="botaoUsuario"
+                    onclick="abrirMenuUsuario(event)"
+                >
+
+                    <div class="dados-usuario">
+
+                        <strong>
+                            {{ aluno["nome"] }}
+                        </strong>
+
+                        <span>
+                            Aluno
+                        </span>
+
+                    </div>
+
+
+                    <div class="icone-usuario">
+
+                        <i class="fa-regular fa-user"></i>
+
+                    </div>
+
+
+                    <i
+                        class="fa-solid fa-chevron-down seta-usuario"
+                    ></i>
+
+                </button>
+
+
+                <!-- MENU DO PERFIL -->
+
+                <div
+                    class="menu-usuario"
+                    id="menuUsuario"
+                >
+
+                    <a
+                        href="{{ url_for('logout') }}"
+                        class="opcao-sair"
+                    >
+
+                        <i class="fa-solid fa-right-from-bracket"></i>
+
+                        Sair
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================== -->
+        <!-- MENU SUPERIOR -->
+        <!-- ========================================== -->
+
+        <nav class="menu-principal">
+
+            <a
+                href="{{ url_for('iniciala') }}"
+                class="menu-item ativo"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                Início
+
+            </a>
+
+
+            <a
+                href="{{ url_for('suporte') }}"
+                class="menu-item"
+            >
+
+                <i class="fa-solid fa-headset"></i>
+
+                Suporte
+
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- ========================================== -->
+    <!-- ESTRUTURA -->
+    <!-- ========================================== -->
+
+    <div class="estrutura-aluno">
+
+
+        <!-- ========================================== -->
+        <!-- BARRA LATERAL -->
+        <!-- ========================================== -->
+
+        <aside class="barra-lateral">
+
+            <div class="titulo-lateral">
+
+                ÁREA DO ALUNO
+
+            </div>
+
+
+            <a
+                href="{{ url_for('iniciala') }}"
+                class="opcao-lateral"
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Visão geral
+                </span>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </a>
+
+
+            <a
+                href="#documentos"
+                class="opcao-lateral"
+            >
+
+                <i class="fa-regular fa-folder-open"></i>
+
+                <span>
+                    Meus documentos
+                </span>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('suporte') }}"
+                class="opcao-lateral"
+            >
+
+                <i class="fa-regular fa-circle-question"></i>
+
+                <span>
+                    Ajuda e suporte
+                </span>
+
+                <i class="fa-solid fa-chevron-right seta"></i>
+
+            </a>
+
+
+
+            <!-- AVISO -->
+
+            <div class="aviso-lateral">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                <div>
+
+                    <strong>
+                        Seus dados estão protegidos
+                    </strong>
+
+                    <p>
+                        As informações são acessíveis apenas
+                        ao aluno e aos profissionais autorizados.
                     </p>
 
                 </div>
 
-
             </div>
-
 
         </aside>
 
 
 
-        <!-- ================================================= -->
+        <!-- ========================================== -->
         <!-- CONTEÚDO -->
-        <!-- ================================================= -->
+        <!-- ========================================== -->
 
         <main class="conteudo">
 
 
+            <!-- ========================================== -->
             <!-- BOAS VINDAS -->
+            <!-- ========================================== -->
 
             <section class="boas-vindas">
 
-
                 <div>
-
 
                     <span class="saudacao">
 
@@ -35,23 +288,19 @@
 
                     <h1>
 
-                        Olá,
-                        {{ aluno["nome"].split()[0] }}!
+                        Olá, {{ aluno["nome"].split()[0] }}!
 
                     </h1>
 
 
                     <p>
 
-                        Acompanhe o andamento dos seus
-                        documentos escolares e consulte
-                        suas informações.
+                        Acompanhe o andamento dos seus documentos
+                        escolares e consulte suas informações.
 
                     </p>
 
-
                 </div>
-
 
 
                 <div class="icone-boas-vindas">
@@ -60,21 +309,19 @@
 
                 </div>
 
-
             </section>
 
 
 
-            <!-- ================================================= -->
+            <!-- ========================================== -->
             <!-- DADOS DO ALUNO -->
-            <!-- ================================================= -->
+            <!-- ========================================== -->
 
             <h2 class="titulo-secao">
 
                 Seus dados
 
             </h2>
-
 
 
             <section class="grade-dados">
@@ -84,13 +331,11 @@
 
                 <div class="card-dado">
 
-
                     <div class="card-icon">
 
                         <i class="fa-solid fa-id-card"></i>
 
                     </div>
-
 
                     <div>
 
@@ -104,7 +349,6 @@
 
                     </div>
 
-
                 </div>
 
 
@@ -113,13 +357,11 @@
 
                 <div class="card-dado">
 
-
                     <div class="card-icon">
 
                         <i class="fa-solid fa-book-open"></i>
 
                     </div>
-
 
                     <div>
 
@@ -147,7 +389,6 @@
 
                     </div>
 
-
                 </div>
 
 
@@ -156,13 +397,11 @@
 
                 <div class="card-dado">
 
-
                     <div class="card-icon">
 
                         <i class="fa-solid fa-users"></i>
 
                     </div>
-
 
                     <div>
 
@@ -171,38 +410,52 @@
                         </span>
 
                         <strong>
-
-                            {{ aluno["id_turma"] or "Não informada" }}
-
+                            {{ aluno["id_turma"] }}
                         </strong>
 
                     </div>
 
-
                 </div>
-
 
             </section>
 
 
 
-            <!-- ================================================= -->
+            <!-- ========================================== -->
             <!-- DOCUMENTOS -->
-            <!-- ================================================= -->
+            <!-- ========================================== -->
 
-            <h2 class="titulo-secao">
-
-                Meus documentos
-
-            </h2>
-
+            <section
+                class="painel-documentos"
+                id="documentos"
+            >
 
 
-            <section class="painel-documentos">
+                <div class="cabecalho-painel">
+
+                    <div>
+
+                        <h2>
+                            Meus documentos
+                        </h2>
+
+                        <p>
+                            Acompanhe o andamento dos seus documentos escolares.
+                        </p>
+
+                    </div>
+
+
+                    <i class="fa-regular fa-folder-open"></i>
+
+                </div>
+
 
 
                 <div class="lista-documentos">
 
+
+                    <!-- FICHA 19 -->
 
                     <article class="documento">
 
@@ -212,7 +465,6 @@
                             <i class="fa-regular fa-file-lines"></i>
 
                         </div>
-
 
 
                         <div class="documento-conteudo">
@@ -236,33 +488,38 @@
 
 
 
-                                {% set status =
-                                    aluno.get("status_ficha19")
-                                    or "Não informado"
-                                %}
+                                <!-- STATUS -->
+
+                                {% if aluno.get("possui_ficha") %}
+
+                                    {% set status = aluno["status_ficha19"] or "Em fabricação" %}
+
+                                {% else %}
+
+                                    {% set status = "Não informado" %}
+
+                                {% endif %}
+
 
 
                                 <span
-                                    class="
-                                        status-documento
-
-                                        {% if status == 'Pronta para emissão' %}
-                                            status-pronto
-                                        {% elif status == 'Em fabricação' %}
-                                            status-andamento
-                                        {% else %}
-                                            status-pendente
-                                        {% endif %}
-                                    "
+                                    class="status-documento
+                                    {% if status == 'Pronta para emissão' %}
+                                        status-pronto
+                                    {% elif status == 'Em fabricação' %}
+                                        status-andamento
+                                    {% else %}
+                                        status-pendente
+                                    {% endif %}"
                                 >
 
 
-                                    {% if status == "Pronta para emissão" %}
+                                    {% if status == 'Pronta para emissão' %}
 
                                         <i class="fa-solid fa-circle-check"></i>
 
 
-                                    {% elif status == "Em fabricação" %}
+                                    {% elif status == 'Em fabricação' %}
 
                                         <i class="fa-solid fa-clock"></i>
 
@@ -276,91 +533,160 @@
 
                                     {{ status }}
 
-
                                 </span>
-
 
                             </div>
 
 
+
+                            <!-- BARRA DE PROGRESSO -->
 
                             <div class="barra-status">
 
-
                                 <div
-                                    class="
-                                        progresso
-
-                                        {% if status == 'Pronta para emissão' %}
-                                            progresso-completo
-                                        {% elif status == 'Em fabricação' %}
-                                            progresso-andamento
-                                        {% endif %}
-                                    "
+                                    class="progresso
+                                    {% if status == 'Pronta para emissão' %}
+                                        progresso-completo
+                                    {% elif status == 'Em fabricação' %}
+                                        progresso-andamento
+                                    {% endif %}"
                                 ></div>
-
 
                             </div>
 
 
+
+                            <!-- ORIENTAÇÃO -->
 
                             <p class="orientacao">
 
 
-                                {% if status == "Pronta para emissão" %}
+                                {% if status == 'Pronta para emissão' %}
 
-                                    Sua Ficha 19 está pronta
-                                    para emissão.
+                                    Seu documento está pronto para emissão.
+                                    Procure a secretaria da escola.
 
 
-                                {% elif status == "Em fabricação" %}
+                                {% elif status == 'Em fabricação' %}
 
-                                    Sua Ficha 19 está sendo
-                                    preparada pela secretaria.
+                                    Seu documento está sendo preparado
+                                    pela secretaria.
 
 
                                 {% else %}
 
-                                    Ainda não há informações
-                                    sobre a emissão da sua
-                                    Ficha 19.
+                                    Ainda não há informações sobre
+                                    a emissão deste documento.
 
                                 {% endif %}
 
 
                             </p>
 
-
                         </div>
-
 
                     </article>
 
-
                 </div>
-
 
             </section>
 
-
         </main>
-
 
     </div>
 
 
 
-    <!-- ================================================= -->
+    <!-- ========================================== -->
     <!-- RODAPÉ -->
-    <!-- ================================================= -->
+    <!-- ========================================== -->
 
     <footer>
 
         <p>
+
             eDOC — Sistema de Gestão de Documentos Escolares
+
         </p>
 
     </footer>
+
+
+
+    <!-- ========================================== -->
+    <!-- MENU DO PERFIL -->
+    <!-- ========================================== -->
+
+    <script>
+
+        function abrirMenuUsuario(event) {
+
+            event.stopPropagation();
+
+            const menu =
+                document.getElementById("menuUsuario");
+
+            const botao =
+                document.getElementById("botaoUsuario");
+
+
+            if (!menu || !botao) {
+                return;
+            }
+
+
+            menu.classList.toggle("aberto");
+
+            botao.classList.toggle("ativo");
+
+        }
+
+
+
+        document.addEventListener("click", function () {
+
+            const menu =
+                document.getElementById("menuUsuario");
+
+            const botao =
+                document.getElementById("botaoUsuario");
+
+
+            if (menu) {
+
+                menu.classList.remove("aberto");
+
+            }
+
+
+            if (botao) {
+
+                botao.classList.remove("ativo");
+
+            }
+
+        });
+
+
+
+        const menuUsuario =
+            document.getElementById("menuUsuario");
+
+
+        if (menuUsuario) {
+
+            menuUsuario.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+                }
+            );
+
+        }
+
+    </script>
 
 
 </body>
