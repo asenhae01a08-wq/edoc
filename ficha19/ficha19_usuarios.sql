@@ -45,7 +45,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Carlos Charles Cardoso','999.888.321-11','carlin@gmail.com','carlos1232026','Profissional','Ativo',NULL),(2,'André Augusto Almeida','214.385.976-10','andrezin@gmail.com','andr1232026','Profissional','Ativo','2026-08-06 13:08:51'),(3,'Bruno Bento Barros','385.712.649-21','brunozin@gmail.com','brun1232026','Profissional','Ativo','2026-08-06 13:08:51'),(4,'Daniel Diego Duarte','472.831.590-43','danielzin@gmail.com','dani1232026','Profissional','Ativo','2026-08-06 13:08:51'),(5,'Eduardo Everton Esteves','563.914.287-65','eduardozin@gmail.com','edua1232026','Profissional','Ativo','2026-08-06 13:08:51'),(6,'Felipe Fabrício Ferreira','638.520.174-87','felipezin@gmail.com','feli1232026','Profissional','Ativo','2026-08-06 13:08:51'),(7,'Guilherme Gustavo Gomes','741.693.258-09','guilhermezin@gmail.com','guil1232026','Profissional','Ativo','2026-08-06 13:08:51'),(8,'Henrique Heitor Holanda','852.174.396-31','henriquezin@gmail.com','henr1232026','Profissional','Ativo','2026-08-06 13:08:51');
+INSERT INTO `usuarios` VALUES (1,'Carlos Charles Cardoso','999.888.321-11','carlosed0c.prise@gmail.com','carlos1232026','Profissional','Ativo',NULL),(2,'André Augusto Almeida','214.385.976-10','andreed0c.prise@gmail.com','andr1232026','Profissional','Ativo','2026-08-06 13:08:51'),(3,'Bruno Bento Barros','385.712.649-21','brunoed0c.prise@gmail.com','brun1232026','Profissional','Ativo','2026-08-06 13:08:51'),(4,'Daniel Diego Duarte','472.831.590-43','danieled0c.prise@gmail.com','dani1232026','Profissional','Ativo','2026-08-06 13:08:51'),(5,'Eduardo Everton Esteves','563.914.287-65','eduardoed0c.prise@gmail.com','edua1232026','Profissional','Ativo','2026-08-06 13:08:51'),(6,'Felipe Fabrício Ferreira','638.520.174-87','felipeed0c.prise@gmail.com','feli1232026','Profissional','Ativo','2026-08-06 13:08:51'),(7,'Guilherme Gustavo Gomes','741.693.258-09','guilhermeed0c.prise@gmail.com','guil1232026','Profissional','Ativo','2026-08-06 13:08:51'),(8,'Henrique Heitor Holanda','852.174.396-31','henriqueed0c.prise@gmail.com','henr1232026','Profissional','Ativo','2026-08-06 13:08:51');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-08-11 11:44:00
+-- Dump completed on 2026-08-14 14:45:47
