@@ -46,21 +46,84 @@ app.config["PASTA_PDFS_GERADOS"] = PASTA_PDFS_GERADOS
 # ==========================================================
 
 def login_required_profissional(f):
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get("nivel") != "Profissional":
-            return redirect(url_for("login"))
+
+        nivel = session.get("nivel")
+
+        # Não está logado
+        if not nivel:
+
+            flash(
+                "Faça login para acessar esta página."
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+
+        # É ALUNO tentando entrar em tela profissional
+        if nivel == "Aluno":
+
+            return redirect(
+                url_for("iniciala")
+            )
+
+
+        # Qualquer coisa diferente de Profissional
+        if nivel != "Profissional":
+
+            session.clear()
+
+            return redirect(
+                url_for("login")
+            )
+
 
         return f(*args, **kwargs)
 
     return decorated_function
 
 
+
 def login_required_aluno(f):
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get("nivel") != "Aluno":
-            return redirect(url_for("login"))
+
+        nivel = session.get("nivel")
+
+        # Não está logado
+        if not nivel:
+
+            flash(
+                "Faça login para acessar esta página."
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+
+        # É PROFISSIONAL tentando entrar em tela do aluno
+        if nivel == "Profissional":
+
+            return redirect(
+                url_for("inicialp")
+            )
+
+
+        # Qualquer coisa diferente de Aluno
+        if nivel != "Aluno":
+
+            session.clear()
+
+            return redirect(
+                url_for("login")
+            )
+
 
         return f(*args, **kwargs)
 
@@ -71,8 +134,36 @@ def login_required_aluno(f):
 # LOGIN
 # ==========================================================
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route(
+    "/login",
+    methods=["GET", "POST"]
+)
 def login():
+
+    # ==========================================
+    # SE JÁ ESTIVER LOGADO
+    # ==========================================
+
+    if request.method == "GET":
+
+        nivel = session.get("nivel")
+
+        if nivel == "Aluno":
+
+            return redirect(
+                url_for("iniciala")
+            )
+
+        if nivel == "Profissional":
+
+            return redirect(
+                url_for("inicialp")
+            )
+
+
+    # ==========================================
+    # LOGIN
+    # ==========================================
 
     if request.method == "POST":
 
@@ -86,10 +177,23 @@ def login():
             ""
         )
 
+
+        if not identificacao or not senha:
+
+            flash(
+                "Preencha a identificação e a senha."
+            )
+
+            return redirect(
+                url_for("login")
+            )
+
+
         usuario = models.verificarLogin(
             identificacao,
             senha
         )
+
 
         if usuario is None:
 
@@ -101,86 +205,136 @@ def login():
                 url_for("login")
             )
 
+
+        # Remove qualquer sessão antiga antes
+        # de criar a sessão correta.
         session.clear()
 
-        session["nome"] = usuario["nome"]
 
-        session["email"] = usuario.get(
-            "email"
-        )
-
-        session["nivel"] = usuario[
-            "cargo_nivel"
-        ]
-
-        session["origem"] = usuario.get(
+        origem = usuario.get(
             "origem"
         )
 
+        cargo = usuario.get(
+            "cargo_nivel"
+        )
+
+
+        # ==================================================
+        # ALUNO
+        #
+        # IMPORTANTE:
+        # verificamos a origem ANTES do profissional.
+        # ==================================================
+
         if (
-            usuario["cargo_nivel"]
-            == "Profissional"
+            origem == "aluno"
+            or cargo == "Aluno"
         ):
-
-            session["id"] = usuario["id"]
-
-            return redirect(
-                url_for("inicialp")
-            )
-
-        if usuario.get("origem") == "aluno":
 
             session["aluno_id"] = (
                 usuario["id"]
             )
 
+            session["nome"] = (
+                usuario["nome"]
+            )
+
+            session["email"] = (
+                usuario.get("email")
+            )
+
+            # Força explicitamente ALUNO
+            session["nivel"] = "Aluno"
+
+            session["origem"] = "aluno"
+
+
             return redirect(
                 url_for("iniciala")
             )
 
-        aluno = models.buscar_aluno_por_email(
-            usuario.get("email")
-        )
 
-        if aluno is None:
+        # ==================================================
+        # PROFISSIONAL
+        # ==================================================
 
-            session.clear()
+        if cargo == "Profissional":
 
-            flash(
-                "O usuário aluno não possui "
-                "cadastro correspondente na "
-                "tabela alunos."
+            session["id"] = (
+                usuario["id"]
             )
+
+            session["nome"] = (
+                usuario["nome"]
+            )
+
+            session["email"] = (
+                usuario.get("email")
+            )
+
+            # Força explicitamente PROFISSIONAL
+            session["nivel"] = (
+                "Profissional"
+            )
+
+            session["origem"] = (
+                origem or "usuario"
+            )
+
 
             return redirect(
-                url_for("login")
+                url_for("inicialp")
             )
 
-        session["aluno_id"] = aluno["id"]
+
+        # ==================================================
+        # TIPO DE USUÁRIO DESCONHECIDO
+        # ==================================================
+
+        session.clear()
+
+        flash(
+            "O usuário não possui um nível "
+            "de acesso válido."
+        )
 
         return redirect(
-            url_for("iniciala")
+            url_for("login")
         )
+
 
     return render_template(
         "login.html"
     )
-
 
 # ==========================================================
 # ÁREA DO ALUNO
 # ==========================================================
 
 @app.route("/iniciala")
+@login_required_aluno
 def iniciala():
 
-    aluno_id = session.get(
-        "aluno_id"
-    )
+    aluno_id = session.get("aluno_id")
+
+    if not aluno_id:
+
+        session.clear()
+
+        flash(
+            "Sessão do aluno não encontrada."
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
 
     aluno = models.buscar_aluno_por_id(
         aluno_id
     )
+
 
     if aluno is None:
 
@@ -194,12 +348,11 @@ def iniciala():
             url_for("login")
         )
 
+
     return render_template(
         "iniciala.html",
         aluno=aluno
     )
-
-
 # ==========================================================
 # ÁREA DO PROFISSIONAL
 # ==========================================================
