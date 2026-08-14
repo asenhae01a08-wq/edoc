@@ -1,59 +1,78 @@
 USE ficha19;
 
--- ============================================================
--- MIGRAÇÃO PARA IMPORTAR O HISTÓRICO ESCOLAR OFICIAL
--- Pode ser executada mais de uma vez.
--- ============================================================
+-- ------------------------------------------------------------
+-- 0. CONFERÊNCIA ANTES DA ALTERAÇÃO
+-- ------------------------------------------------------------
+SELECT id, matricula, nome
+FROM alunos
+ORDER BY id;
 
--- 1) status_ficha19: algumas cópias antigas do banco não possuem a coluna.
-SET @tem_status = (
-    SELECT COUNT(*)
-    FROM information_schema.COLUMNS
-    WHERE TABLE_SCHEMA = DATABASE()
-      AND TABLE_NAME = 'alunos'
-      AND COLUMN_NAME = 'status_ficha19'
-);
+-- ------------------------------------------------------------
+-- 1. REMOVER TEMPORARIAMENTE AS FOREIGN KEYS QUE APONTAM
+--    DIRETAMENTE PARA alunos.id
+-- ------------------------------------------------------------
 
-SET @sql_status = IF(
-    @tem_status = 0,
-    "ALTER TABLE alunos
-     ADD COLUMN status_ficha19
-     ENUM('Pronta para emissão','Em fabricação')
-     DEFAULT 'Em fabricação'
-     AFTER senha",
-    "SELECT 'alunos.status_ficha19 já existe' AS info"
-);
+ALTER TABLE aluno_disciplina_base_comum
+    DROP FOREIGN KEY aluno_disciplina_base_comum_ibfk_1;
 
-PREPARE stmt_status FROM @sql_status;
-EXECUTE stmt_status;
-DEALLOCATE PREPARE stmt_status;
+ALTER TABLE aluno_disciplina_itinerario
+    DROP FOREIGN KEY aluno_disciplina_itinerario_ibfk_1;
 
+ALTER TABLE historico_escolar_geral
+    DROP FOREIGN KEY historico_escolar_geral_ibfk_1;
 
--- 2) dados_extras:
--- O documento oficial possui informações que não cabem nas tabelas antigas,
--- como endereço/autorização da escola, resumo anual, trilhas, observações,
--- CH em hora/relógio e data/local. Elas serão preservadas em JSON.
-SET @tem_extras = (
-    SELECT COUNT(*)
-    FROM information_schema.COLUMNS
-    WHERE TABLE_SCHEMA = DATABASE()
-      AND TABLE_NAME = 'historico_escolar_geral'
-      AND COLUMN_NAME = 'dados_extras'
-);
+-- ------------------------------------------------------------
+-- 2. TRANSFORMAR alunos.id EM AUTO_INCREMENT
+-- ------------------------------------------------------------
 
-SET @sql_extras = IF(
-    @tem_extras = 0,
-    "ALTER TABLE historico_escolar_geral
-     ADD COLUMN dados_extras JSON NULL
-     AFTER data_conclusao",
-    "SELECT 'historico_escolar_geral.dados_extras já existe' AS info"
-);
+ALTER TABLE alunos
+    MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT;
 
-PREPARE stmt_extras FROM @sql_extras;
-EXECUTE stmt_extras;
-DEALLOCATE PREPARE stmt_extras;
+-- ------------------------------------------------------------
+-- 3. RECRIAR AS FOREIGN KEYS EXATAMENTE COMO ESTAVAM
+-- ------------------------------------------------------------
 
+ALTER TABLE aluno_disciplina_base_comum
+    ADD CONSTRAINT aluno_disciplina_base_comum_ibfk_1
+    FOREIGN KEY (aluno_id)
+    REFERENCES alunos(id);
 
--- Conferência
-DESCRIBE alunos;
-DESCRIBE historico_escolar_geral;
+ALTER TABLE aluno_disciplina_itinerario
+    ADD CONSTRAINT aluno_disciplina_itinerario_ibfk_1
+    FOREIGN KEY (aluno_id)
+    REFERENCES alunos(id);
+
+ALTER TABLE historico_escolar_geral
+    ADD CONSTRAINT historico_escolar_geral_ibfk_1
+    FOREIGN KEY (aluno_id)
+    REFERENCES alunos(id);
+
+-- ------------------------------------------------------------
+-- 4. ADICIONAR O JSON USADO PELO ficha19BD.py
+-- ------------------------------------------------------------
+
+ALTER TABLE historico_escolar_geral
+    ADD COLUMN dados_extras JSON NULL
+    AFTER data_conclusao;
+
+-- ------------------------------------------------------------
+-- 5. CONFERÊNCIA FINAL
+-- ------------------------------------------------------------
+
+SHOW COLUMNS FROM alunos LIKE 'id';
+
+SHOW COLUMNS
+FROM historico_escolar_geral
+LIKE 'dados_extras';
+
+SELECT
+    TABLE_NAME,
+    CONSTRAINT_NAME,
+    COLUMN_NAME,
+    REFERENCED_TABLE_NAME,
+    REFERENCED_COLUMN_NAME
+FROM information_schema.KEY_COLUMN_USAGE
+WHERE TABLE_SCHEMA = DATABASE()
+  AND REFERENCED_TABLE_NAME = 'alunos'
+  AND REFERENCED_COLUMN_NAME = 'id'
+ORDER BY TABLE_NAME, CONSTRAINT_NAME;

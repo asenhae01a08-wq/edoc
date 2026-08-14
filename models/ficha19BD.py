@@ -13,6 +13,71 @@ def _valor_seguro(valor):
     return valor
 
 
+
+def _nota_segura(valor, contexto=""):
+    if valor in (None, "", "-"):
+        return None
+
+    try:
+        if isinstance(valor, str):
+            valor = valor.strip().replace(",", ".")
+        nota = float(valor)
+    except (TypeError, ValueError):
+        raise ValueError(
+            f"Nota inválida recebida do PDF"
+            f"{' em ' + contexto if contexto else ''}: {valor!r}"
+        )
+
+    if nota < 0 or nota > 10:
+        raise ValueError(
+            f"Nota fora da faixa de 0 a 10"
+            f"{' em ' + contexto if contexto else ''}: {nota}."
+        )
+
+    return round(nota, 2)
+
+
+def _percentual_seguro(valor, contexto=""):
+    if valor in (None, "", "-"):
+        return None
+
+    try:
+        if isinstance(valor, str):
+            valor = valor.strip().replace("%", "").replace(",", ".")
+        percentual = float(valor)
+    except (TypeError, ValueError):
+        raise ValueError(
+            f"Percentual inválido recebido do PDF"
+            f"{' em ' + contexto if contexto else ''}: {valor!r}"
+        )
+
+    if percentual < 0 or percentual > 100:
+        raise ValueError(
+            f"Percentual fora da faixa de 0 a 100"
+            f"{' em ' + contexto if contexto else ''}: {percentual}."
+        )
+
+    return round(percentual, 2)
+
+
+def _id_alunos_auto_increment(cursor):
+    cursor.execute(
+        """
+        SELECT EXTRA
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'alunos'
+          AND COLUMN_NAME = 'id'
+        LIMIT 1
+        """
+    )
+    linha = cursor.fetchone()
+    return bool(
+        linha
+        and "auto_increment" in str(linha.get("EXTRA") or "").lower()
+    )
+
+
 def _registro_seguro(registro):
     if not registro:
         return registro
@@ -68,10 +133,13 @@ def _validar_estrutura(cursor):
     if not _coluna_existe(cursor, "historico_escolar_geral", "dados_extras"):
         faltando.append("historico_escolar_geral.dados_extras")
 
+    if not _id_alunos_auto_increment(cursor):
+        faltando.append("alunos.id AUTO_INCREMENT")
+
     if faltando:
         raise RuntimeError(
             "O banco precisa da migração da Ficha 19 oficial. "
-            "Execute o arquivo migracao_ficha19_oficial.sql. "
+            "Execute o arquivo migracao_ficha19_corrigida.sql. "
             "Campos ausentes: " + ", ".join(faltando)
         )
 
@@ -201,10 +269,15 @@ def salvar_importacao_pdf(dados):
     itinerario = dados.get("itinerario", [])
     extras = dados.get("extras", {})
 
-    matricula = aluno_pdf.get("matricula")
+    matricula = str(aluno_pdf.get("matricula") or "").strip()
 
     if not matricula:
         raise ValueError("A matrícula não foi encontrada no PDF oficial.")
+
+    if not matricula.isdigit() or len(matricula) != 7:
+        raise ValueError(
+            f"A matrícula extraída precisa ter 7 números. Valor recebido: {matricula!r}."
+        )
 
     conexao = conectar_mysql()
 
@@ -430,10 +503,16 @@ def salvar_importacao_pdf(dados):
                 """,
                 (
                     item.get("nome"),
-                    item.get("nota"),
+                    _nota_segura(
+                        item.get("nota"),
+                        item.get("nome") or "Formação Geral Básica",
+                    ),
                     item.get("ano_letivo"),
                     resultado,
-                    item.get("frequencia_percentual"),
+                    _percentual_seguro(
+                        item.get("frequencia_percentual"),
+                        item.get("nome") or "Formação Geral Básica",
+                    ),
                     item.get("carga_horaria_horas_aula"),
                     item.get("carga_horaria_relogio"),
                     item.get("carga_horaria_total_anual"),
@@ -464,7 +543,10 @@ def salvar_importacao_pdf(dados):
                 (
                     historico_id,
                     disciplina_id,
-                    item.get("frequencia_percentual"),
+                    _percentual_seguro(
+                        item.get("frequencia_percentual"),
+                        item.get("nome") or "Formação Geral Básica",
+                    ),
                     item.get("carga_horaria_horas_aula"),
                 ),
             )
@@ -497,10 +579,16 @@ def salvar_importacao_pdf(dados):
                     item.get("nome"),
                     item.get("abreviacao"),
                     item.get("tipo"),
-                    item.get("nota"),
+                    _nota_segura(
+                        item.get("nota"),
+                        item.get("nome") or "Itinerário Formativo",
+                    ),
                     resultado,
                     item.get("periodo_letivo"),
-                    item.get("frequencia"),
+                    _percentual_seguro(
+                        item.get("frequencia"),
+                        item.get("nome") or "Itinerário Formativo",
+                    ),
                     item.get("carga_horaria"),
                     item.get("carga_horaria_horas_aula")
                     or item.get("carga_horaria"),
@@ -532,7 +620,10 @@ def salvar_importacao_pdf(dados):
                 (
                     historico_id,
                     disciplina_id,
-                    item.get("frequencia"),
+                    _percentual_seguro(
+                        item.get("frequencia"),
+                        item.get("nome") or "Itinerário Formativo",
+                    ),
                     item.get("carga_horaria_horas_aula")
                     or item.get("carga_horaria"),
                 ),
