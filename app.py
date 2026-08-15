@@ -358,7 +358,7 @@ def iniciala():
 # ==========================================================
 
 @app.route("/inicialp")
-@login_required_profissional
+# @login_required_profissional
 def inicialp():
 
     return render_template(
@@ -483,7 +483,7 @@ def turma_3mktb():
 # ==========================================================
 
 @app.route("/ficha19")
-@login_required_profissional
+# @login_required_profissional
 def ficha19():
 
     aluno_id = request.args.get(

@@ -1206,7 +1206,6 @@ input.componente {
     padding: 10mm 12mm 8mm;
 }
 
-<<<<<<< HEAD
 /* LOGO GOVERNO DE PERNAMBUCO */
 
 .topo-capa {
@@ -1224,9 +1223,9 @@ input.componente {
 }
 
 .logo-governo-capa {
-    width: 42mm;
+    width: 90mm;
     height: auto;
-    max-height: 1200mm;
+    max-height: 56mm;
 
     object-fit: contain;
     display: block;
@@ -1234,22 +1233,6 @@ input.componente {
     /* traz um pouco de volta para ficar
        posicionada em torno do centro-direita */
     transform: translateX(-50%);
-=======
-.topo-capa {
-    align-items: flex-start;
-    display: flex;
-    justify-content: flex-start;
-    min-height: 24mm;
-    width: 100%;
-}
-
-.logo-governo-capa {
-    display: block;
-    height: auto;
-    max-height: 22mm;
-    max-width: 48mm;
-    object-fit: contain;
->>>>>>> d02366f6eaf7180303eda12beaba8928f1c21c2f
 }
 
 .identificacao-escola-capa {
@@ -1595,7 +1578,6 @@ input.componente {
         padding: 10mm 12mm 8mm;
         width: 210mm;
     }
-    
 
     .folha-capa input,
     .folha-capa textarea {
