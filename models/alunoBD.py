@@ -189,9 +189,10 @@ def cadastrar_aluno(nome, matricula, cpf, email, data_nascimento, turma):
                 primeiro_login,
                 email,
                 senha,
-                status_ficha19
+                status_ficha19,
+                cargo_nivel
             )
-            VALUES (%s, %s, %s, %s, %s, 1, %s, 1, %s, %s, 'Em fabricação')
+            VALUES (%s, %s, %s, %s, %s, 1, %s, NULL, %s, %s, 'Em fabricação', 'Aluno')
             """,
             (
                 nome,

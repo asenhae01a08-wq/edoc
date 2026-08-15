@@ -559,6 +559,14 @@ def ficha19():
 
 # ==========================================================
 # IMPORTAR PDF DO SIEPE
+#
+# Modo normal:
+# - recebe 1 PDF pelo formulário e mantém o comportamento antigo.
+#
+# Modo lote:
+# - o navegador envia 1 PDF por requisição;
+# - o cabeçalho X-EDOC-BATCH=1 faz a rota responder JSON;
+# - cada PDF mantém sua própria transação no ficha19BD.py.
 # ==========================================================
 
 @app.route(
@@ -568,6 +576,28 @@ def ficha19():
 @login_required_profissional
 def importar_pdf_siepe():
 
+    modo_lote = (
+        request.headers.get("X-EDOC-BATCH") == "1"
+    )
+
+    def responder_erro(
+        mensagem,
+        status=400
+    ):
+        if modo_lote:
+            return jsonify(
+                {
+                    "sucesso": False,
+                    "erro": str(mensagem),
+                }
+            ), status
+
+        flash(str(mensagem))
+
+        return redirect(
+            url_for("ficha19")
+        )
+
     arquivo = request.files.get(
         "arquivoSiepe"
     )
@@ -576,26 +606,17 @@ def importar_pdf_siepe():
         arquivo is None
         or arquivo.filename == ""
     ):
-
-        flash(
-            "Selecione um PDF do SIEPE."
-        )
-
-        return redirect(
-            url_for("ficha19")
+        return responder_erro(
+            "Selecione um PDF do SIEPE.",
+            400
         )
 
     if not arquivo.filename.lower().endswith(
         ".pdf"
     ):
-
-        flash(
-            "O arquivo selecionado "
-            "precisa ser um PDF."
-        )
-
-        return redirect(
-            url_for("ficha19")
+        return responder_erro(
+            "O arquivo selecionado precisa ser um PDF.",
+            400
         )
 
     try:
@@ -613,50 +634,43 @@ def importar_pdf_siepe():
         # ==========================================
 
         dados = extrair_dados_siepe(
-
             conteudo["texto"],
-
             conteudo["tabelas"],
-
             conteudo.get("paginas")
         )
 
-        matricula = (
-            dados
-            .get("aluno", {})
-            .get("matricula")
+        aluno_pdf = dados.get(
+            "aluno",
+            {}
+        )
+
+        matricula = aluno_pdf.get(
+            "matricula"
         )
 
         app.logger.info(
-            "Ficha 19 lida: matricula=%s, base_comum=%s, itinerario=%s",
+            "Ficha 19 lida: arquivo=%s, matricula=%s, base_comum=%s, itinerario=%s",
+            arquivo.filename,
             matricula,
             len(dados.get("base_comum", [])),
             len(dados.get("itinerario", [])),
         )
 
         if not matricula:
-
-            flash(
-                "O PDF foi lido, mas a "
-                "matrícula não foi encontrada."
-            )
-
-            return redirect(
-                url_for("ficha19")
+            return responder_erro(
+                "O PDF foi lido, mas a matrícula não foi encontrada.",
+                422
             )
 
         # ==========================================
         # 3 - SALVA NO BANCO
         # ==========================================
 
-        aluno_id = (
-            models.salvar_importacao_pdf(
-                dados
-            )
+        aluno_id = models.salvar_importacao_pdf(
+            dados
         )
 
         if not aluno_id:
-
             raise ValueError(
                 "O PDF foi processado, "
                 "mas não foi possível obter "
@@ -674,12 +688,46 @@ def importar_pdf_siepe():
         )
 
         if not dados_salvos:
-
             raise ValueError(
                 "O PDF foi processado, "
                 "mas os dados não puderam "
                 "ser recuperados do banco."
             )
+
+        aluno_salvo = (
+            dados_salvos.get("aluno")
+            or {}
+        )
+
+        # ==========================================
+        # 5A - RESPOSTA PARA IMPORTAÇÃO EM LOTE
+        # ==========================================
+
+        if modo_lote:
+            return jsonify(
+                {
+                    "sucesso": True,
+                    "arquivo": arquivo.filename,
+                    "aluno_id": aluno_id,
+                    "matricula": (
+                        aluno_salvo.get("matricula")
+                        or matricula
+                    ),
+                    "nome": (
+                        aluno_salvo.get("nome")
+                        or aluno_pdf.get("nome")
+                        or ""
+                    ),
+                    "url_ficha": url_for(
+                        "ficha19",
+                        aluno_id=aluno_id
+                    ),
+                }
+            )
+
+        # ==========================================
+        # 5B - COMPORTAMENTO ANTIGO: 1 PDF
+        # ==========================================
 
         flash(
             "PDF importado com sucesso. "
@@ -695,29 +743,26 @@ def importar_pdf_siepe():
         )
 
     except ValueError as erro:
-
-        flash(
-            str(erro)
-        )
-
-        return redirect(
-            url_for("ficha19")
+        return responder_erro(
+            str(erro),
+            422
         )
 
     except Exception as erro:
 
         app.logger.exception(
             "Erro durante a importação "
-            "da Ficha 19"
+            "da Ficha 19: arquivo=%s",
+            getattr(
+                arquivo,
+                "filename",
+                "desconhecido"
+            ),
         )
 
-        flash(
-            f"Erro ao processar o PDF: "
-            f"{erro}"
-        )
-
-        return redirect(
-            url_for("ficha19")
+        return responder_erro(
+            f"Erro ao processar o PDF: {erro}",
+            500
         )
 
 

@@ -844,6 +844,7 @@
                 name="arquivoSiepe"
                 accept="application/pdf,.pdf"
                 required
+                multiple
             >
 
             <span
@@ -2970,6 +2971,12 @@
     src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"
     alt="Brasão de Pernambuco"
 >
+
+
+    <!-- Importação múltipla: não interfere no fluxo de 1 PDF -->
+    <script
+        src="{{ url_for('static', filename='scripts/importacao_lote.js') }}"
+    ></script>
 
 </body>
 
