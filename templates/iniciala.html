@@ -2,10 +2,7 @@
 <html lang="pt-BR">
 
 <head>
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
->
+
     <meta charset="UTF-8">
 
     <meta
@@ -13,11 +10,13 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>eDOC - Área do Aluno</title>
+    <title>
+        eDOC - Área do Aluno
+    </title>
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style3.css') }}"
+        href="{{ url_for('static', filename='style3.css') }}?v=20"
     >
 
     <link
@@ -25,80 +24,54 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
-    <script
-        src="{{ url_for('static', filename='script/script3.js') }}"
-        defer
-    ></script>
-
 </head>
 
 <body>
 
 
- <header class="cabecalho">
+    <!-- ==========================================
+         CABEÇALHO
+    ========================================== -->
 
-    <div class="topo">
+    <header class="cabecalho">
 
-        <a
-            href="{{ url_for('iniciala') }}"
-            class="marca"
-        >
-
-            <div class="espaco-logo">
-
-            
-                <img
-                    src="{{ url_for('static', filename='img/logo.png') }}"
-                    alt="Logo do eDOC"
-                >
-             
-
-            </div>
-
-            <div class="nome-sistema">
-
-                <strong>
-                    eDOC
-                </strong>
-
-                <span>
-                    Gestão Documental Escolar
-                </span>
-
-            </div>
-
-        </a>
+        <div class="topo">
 
 
-        <div class="usuario">
+            <!-- LOGO / MARCA -->
 
-            <div class="dados-usuario">
+            <a
+                href="{{ url_for('iniciala') }}"
+                class="marca"
+            >
 
-                <strong>
-                    {{ aluno["nome"] }}
-                </strong>
+                <div class="espaco-logo">
 
-                <span>
-                    Aluno
-                </span>
+                    <img
+                        src="{{ url_for('static', filename='img/logo.png') }}"
+                        alt="Logo do eDOC"
+                    >
 
-            </div>
+                </div>
 
-            <div class="icone-usuario">
-                <i class="fa-regular fa-user"></i>
-            </div>
 
-            <i class="fa-solid fa-chevron-down seta-usuario"></i>
+                <div class="nome-sistema">
 
-        </div>
+                    <strong>
+                        eDOC
+                    </strong>
 
-    </div>
+                    <span>
+                        Gestão Documental Escolar
+                    </span>
 
-</header>
+                </div>
 
-            <!-- ========================================== -->
+            </a>
+
+
+
             <!-- PERFIL DO ALUNO -->
-            <!-- ========================================== -->
 
             <div class="area-usuario">
 
@@ -136,8 +109,6 @@
                 </button>
 
 
-                <!-- MENU DO PERFIL -->
-
                 <div
                     class="menu-usuario"
                     id="menuUsuario"
@@ -162,9 +133,7 @@
 
 
 
-        <!-- ========================================== -->
         <!-- MENU SUPERIOR -->
-        <!-- ========================================== -->
 
         <nav class="menu-principal">
 
@@ -197,18 +166,19 @@
 
 
 
-    <!-- ========================================== -->
-    <!-- ESTRUTURA -->
-    <!-- ========================================== -->
+    <!-- ==========================================
+         ESTRUTURA PRINCIPAL
+    ========================================== -->
 
     <div class="estrutura-aluno">
 
 
-        <!-- ========================================== -->
-        <!-- BARRA LATERAL -->
-        <!-- ========================================== -->
+        <!-- ==========================================
+             BARRA LATERAL
+        ========================================== -->
 
         <aside class="barra-lateral">
+
 
             <div class="titulo-lateral">
 
@@ -287,44 +257,39 @@
 
             </div>
 
+
         </aside>
 
 
 
-        <!-- ========================================== -->
-        <!-- CONTEÚDO -->
-        <!-- ========================================== -->
+        <!-- ==========================================
+             CONTEÚDO
+        ========================================== -->
 
         <main class="conteudo">
 
 
-            <!-- ========================================== -->
-            <!-- BOAS VINDAS -->
-            <!-- ========================================== -->
+            <!-- ==========================================
+                 BOAS-VINDAS
+            ========================================== -->
 
             <section class="boas-vindas">
 
                 <div>
 
                     <span class="saudacao">
-
                         Área do aluno
-
                     </span>
 
 
                     <h1>
-
                         Olá, {{ aluno["nome"].split()[0] }}!
-
                     </h1>
 
 
                     <p>
-
                         Acompanhe o andamento dos seus documentos
                         escolares e consulte suas informações.
-
                     </p>
 
                 </div>
@@ -340,9 +305,9 @@
 
 
 
-            <!-- ========================================== -->
-            <!-- DADOS DO ALUNO -->
-            <!-- ========================================== -->
+            <!-- ==========================================
+                 DADOS DO ALUNO
+            ========================================== -->
 
             <h2 class="titulo-secao">
 
@@ -363,6 +328,7 @@
                         <i class="fa-solid fa-id-card"></i>
 
                     </div>
+
 
                     <div>
 
@@ -389,6 +355,7 @@
                         <i class="fa-solid fa-book-open"></i>
 
                     </div>
+
 
                     <div>
 
@@ -430,6 +397,7 @@
 
                     </div>
 
+
                     <div>
 
                         <span>
@@ -444,13 +412,14 @@
 
                 </div>
 
+
             </section>
 
 
 
-            <!-- ========================================== -->
-            <!-- DOCUMENTOS -->
-            <!-- ========================================== -->
+            <!-- ==========================================
+                 DOCUMENTOS
+            ========================================== -->
 
             <section
                 class="painel-documentos"
@@ -459,6 +428,7 @@
 
 
                 <div class="cabecalho-painel">
+
 
                     <div>
 
@@ -475,14 +445,13 @@
 
                     <i class="fa-regular fa-folder-open"></i>
 
+
                 </div>
 
 
 
                 <div class="lista-documentos">
 
-
-                    <!-- FICHA 19 -->
 
                     <article class="documento">
 
@@ -562,11 +531,12 @@
 
                                 </span>
 
+
                             </div>
 
 
 
-                            <!-- BARRA DE PROGRESSO -->
+                            <!-- BARRA DE STATUS -->
 
                             <div class="barra-status">
 
@@ -610,39 +580,43 @@
 
                             </p>
 
+
                         </div>
+
 
                     </article>
 
+
                 </div>
+
 
             </section>
 
+
         </main>
+
 
     </div>
 
 
 
-    <!-- ========================================== -->
-    <!-- RODAPÉ -->
-    <!-- ========================================== -->
+    <!-- ==========================================
+         RODAPÉ
+    ========================================== -->
 
     <footer>
 
         <p>
-
             eDOC — Sistema de Gestão de Documentos Escolares
-
         </p>
 
     </footer>
 
 
 
-    <!-- ========================================== -->
-    <!-- MENU DO PERFIL -->
-    <!-- ========================================== -->
+    <!-- ==========================================
+         MENU DO PERFIL
+    ========================================== -->
 
     <script>
 
@@ -670,29 +644,32 @@
 
 
 
-        document.addEventListener("click", function () {
+        document.addEventListener(
+            "click",
+            function () {
 
-            const menu =
-                document.getElementById("menuUsuario");
+                const menu =
+                    document.getElementById("menuUsuario");
 
-            const botao =
-                document.getElementById("botaoUsuario");
+                const botao =
+                    document.getElementById("botaoUsuario");
 
 
-            if (menu) {
+                if (menu) {
 
-                menu.classList.remove("aberto");
+                    menu.classList.remove("aberto");
+
+                }
+
+
+                if (botao) {
+
+                    botao.classList.remove("ativo");
+
+                }
 
             }
-
-
-            if (botao) {
-
-                botao.classList.remove("ativo");
-
-            }
-
-        });
+        );
 
 
 
