@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `ficha19` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `ficha19`;
 -- MySQL dump 10.13  Distrib 8.0.46, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ficha19
@@ -27,7 +29,7 @@ CREATE TABLE `disciplinas_anuais_base_comum` (
   `nome` varchar(150) NOT NULL,
   `nota` decimal(4,2) DEFAULT NULL,
   `ano_letivo` int DEFAULT NULL,
-  `resultado` varchar(30) DEFAULT NULL,
+  `resultado` varchar(50) DEFAULT NULL,
   `frequencia_percentual` decimal(5,2) DEFAULT NULL,
   `carga_horaria_horas_aula` int DEFAULT NULL,
   `carga_horaria_relogio` int DEFAULT NULL,
@@ -55,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-28 12:45:55
+-- Dump completed on 2026-08-14 20:48:39

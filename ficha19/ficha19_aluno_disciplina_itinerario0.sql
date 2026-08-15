@@ -18,29 +18,29 @@ USE `ficha19`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `aluno_disciplina_base_comum`
+-- Table structure for table `aluno_disciplina_itinerario`
 --
 
-DROP TABLE IF EXISTS `aluno_disciplina_base_comum`;
+DROP TABLE IF EXISTS `aluno_disciplina_itinerario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `aluno_disciplina_base_comum` (
+CREATE TABLE `aluno_disciplina_itinerario` (
   `aluno_id` int NOT NULL,
   `disciplina_id` int NOT NULL,
   PRIMARY KEY (`aluno_id`,`disciplina_id`),
   KEY `disciplina_id` (`disciplina_id`),
-  CONSTRAINT `aluno_disciplina_base_comum_ibfk_1` FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`),
-  CONSTRAINT `aluno_disciplina_base_comum_ibfk_2` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplinas_anuais_base_comum` (`id`)
+  CONSTRAINT `aluno_disciplina_itinerario_ibfk_1` FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`),
+  CONSTRAINT `aluno_disciplina_itinerario_ibfk_2` FOREIGN KEY (`disciplina_id`) REFERENCES `disciplinas_anuais_itinerario_formativo` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `aluno_disciplina_base_comum`
+-- Dumping data for table `aluno_disciplina_itinerario`
 --
 
-LOCK TABLES `aluno_disciplina_base_comum` WRITE;
-/*!40000 ALTER TABLE `aluno_disciplina_base_comum` DISABLE KEYS */;
-/*!40000 ALTER TABLE `aluno_disciplina_base_comum` ENABLE KEYS */;
+LOCK TABLES `aluno_disciplina_itinerario` WRITE;
+/*!40000 ALTER TABLE `aluno_disciplina_itinerario` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aluno_disciplina_itinerario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-08-14 14:45:46
+-- Dump completed on 2026-08-14 20:47:50
