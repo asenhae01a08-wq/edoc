@@ -6,33 +6,49 @@
 
 :root {
     --azul-principal: #0c4770;
-    --azul-escuro: #073450;
     --azul-claro: #e9f3fa;
     --azul-hover: #126596;
-    --verde: #1d8a68;
+
     --branco: #ffffff;
     --fundo: #f1f4f7;
+
     --texto: #26333d;
     --texto-claro: #667580;
+
     --borda: #d8e0e6;
+
     --sombra: 0 4px 15px rgba(16, 51, 75, 0.1);
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
 }
 
 body {
     min-height: 100vh;
+
+    padding: 30px 0;
+
     background: var(--fundo);
+
     color: var(--texto);
+
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* ÁREA PRINCIPAL */
+
+/* =========================
+   CARD PRINCIPAL
+========================= */
 
 .container {
     width: min(1100px, 92%);
-    min-height: calc(100vh - 60px);
 
-    margin: 30px auto;
-    padding: 35px 45px 55px;
+    margin: 0 auto;
+
+    padding: 32px 45px 50px;
 
     position: relative;
 
@@ -44,13 +60,17 @@ body {
     box-shadow: var(--sombra);
 }
 
-/* BOTÃO VOLTAR */
+
+/* =========================
+   VOLTAR
+========================= */
 
 .voltar {
     width: 46px;
     height: 46px;
 
     position: absolute;
+
     top: 30px;
     left: 35px;
 
@@ -59,12 +79,14 @@ body {
     justify-content: center;
 
     background: var(--azul-claro);
+
     color: var(--azul-principal);
 
     border: 1px solid #c9ddea;
     border-radius: 10px;
 
     text-decoration: none;
+
     font-size: 19px;
 
     transition: 0.2s;
@@ -72,103 +94,123 @@ body {
 
 .voltar:hover {
     background: var(--azul-principal);
+
     color: var(--branco);
 
     transform: translateX(-3px);
 }
 
-/* LOGO */
+
+/* =========================
+   LOGO
+========================= */
 
 .logo {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 
-    margin-top: 5px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
-.logo-circle {
+.espaco-logo {
     width: 72px;
     height: 72px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 0 0 72px;
 
-    background: var(--azul-principal);
-    color: var(--branco);
+    background: #f7f9fa;
 
+    border: 2px dashed #b8c8d3;
     border-radius: 18px;
 
-    font-size: 32px;
+    overflow: hidden;
+}
 
-    box-shadow: 0 6px 18px rgba(12, 71, 112, 0.2);
+.espaco-logo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 5px;
 }
 
 .logo h2 {
-    margin-top: 12px;
+    margin-top: 10px;
 
     color: var(--azul-principal);
 
     font-size: 30px;
+    line-height: 1;
 }
 
-/* TÍTULOS */
+
+/* =========================
+   TÍTULO
+========================= */
 
 .container > h1 {
     margin-bottom: 8px;
 
+    text-align: center;
+
     color: var(--texto);
 
-    text-align: center;
     font-size: 30px;
 }
 
 .subtitulo {
-    margin-bottom: 20px;
+    margin-bottom: 28px;
+
+    text-align: center;
 
     color: var(--texto-claro);
 
-    text-align: center;
     font-size: 15px;
 }
 
-/* LISTA DAS TURMAS */
+
+/* =========================
+   TURMAS
+========================= */
 
 .turmas {
+    width: 100%;
+
     max-width: 720px;
+
     margin: 0 auto;
 
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
     gap: 20px;
 }
 
-/* Se seu HTML usar .cards ou .lista-turmas */
 
-.cards,
-.lista-turmas {
-    max-width: 720px;
-    margin: 0 auto;
-
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-}
-
-/* CARTÃO DA TURMA */
+/* =========================
+   CARDS
+========================= */
 
 .card {
     min-height: 180px;
+
     padding: 24px;
 
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
     background: var(--branco);
+
     color: var(--texto);
 
     border: 1px solid var(--borda);
@@ -177,9 +219,9 @@ body {
     text-align: center;
     text-decoration: none;
 
-    box-shadow: 0 2px 9px rgba(20, 55, 80, 0.06);
-
-    cursor: pointer;
+    box-shadow:
+        0 2px 9px
+        rgba(20, 55, 80, 0.06);
 
     transition: 0.2s;
 }
@@ -192,67 +234,34 @@ body {
     transform: translateY(-4px);
 }
 
-/* CÍRCULO DO ÍCONE */
-
-.card .icone,
-.card-icon,
-.icone-turma {
+.icone-card {
     width: 58px;
     height: 58px;
 
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     background: var(--azul-claro);
+
     color: var(--azul-principal);
 
     border: 1px solid #c9ddea;
     border-radius: 50%;
 
-    font-size: 24px;
+    font-size: 23px;
 
     transition: 0.2s;
 }
 
-.card:hover .icone,
-.card:hover .card-icon,
-.card:hover .icone-turma {
+.card:hover .icone-card {
     background: var(--azul-principal);
+
     color: var(--branco);
 }
 
-/* CASO O ÍCONE ESTEJA DIRETO DENTRO DO CARD */
-
-.card > i {
-    width: 58px;
-    height: 58px;
-
-    margin-bottom: 16px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    background: var(--azul-claro);
-    color: var(--azul-principal);
-
-    border: 1px solid #c9ddea;
-    border-radius: 50%;
-
-    font-size: 24px;
-
-    transition: 0.2s;
-}
-
-.card:hover > i {
-    background: var(--azul-principal);
-    color: var(--branco);
-}
-
-.card h2,
 .card h3 {
     margin-bottom: 8px;
 
@@ -261,47 +270,31 @@ body {
     font-size: 22px;
 }
 
-.card p {
-    max-width: 220px;
+.card span {
+    max-width: 230px;
 
     color: var(--texto-claro);
 
     font-size: 13px;
+
     line-height: 1.4;
 }
 
-/* DESTAQUE OPCIONAL AO PASSAR O MOUSE */
 
-.card::after {
-    content: "Consultar alunos";
-
-    margin-top: 15px;
-
-    color: var(--azul-principal);
-
-    font-size: 12px;
-    font-weight: bold;
-
-    opacity: 0;
-
-    transform: translateY(5px);
-
-    transition: 0.2s;
-}
-
-.card:hover::after {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* RESPONSIVIDADE */
+/* =========================
+   RESPONSIVO
+========================= */
 
 @media (max-width: 750px) {
+
+    body {
+        padding: 18px 0;
+    }
+
     .container {
         width: 94%;
-        margin: 18px auto;
 
-        padding: 30px 20px 45px;
+        padding: 28px 20px 40px;
     }
 
     .voltar {
@@ -309,11 +302,11 @@ body {
         left: 20px;
     }
 
-    .logo-circle {
+    .espaco-logo {
         width: 62px;
         height: 62px;
 
-        font-size: 27px;
+        flex-basis: 62px;
     }
 
     .logo h2 {
@@ -324,28 +317,18 @@ body {
         font-size: 25px;
     }
 
-    .turmas,
-    .cards,
-    .lista-turmas {
+    .subtitulo {
+        font-size: 14px;
+    }
+
+    .turmas {
         grid-template-columns: 1fr;
+
+        max-width: 500px;
     }
 
     .card {
         min-height: 155px;
     }
-}
 
-@media (max-width: 420px) {
-    .container {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .container > h1 {
-        font-size: 22px;
-    }
-
-    .subtitulo {
-        font-size: 14px;
-    }
 }

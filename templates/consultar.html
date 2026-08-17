@@ -10,9 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        Consultar Documentos
-    </title>
+    <title>Consultar Documentos</title>
 
     <link
         rel="stylesheet"
@@ -28,163 +26,117 @@
 
 <body>
 
+    <main class="container">
 
-<div class="container">
-
-
-    <a
-        href="{{ url_for('inicialp') }}"
-        class="voltar"
-    >
-
-        <i class="fa-solid fa-arrow-left"></i>
-
-    </a>
+        <a
+            href="{{ url_for('inicialp') }}"
+            class="voltar"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
 
 
-    <div class="logo">
+                <div class="espaco-logo">
+
+                    <img
+                        src="{{ url_for('static', filename='img/logo.png') }}"
+                        alt="Logo do eDOC"
+                    >
+
+                </div>
 
 
-        <div class="logo-circle">
-
-            <i class="fa-solid fa-graduation-cap"></i>
+            <h2>eDOC</h2>
 
         </div>
 
 
-        <h2>
-            eDOC
-        </h2>
+        <h1>
+            Consultar Documentos
+        </h1>
 
 
-    </div>
+        <p class="subtitulo">
+            Selecione a turma para consultar:
+        </p>
 
 
-    <h1>
-        Consultar Documentos
-    </h1>
+        <div class="turmas">
+
+            <a
+                href="{{ url_for('turma_3tdsa') }}"
+                class="card"
+            >
+
+                <div class="icone-card">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <h3>3º TDS A</h3>
+
+                <span>
+                    Técnico em Desenvolvimento de Sistemas
+                </span>
+
+            </a>
 
 
-    <p class="subtitulo">
-    Selecione a turma para consultar:
-</p>
+            <a
+                href="{{ url_for('turma_3tdsb') }}"
+                class="card"
+            >
+
+                <div class="icone-card">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <h3>3º TDS B</h3>
+
+                <span>
+                    Técnico em Desenvolvimento de Sistemas
+                </span>
+
+            </a>
 
 
-    <div class="turmas">
+            <a
+                href="{{ url_for('turma_3mkta') }}"
+                class="card"
+            >
+
+                <div class="icone-card">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <h3>3º MKT A</h3>
+
+                <span>
+                    Técnico em Marketing
+                </span>
+
+            </a>
 
 
-        <!-- 3º TDS A -->
+            <a
+                href="{{ url_for('turma_3mktb') }}"
+                class="card"
+            >
 
-        <a
-            href="{{ url_for('turma_3tdsa') }}"
-            class="card"
-        >
+                <div class="icone-card">
+                    <i class="fa-solid fa-users"></i>
+                </div>
 
+                <h3>3º MKT B</h3>
 
-            <div class="icone-card">
+                <span>
+                    Técnico em Marketing
+                </span>
 
-                <i class="fa-solid fa-users"></i>
+            </a>
 
-            </div>
+        </div>
 
-
-            <h3>
-                3º TDS A
-            </h3>
-
-
-            <span>
-                Técnico em Desenvolvimento de Sistemas
-            </span>
-
-
-        </a>
-
-
-        <!-- 3º TDS B -->
-
-        <a
-            href="{{ url_for('turma_3tdsb') }}"
-            class="card"
-        >
-
-
-            <div class="icone-card">
-
-                <i class="fa-solid fa-users"></i>
-
-            </div>
-
-
-            <h3>
-                3º TDS B
-            </h3>
-
-
-            <span>
-                Técnico em Desenvolvimento de Sistemas
-            </span>
-
-
-        </a>
-
-
-        <!-- 3º MKT A -->
-
-         <a
-            href="{{ url_for('turma_3mkta') }}"
-            class="card"
-        >
-
-
-            <div class="icone-card">
-
-                <i class="fa-solid fa-users"></i>
-
-            </div>
-
-
-            <h3>
-                3º MKT A
-            </h3>
-
-
-            <span>
-                Técnico em Marketing
-            </span>
-
-
-        </a>
-
-
-        <!-- 3º MKT B -->
-
-         <a
-            href="{{ url_for('turma_3mktb') }}"
-            class="card"
-        >
-
-
-            <div class="icone-card">
-
-                <i class="fa-solid fa-users"></i>
-
-            </div>
-
-
-            <h3>
-                3º MKT B
-            </h3>
-
-
-            <span>
-                Técnico em Marketing
-            </span>
-
-
-        </a>
-</div>
-
+    </main>
 
 </body>
 
