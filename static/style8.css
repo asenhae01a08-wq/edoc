@@ -105,32 +105,87 @@ body {
 
 /* USUÁRIO */
 
+/* =========================
+   PERFIL DO USUÁRIO
+========================= */
+
+.area-usuario {
+    position: relative;
+}
+
+
+/* botão que contém nome + cargo + ícone */
+
 .usuario {
+    min-width: 255px;
+    min-height: 62px;
+
+    padding: 8px 10px 8px 16px;
+
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 12px;
+
+    background: transparent;
+
+    border: none;
+    border-radius: 8px;
+
+    color: var(--texto);
+
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition: 0.2s;
 }
+
+
+/* remove aparência padrão de botão */
+
+.usuario:focus {
+    outline: none;
+}
+
+.usuario:hover,
+.usuario.ativo {
+    background: #f5f9fc;
+}
+
+
+/* nome e cargo */
 
 .dados-usuario {
     display: flex;
     flex-direction: column;
+
     text-align: right;
 }
 
 .dados-usuario strong {
     color: var(--texto);
+
     font-size: 14px;
+    font-weight: 700;
 }
 
 .dados-usuario span {
     margin-top: 3px;
+
     color: var(--texto-claro);
+
     font-size: 12px;
 }
+
+
+/* círculo do usuário */
 
 .icone-usuario {
     width: 44px;
     height: 44px;
+
+    min-width: 44px;
 
     display: flex;
     align-items: center;
@@ -145,12 +200,87 @@ body {
     font-size: 19px;
 }
 
+
+/* setinha */
+
 .seta-usuario {
-    margin-left: 2px;
+    margin-left: 1px;
+
     color: #8796a1;
+
     font-size: 10px;
+
+    transition: 0.2s;
 }
 
+.usuario.ativo .seta-usuario {
+    transform: rotate(180deg);
+}
+
+
+/* =========================
+   MENU DO PERFIL
+========================= */
+
+.menu-usuario {
+    width: 100%;
+    min-width: 255px;
+
+    position: absolute;
+
+    top: calc(100% + 5px);
+    right: 0;
+
+    display: none;
+
+    overflow: hidden;
+
+    background: var(--branco);a
+
+    border: 1px solid var(--borda);
+    border-radius: 8px;
+
+    box-shadow:
+        0 8px 22px
+        rgba(16, 51, 75, 0.14);
+
+    z-index: 1000;
+}
+
+.menu-usuario.aberto {
+    display: block;
+}
+
+
+/* opção sair */
+
+.opcao-sair {
+    min-height: 48px;
+
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #c0392b;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.opcao-sair:hover {
+    background: #fff3f2;
+}
+
+.opcao-sair i {
+    font-size: 14px;
+}
 /* =========================
    MENU PRINCIPAL
 ========================= */
@@ -772,4 +902,21 @@ footer {
     .card-acao {
         min-height: 125px;
     }
+    .area-usuario {
+    margin-left: auto;
+}
+
+.usuario {
+    min-width: auto;
+
+    padding: 6px;
+}
+
+.menu-usuario {
+    min-width: 170px;
+}
+
+.seta-usuario {
+    display: none;
+}
 }

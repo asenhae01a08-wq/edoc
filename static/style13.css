@@ -49,13 +49,14 @@ body {
     width: 100%;
 
     padding: 42px 38px;
-
+    position: relative;
     background: var(--branco);
 
     border: 1px solid var(--borda);
     border-radius: 14px;
 
     box-shadow: var(--sombra);
+
 }
 
 .logo {
@@ -181,30 +182,43 @@ body {
     background: var(--azul-hover);
     transform: translateY(-1px);
 }
+/* =========================
+   BOTÃO VOLTAR - PADRÃO eDOC
+========================= */
 
-.voltar {
-    margin-top: 22px;
+.botao-voltar {
+    width: 46px;
+    height: 46px;
 
-    text-align: center;
-}
+    position: absolute;
+    top: 28px;
+    left: 28px;
 
-.voltar a {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 7px;
+    justify-content: center;
 
+    background: var(--azul-claro);
     color: var(--azul-principal);
+
+    border: 1px solid #c9ddea;
+    border-radius: 10px;
 
     text-decoration: none;
 
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 19px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
 }
 
-.voltar a:hover {
-    color: var(--azul-hover);
-}
+.botao-voltar:hover {
+    background: var(--azul-principal);
+    color: var(--branco);
 
+    transform: translateX(-3px);
+}
 .mensagem {
     margin-bottom: 18px;
     padding: 12px 14px;

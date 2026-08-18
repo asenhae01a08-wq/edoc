@@ -67,18 +67,33 @@
             display: flex;
             gap: 11px;
         }
+.icone-edoc {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
 
-        .icone-edoc {
-            align-items: center;
-            background: #17365d;
-            border-radius: 8px;
-            color: #ffffff;
-            display: flex;
-            font-size: 22px;
-            height: 45px;
-            justify-content: center;
-            width: 45px;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f7f9fa;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+.icone-edoc img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 3px;
+}
 
         .identidade-edoc h1 {
             color: #17365d;
@@ -115,8 +130,37 @@
         }
 
         .botao-voltar {
-            background: #58626e;
-        }
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e9f3fa;
+    color: #0c4770;
+
+    border: 1px solid #c9ddea;
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.botao-voltar:hover {
+    background: #0c4770;
+    color: #ffffff;
+
+    transform: translateX(-3px);
+}
 
         .rotulo-upload {
             background: #1e5f9e;
@@ -805,8 +849,11 @@
         <div class="identidade-edoc">
 
             <div class="icone-edoc">
-                <i class="fa-regular fa-file-lines"></i>
-            </div>
+    <img
+        src="{{ url_for('static', filename='img/logo.png') }}"
+        alt="Logo do eDOC"
+    >
+</div>
 
             <div>
                 <h1>eDOC</h1>
@@ -823,12 +870,12 @@
         >
 
             <a
-                href="{{ url_for('inicialp') }}"
-                class="botao-edoc botao-voltar"
-            >
-                <i class="fa-solid fa-arrow-left"></i>
-                Voltar
-            </a>
+    href="{{ url_for('inicialp') }}"
+    class="botao-voltar"
+    title="Voltar"
+>
+    <i class="fa-solid fa-arrow-left"></i>
+</a>
 
             <label
                 for="arquivoSiepe"

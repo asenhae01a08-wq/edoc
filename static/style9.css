@@ -60,6 +60,8 @@ body {
 ========================= */
 
 .card-suporte {
+    position: relative;
+
     width: 100%;
     max-width: 620px;
 
@@ -77,7 +79,6 @@ body {
 /* =========================
    ESPAÇO DA LOGO
 ========================= */
-
 .espaco-logo {
     width: 82px;
     height: 82px;
@@ -88,16 +89,14 @@ body {
     align-items: center;
     justify-content: center;
 
-    background: #f8fafb;
+    background: #f7f9fa;
 
-    border: 2px dashed #b8c8d3;
+    border: 1px solid var(--borda);
     border-radius: 14px;
 
     overflow: hidden;
 }
 
-
-/* Quando você colocar a imagem */
 
 .espaco-logo img {
     width: 100%;
@@ -317,38 +316,40 @@ body {
 /* =========================
    VOLTAR
 ========================= */
+.botao-voltar {
+    width: 46px;
+    height: 46px;
 
-.voltar {
-    width: fit-content;
+    position: absolute;
 
-    margin: 24px auto 0;
+    top: 28px;
+    left: 28px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    gap: 8px;
-
+    background: var(--azul-claro);
     color: var(--azul-principal);
+
+    border: 1px solid #c9ddea;
+    border-radius: 10px;
 
     text-decoration: none;
 
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 19px;
+
+    cursor: pointer;
 
     transition: 0.2s;
 }
 
+.botao-voltar:hover {
+    background: var(--azul-principal);
+    color: var(--branco);
 
-.voltar:hover {
-    color: var(--azul-escuro);
+    transform: translateX(-3px);
 }
-
-
-.voltar i {
-    font-size: 12px;
-}
-
 
 /* =========================
    RESPONSIVIDADE
@@ -387,5 +388,8 @@ body {
     .dados-contato strong {
         font-size: 14px;
     }
-
+    .botao-voltar {
+    top: 18px;
+    left: 18px;
+}
 }

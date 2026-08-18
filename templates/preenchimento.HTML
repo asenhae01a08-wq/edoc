@@ -32,10 +32,12 @@
                 href="{{ url_for('inicialp') }}"
                 class="marca"
             >
-
-                <div class="logo-circle">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
+<div class="logo-circle">
+    <img
+        src="{{ url_for('static', filename='img/logo.png') }}"
+        alt="Logo do eDOC"
+    >
+</div>
 
                 <div class="nome-sistema">
                     <strong>eDOC</strong>
@@ -48,12 +50,11 @@
             </a>
 
             <a
-                href="{{ url_for('inicialp') }}"
-                class="botao-voltar"
-            >
-                <i class="fa-solid fa-arrow-left"></i>
-                Voltar
-            </a>
+    href="{{ url_for('inicialp') }}"
+    class="voltar"
+>
+    <i class="fa-solid fa-arrow-left"></i>
+</a>
 
         </div>
 

@@ -53,17 +53,29 @@ body {
 .logo-circle {
     width: 55px;
     height: 55px;
+    min-width: 55px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: var(--azul-principal);
-    color: var(--branco);
+    background: #f7f9fa;
 
+    border: 1px solid var(--borda);
     border-radius: 14px;
 
-    font-size: 25px;
+    overflow: hidden;
+}
+
+.logo-circle img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 4px;
 }
 
 .nome-sistema {
@@ -85,32 +97,31 @@ body {
     font-size: 12px;
 }
 
-.botao-voltar {
-    min-height: 42px;
-    padding: 0 16px;
+.voltar {
+    width: 46px;
+    height: 46px;
 
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
 
-    color: var(--azul-principal);
     background: var(--azul-claro);
+    color: var(--azul-principal);
 
     border: 1px solid #c9ddea;
-    border-radius: 8px;
+    border-radius: 10px;
 
     text-decoration: none;
-
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 19px;
 
     transition: 0.2s;
 }
 
-.botao-voltar:hover {
+.voltar:hover {
     background: var(--azul-principal);
     color: var(--branco);
+
+    transform: translateX(-3px);
 }
 
 .pagina-cadastro {
@@ -355,11 +366,17 @@ body {
     }
 
     .logo-circle {
-        width: 46px;
-        height: 46px;
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+}
 
-        font-size: 20px;
-    }
+.voltar {
+    width: 42px;
+    height: 42px;
+
+    font-size: 17px;
+}
 
     .nome-sistema strong {
         font-size: 24px;

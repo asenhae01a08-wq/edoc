@@ -26,6 +26,13 @@
     <main class="container">
 
         <section class="card">
+            <a
+    href="{{ url_for('login') }}"
+    class="botao-voltar"
+    title="Voltar"
+>
+    <i class="fa-solid fa-arrow-left"></i>
+</a>
 
             <div class="logo">
                 <i class="fa-solid fa-key"></i>
@@ -72,6 +79,7 @@
                     </div>
 
                 </div>
+                
 
                 <button type="submit" class="btn">
 
@@ -83,17 +91,6 @@
 
             </form>
 
-            <div class="voltar">
-
-                <a href="{{ url_for('login') }}">
-
-                    <i class="fa-solid fa-arrow-left"></i>
-
-                    Voltar para o login
-
-                </a>
-
-            </div>
 
         </section>
 
