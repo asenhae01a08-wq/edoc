@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        eDOC - Redefinir Senha
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style10.css') }}?v=50"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <main class="pagina-redefinir">
+
+
+        <section class="card-redefinir">
+
+
+            <!-- ==========================================
+                 VOLTAR
+            ========================================== -->
+
+            <a
+                href="{{ url_for('login') }}"
+                class="botao-voltar"
+                aria-label="Voltar para o login"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </a>
+
+
+
+            <!-- ==========================================
+                 CABEÇALHO
+            ========================================== -->
+
+            <div class="cabecalho-redefinir">
+
+
+                <div class="icone-redefinir">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                </div>
+
+
+                <h1>
+                    Redefinir senha
+                </h1>
+
+
+                <p>
+
+                    Este é seu primeiro acesso.
+
+                    Crie uma nova senha para continuar
+                    utilizando o eDOC.
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- ==========================================
+                 MENSAGENS
+            ========================================== -->
+
+            {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+                {% if mensagens %}
+
+                    {% for categoria, mensagem in mensagens %}
+
+                        <div
+                            class="mensagem
+                            {% if categoria == 'sucesso' %}
+                                mensagem-sucesso
+                            {% else %}
+                                mensagem-erro
+                            {% endif %}"
+                        >
+
+                            {{ mensagem }}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            {% endwith %}
+
+
+
+            <!-- ==========================================
+                 FORMULÁRIO
+            ========================================== -->
+
+            <form
+                method="POST"
+                action="{{ url_for('redefinir') }}"
+                class="formulario-redefinir"
+            >
+
+
+                <!-- NOVA SENHA -->
+
+                <div class="campo">
+
+
+                    <label for="senha">
+
+                        Nova senha
+
+                    </label>
+
+
+                    <div class="campo-senha">
+
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Digite sua nova senha"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="mostrar-senha"
+                            onclick="alternarSenha('senha', 'iconeSenha1')"
+                            aria-label="Mostrar ou esconder senha"
+                        >
+
+                            <i
+                                class="fa-regular fa-eye"
+                                id="iconeSenha1"
+                            ></i>
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- CONFIRMAR SENHA -->
+
+                <div class="campo">
+
+
+                    <label for="confirmar_senha">
+
+                        Confirmar nova senha
+
+                    </label>
+
+
+                    <div class="campo-senha">
+
+
+                        <input
+                            type="password"
+                            id="confirmar_senha"
+                            name="confirmar_senha"
+                            placeholder="Digite novamente sua senha"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="mostrar-senha"
+                            onclick="alternarSenha('confirmar_senha', 'iconeSenha2')"
+                            aria-label="Mostrar ou esconder senha"
+                        >
+
+                            <i
+                                class="fa-regular fa-eye"
+                                id="iconeSenha2"
+                            ></i>
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- BOTÃO -->
+
+                <button
+                    type="submit"
+                    class="botao-redefinir"
+                >
+
+                    <i class="fa-solid fa-key"></i>
+
+                    Redefinir senha
+
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ==========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script>
+
+
+        function alternarSenha(campoId, iconeId) {
+
+
+            const campo =
+                document.getElementById(campoId);
+
+
+            const icone =
+                document.getElementById(iconeId);
+
+
+
+            if (campo.type === "password") {
+
+
+                campo.type = "text";
+
+
+                icone.classList.remove(
+                    "fa-eye"
+                );
+
+
+                icone.classList.add(
+                    "fa-eye-slash"
+                );
+
+
+            }
+
+            else {
+
+
+                campo.type = "password";
+
+
+                icone.classList.remove(
+                    "fa-eye-slash"
+                );
+
+
+                icone.classList.add(
+                    "fa-eye"
+                );
+
+
+            }
+
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

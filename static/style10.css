@@ -1,0 +1,522 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root {
+
+    --azul-principal: #0c4770;
+    --azul-escuro: #073450;
+    --azul-hover: #126596;
+    --azul-claro: #e9f3fa;
+
+    --verde: #1d8a68;
+    --vermelho: #b52b2b;
+
+    --branco: #ffffff;
+
+    --fundo: #f1f4f7;
+
+    --texto: #26333d;
+    --texto-claro: #667580;
+
+    --borda: #d8e0e6;
+
+}
+
+
+/* ==========================================
+   HTML / BODY
+========================================== */
+
+html,
+body {
+
+    width: 100%;
+
+    min-height: 100%;
+
+}
+
+
+body {
+
+    min-height: 100vh;
+
+    background: var(--fundo);
+
+    color: var(--texto);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* REMOVE QUALQUER ESTILO ANTIGO DE FUNDO */
+
+body::before,
+body::after {
+
+    display: none !important;
+
+    content: none !important;
+
+}
+
+
+/* ==========================================
+   PÁGINA
+========================================== */
+
+.pagina-redefinir {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    padding: 30px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--fundo);
+
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.card-redefinir {
+
+    width: 100%;
+
+    max-width: 430px;
+
+    padding:
+        26px
+        30px
+        32px;
+
+    position: relative;
+
+    background: var(--branco);
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 28px
+        rgba(12, 71, 112, 0.12);
+
+}
+
+
+/* ==========================================
+   VOLTAR
+========================================== */
+
+.botao-voltar {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--azul-claro);
+
+    color: var(--azul-principal);
+
+    border:
+        1px solid
+        #c9ddea;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+
+}
+
+
+.botao-voltar:hover {
+
+    background: var(--azul-principal);
+
+    color: var(--branco);
+
+    transform:
+        translateX(-3px);
+
+}
+
+
+/* ==========================================
+   CABEÇALHO
+========================================== */
+
+.cabecalho-redefinir {
+
+    margin-top: 8px;
+
+    text-align: center;
+
+}
+
+
+.icone-redefinir {
+
+    width: 58px;
+
+    height: 58px;
+
+    margin:
+        0
+        auto
+        14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: var(--azul-claro);
+
+    color: var(--azul-principal);
+
+    border-radius: 50%;
+
+    font-size: 22px;
+
+}
+
+
+.cabecalho-redefinir h1 {
+
+    color: var(--azul-principal);
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+}
+
+
+.cabecalho-redefinir p {
+
+    max-width: 330px;
+
+    margin:
+        8px
+        auto
+        26px;
+
+    color: var(--texto-claro);
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+}
+
+
+/* ==========================================
+   FORMULÁRIO
+========================================== */
+
+.formulario-redefinir {
+
+    width: 100%;
+
+}
+
+
+.campo {
+
+    width: 100%;
+
+    margin-bottom: 18px;
+
+}
+
+
+.campo label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--texto);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+/* ==========================================
+   CAMPOS SENHA
+========================================== */
+
+.campo-senha {
+
+    width: 100%;
+
+    position: relative;
+
+}
+
+
+.campo-senha input {
+
+    width: 100%;
+
+    height: 46px;
+
+    padding:
+        0
+        45px
+        0
+        13px;
+
+    background: #ffffff;
+
+    color: var(--texto);
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    outline: none;
+
+    transition: 0.2s;
+
+}
+
+
+.campo-senha input::placeholder {
+
+    color: #98a4ac;
+
+}
+
+
+.campo-senha input:focus {
+
+    border-color:
+        var(--azul-principal);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(12, 71, 112, 0.08);
+
+}
+
+
+/* ==========================================
+   OLHO DA SENHA
+========================================== */
+
+.mostrar-senha {
+
+    width: 42px;
+
+    height: 100%;
+
+    position: absolute;
+
+    top: 0;
+
+    right: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: transparent;
+
+    color: var(--texto-claro);
+
+    border: none;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+}
+
+
+.mostrar-senha:hover {
+
+    color:
+        var(--azul-principal);
+
+}
+
+
+/* ==========================================
+   BOTÃO REDEFINIR
+========================================== */
+
+.botao-redefinir {
+
+    width: 100%;
+
+    height: 46px;
+
+    margin-top: 4px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    background:
+        var(--azul-principal);
+
+    color:
+        var(--branco);
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+
+.botao-redefinir:hover {
+
+    background:
+        var(--azul-hover);
+
+}
+
+
+/* ==========================================
+   MENSAGENS
+========================================== */
+
+.mensagem {
+
+    width: 100%;
+
+    margin-bottom: 18px;
+
+    padding: 11px 13px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+}
+
+
+/* ERRO */
+
+.mensagem-erro {
+
+    background: #fff0f0;
+
+    color: #9a2929;
+
+    border:
+        1px solid
+        #f0cccc;
+
+}
+
+
+/* SUCESSO */
+
+.mensagem-sucesso {
+
+    background: #e4f5ef;
+
+    color: #14684f;
+
+    border:
+        1px solid
+        #bde0d3;
+
+}
+
+
+/* ==========================================
+   RESPONSIVO
+========================================== */
+
+@media (max-width: 500px) {
+
+
+    .pagina-redefinir {
+
+        padding:
+            20px
+            15px;
+
+    }
+
+
+    .card-redefinir {
+
+        padding:
+            22px
+            20px
+            28px;
+
+    }
+
+
+    .cabecalho-redefinir h1 {
+
+        font-size: 22px;
+
+    }
+
+
+}

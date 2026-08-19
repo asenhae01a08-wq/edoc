@@ -354,6 +354,223 @@ def iniciala():
         aluno=aluno
     )
 # ==========================================================
+# REDEFINIR SENHA - PRIMEIRO ACESSO
+# ==========================================================
+
+@app.route("/redefinir", methods=["GET", "POST"])
+def redefinir():
+
+    # ======================================================
+    # SEGURANÇA
+    # O aluno só pode acessar essa página depois do login
+    # ======================================================
+
+    if "usuario_id" not in session:
+
+        flash(
+            "Faça login para continuar.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    # ======================================================
+    # GET
+    # ======================================================
+
+    if request.method == "GET":
+
+        return render_template(
+            "redefinir.html"
+        )
+
+
+    # ======================================================
+    # RECEBE AS SENHAS
+    # ======================================================
+
+    senha = request.form.get(
+        "senha",
+        ""
+    ).strip()
+
+
+    confirmar_senha = request.form.get(
+        "confirmar_senha",
+        ""
+    ).strip()
+
+
+    # ======================================================
+    # CAMPOS VAZIOS
+    # ======================================================
+
+    if not senha or not confirmar_senha:
+
+        flash(
+            "Preencha todos os campos.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # TAMANHO MÍNIMO
+    # ======================================================
+
+    if len(senha) < 6:
+
+        flash(
+            "A senha deve possuir pelo menos 6 caracteres.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # CONFIRMAÇÃO
+    # ======================================================
+
+    if senha != confirmar_senha:
+
+        flash(
+            "As senhas não coincidem.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # CONEXÃO COM MYSQL
+    # ======================================================
+
+    conexao = conectar_mysql()
+
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    cursor = conexao.cursor()
+
+
+    try:
+
+        # ==================================================
+        # ATUALIZA A SENHA REAL DO USUÁRIO
+        # E FINALIZA O PRIMEIRO ACESSO
+        # ==================================================
+
+        query = """
+            UPDATE usuarios
+
+            SET
+                senha = %s,
+                primeiro_acesso = 0
+
+            WHERE id = %s
+        """
+
+
+        cursor.execute(
+            query,
+            (
+                senha,
+                session["usuario_id"]
+            )
+        )
+
+
+        # Confere se encontrou o usuário
+
+        if cursor.rowcount == 0:
+
+            conexao.rollback()
+
+            flash(
+                "Usuário não encontrado.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("redefinir")
+            )
+
+
+        conexao.commit()
+
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        print(
+            "ERRO AO REDEFINIR SENHA:",
+            erro
+        )
+
+        flash(
+            "Não foi possível redefinir a senha.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    finally:
+
+        cursor.close()
+
+        conexao.close()
+
+
+    # ======================================================
+    # ENCERRA O PRIMEIRO LOGIN
+    # ======================================================
+
+    session.clear()
+
+
+    # ======================================================
+    # MENSAGEM PARA O LOGIN
+    # ======================================================
+
+    flash(
+        "Senha redefinida com sucesso!",
+        "sucesso"
+    )
+
+
+    # ======================================================
+    # VOLTA PARA O LOGIN
+    # ======================================================
+
+    return redirect(
+        url_for("login")
+    )
+# ==========================================================
 # ÁREA DO PROFISSIONAL
 # ==========================================================
 

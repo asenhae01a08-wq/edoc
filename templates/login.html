@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -9,24 +10,33 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>eDOC - Acesso</title>
+    <title>
+        eDOC - Acesso
+    </title>
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style2.css') }}"
+        href="{{ url_for('static', filename='style2.css') }}?v=100"
     >
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
+
 </head>
+
 
 <body>
 
+
     <div class="pagina">
 
-        <!-- BANNER -->
+
+        <!-- ==========================================
+             BANNER
+        ========================================== -->
+
         <header class="banner">
 
             <div class="marca">
@@ -40,9 +50,12 @@
 
                 </div>
 
+
                 <div class="texto-logo">
 
-                    <h1>eDOC</h1>
+                    <h1>
+                        eDOC
+                    </h1>
 
                     <p>
                         Sistema de Gestão de Documentos Escolares
@@ -55,48 +68,67 @@
         </header>
 
 
-        <!-- MENU -->
+
+        <!-- ==========================================
+             MENU
+        ========================================== -->
+
         <nav class="menu">
 
-            <a href="#" class="ativo">
+            <a
+                href="#"
+                class="ativo"
+            >
                 Início
             </a>
 
-            <a href="suporte">
+
+            <a
+                href="{{ url_for('suporte') }}"
+            >
                 Contato
             </a>
 
         </nav>
 
 
-        <!-- CONTEÚDO -->
+
+        <!-- ==========================================
+             CONTEÚDO
+        ========================================== -->
+
         <main class="conteudo">
+
 
             <section class="area-acesso">
 
-                <div class="titulo-pagina">
 
-
-        
-
-                </div>
-
+                <!-- ==========================================
+                     PAINEL
+                ========================================== -->
 
                 <div class="painel-login">
 
-                  <div class="cabecalho-painel">
 
-    <div class="cabecalho-painel">
+                    <div class="cabecalho-painel">
 
-    <h3>Entrar no sistema</h3>
+                        <h3>
+                            Entrar no sistema
+                        </h3>
 
-</div>
-</div>
+                    </div>
+
 
 
                     <div class="corpo-painel">
 
+
+                        <!-- ==========================================
+                             APRESENTAÇÃO
+                        ========================================== -->
+
                         <div class="apresentacao">
+
 
                             <div class="icone-usuario">
 
@@ -104,20 +136,29 @@
 
                             </div>
 
+
                             <div class="texto-apresentacao">
 
-                                <h3>Bem-vindo ao eDOC</h3>
+                                <h3>
+                                    Bem-vindo ao eDOC
+                                </h3>
 
                                 <p>
-                                    Consulte documentos escolares, acompanhe
-                                    solicitações e acesse as funcionalidades
-                                    disponíveis para o seu perfil.
+                                    Consulte documentos escolares,
+                                    acompanhe solicitações e acesse
+                                    as funcionalidades disponíveis
+                                    para o seu perfil.
                                 </p>
 
                             </div>
 
                         </div>
 
+
+
+                        <!-- ==========================================
+                             FORMULÁRIO
+                        ========================================== -->
 
                         <form
                             action="{{ url_for('login') }}"
@@ -126,12 +167,17 @@
                             class="formulario"
                         >
 
+
                             <!-- MATRÍCULA / E-MAIL -->
+
                             <div class="grupo">
 
                                 <label for="identificacao">
+
                                     Matrícula ou e-mail
+
                                 </label>
+
 
                                 <div class="campo">
 
@@ -151,12 +197,17 @@
                             </div>
 
 
+
                             <!-- SENHA -->
+
                             <div class="grupo">
 
                                 <label for="senha">
+
                                     Senha
+
                                 </label>
+
 
                                 <div class="campo">
 
@@ -170,6 +221,7 @@
                                         autocomplete="current-password"
                                         required
                                     >
+
 
                                     <button
                                         type="button"
@@ -191,7 +243,11 @@
                             </div>
 
 
-                            <!-- AÇÕES -->
+
+                            <!-- ==========================================
+                                 AÇÕES
+                            ========================================== -->
+
                             <div class="acoes">
 
                                 <button
@@ -205,20 +261,29 @@
 
                                 </button>
 
+
                                 <a href="{{ url_for('esqueci') }}">
+
                                     Esqueci minha senha
+
                                 </a>
 
                             </div>
 
+
                         </form>
+
 
                     </div>
 
                 </div>
 
 
-                <!-- MENSAGENS DO FLASK -->
+
+                <!-- ==========================================
+                     MENSAGENS DO FLASK
+                ========================================== -->
+
                 {% with messages = get_flashed_messages() %}
 
                     {% if messages %}
@@ -228,8 +293,11 @@
                             {% for message in messages %}
 
                                 <p>
+
                                     <i class="fa-solid fa-circle-exclamation"></i>
+
                                     {{ message }}
+
                                 </p>
 
                             {% endfor %}
@@ -240,10 +308,17 @@
 
                 {% endwith %}
 
+
             </section>
+
 
         </main>
 
+
+
+        <!-- ==========================================
+             RODAPÉ
+        ========================================== -->
 
         <footer class="rodape">
 
@@ -253,10 +328,15 @@
 
         </footer>
 
+
     </div>
 
 
-    <!-- MOSTRAR / ESCONDER SENHA -->
+
+    <!-- ==========================================
+         MOSTRAR / ESCONDER SENHA
+    ========================================== -->
+
     <script>
 
         function mostrarSenha() {
@@ -273,13 +353,17 @@
                 campoSenha.type = "text";
 
                 iconeSenha.classList.remove("fa-eye");
+
                 iconeSenha.classList.add("fa-eye-slash");
 
-            } else {
+            }
+
+            else {
 
                 campoSenha.type = "password";
 
                 iconeSenha.classList.remove("fa-eye-slash");
+
                 iconeSenha.classList.add("fa-eye");
 
             }
@@ -287,6 +371,7 @@
         }
 
     </script>
+
 
 </body>
 
