@@ -799,7 +799,7 @@ a {
 @media (max-width: 750px) {
 
     .banner {
-        min-height: auto;
+        min-height: 300px;
     }
 
 

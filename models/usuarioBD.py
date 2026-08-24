@@ -70,7 +70,7 @@ def verificarLogin(identificacao, senha):
             (identificacao, senha),
         )
         aluno = cursor.fetchone()
-
+        
         if aluno:
             aluno["cargo_nivel"] = "Aluno"
             aluno["origem"] = "aluno"
