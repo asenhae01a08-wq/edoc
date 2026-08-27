@@ -387,14 +387,47 @@ def gerar_fichas():
 # CONSULTAR DOCUMENTOS
 # ==========================================================
 
-@app.route("/consultar_documentos")
+@app.route("/consultar_documentos", methods=["GET"])
 @login_required_profissional
 def consultar():
 
+    termo = request.args.get(
+        "q",
+        ""
+    ).strip()
+
+    alunos = []
+
+    pesquisou = False
+
+
+    if termo:
+
+        pesquisou = True
+
+        alunos = models.buscar_alunos_por_pesquisa(
+            termo
+        )
+
+
     return render_template(
-        "consultar.html"
+        "consultar.html",
+        termo=termo,
+        alunos=alunos,
+        pesquisou=pesquisou
     )
 
+# ==========================================================
+# TURMAS E ALUNOS
+# ==========================================================
+
+@app.route("/turmas_alunos")
+@login_required_profissional
+def turmas_alunos():
+
+    return render_template(
+        "turmas_alunos.html"
+    )
 
 # ==========================================================
 # TURMA TDS A

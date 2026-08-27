@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
@@ -10,12 +11,16 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Consultar Documentos</title>
+    <title>
+        Consultar Documentos
+    </title>
+
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style7.css') }}"
+        href="{{ url_for('static', filename='style7.css') }}?v=30"
     >
+
 
     <link
         rel="stylesheet"
@@ -24,115 +29,387 @@
 
 </head>
 
+
 <body>
 
+
     <main class="container">
+
+
+        <!-- ==========================================
+             VOLTAR
+        ========================================== -->
 
         <a
             href="{{ url_for('inicialp') }}"
             class="voltar"
+            aria-label="Voltar"
         >
+
             <i class="fa-solid fa-arrow-left"></i>
+
         </a>
 
-<div class="logo">
-
-    <div class="espaco-logo">
-        <img
-            src="{{ url_for('static', filename='img/logo.png') }}"
-            alt="Logo do eDOC"
-        >
-    </div>
-
-    <h2>eDOC</h2>
-
-</div>
-
-<h1>
-    Consultar Documentos
-</h1>
-
-<p class="subtitulo">
-    Selecione a turma para consultar:
-</p>
 
 
-        <div class="turmas">
+        <!-- ==========================================
+             LOGO
+        ========================================== -->
 
-            <a
-                href="{{ url_for('turma_3tdsa') }}"
-                class="card"
-            >
+        <div class="logo">
 
-                <div class="icone-card">
-                    <i class="fa-solid fa-users"></i>
-                </div>
+            <div class="espaco-logo">
 
-                <h3>3º TDS A</h3>
+                <img
+                    src="{{ url_for('static', filename='img/logo.png') }}"
+                    alt="Logo do eDOC"
+                >
 
-                <span>
-                    Técnico em Desenvolvimento de Sistemas
-                </span>
-
-            </a>
+            </div>
 
 
-            <a
-                href="{{ url_for('turma_3tdsb') }}"
-                class="card"
-            >
-
-                <div class="icone-card">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-
-                <h3>3º TDS B</h3>
-
-                <span>
-                    Técnico em Desenvolvimento de Sistemas
-                </span>
-
-            </a>
-
-
-            <a
-                href="{{ url_for('turma_3mkta') }}"
-                class="card"
-            >
-
-                <div class="icone-card">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-
-                <h3>3º MKT A</h3>
-
-                <span>
-                    Técnico em Marketing
-                </span>
-
-            </a>
-
-
-            <a
-                href="{{ url_for('turma_3mktb') }}"
-                class="card"
-            >
-
-                <div class="icone-card">
-                    <i class="fa-solid fa-users"></i>
-                </div>
-
-                <h3>3º MKT B</h3>
-
-                <span>
-                    Técnico em Marketing
-                </span>
-
-            </a>
+            <h2>
+                eDOC
+            </h2>
 
         </div>
 
+
+
+        <!-- ==========================================
+             TÍTULO
+        ========================================== -->
+
+        <h1>
+            Consultar documentos
+        </h1>
+
+
+        <p class="subtitulo">
+
+            Pesquise o aluno pelo nome ou matrícula.
+
+        </p>
+
+
+
+        <!-- ==========================================
+             PESQUISA
+        ========================================== -->
+
+        <section class="area-pesquisa">
+
+
+            <form
+                action="{{ url_for('consultar') }}"
+                method="GET"
+                class="form-pesquisa"
+            >
+
+
+                <div class="campo-pesquisa">
+
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+
+                    <input
+                        type="text"
+                        name="q"
+                        id="pesquisa"
+                        value="{{ termo }}"
+                        placeholder="Digite o nome ou matrícula do aluno"
+                        autocomplete="off"
+                    >
+
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="botao-pesquisar"
+                >
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    Pesquisar
+
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+
+
+        <!-- ==========================================
+             RESULTADOS
+        ========================================== -->
+
+        <section class="area-resultados">
+
+
+            {% if pesquisou %}
+
+
+                {% if alunos %}
+
+
+                    <div class="cabecalho-resultados">
+
+
+                        <div>
+
+                            <span>
+                                RESULTADO DA PESQUISA
+                            </span>
+
+                            <h2>
+                                Alunos encontrados
+                            </h2>
+
+                        </div>
+
+
+                        <div class="quantidade">
+
+                            {{ alunos|length }}
+
+                            {% if alunos|length == 1 %}
+
+                                aluno
+
+                            {% else %}
+
+                                alunos
+
+                            {% endif %}
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="lista-alunos">
+
+
+                        {% for aluno in alunos %}
+
+
+                            <article class="aluno-card">
+
+
+                                <!-- ÍCONE -->
+
+                                <div class="aluno-icone">
+
+                                    <i class="fa-solid fa-user-graduate"></i>
+
+                                </div>
+
+
+
+                                <!-- INFORMAÇÕES -->
+
+                                <div class="aluno-informacoes">
+
+
+                                    <h3>
+
+                                        {{ aluno["nome"] }}
+
+                                    </h3>
+
+
+                                    <div class="dados-aluno">
+
+
+                                        <span>
+
+                                            <i class="fa-solid fa-id-card"></i>
+
+                                            Matrícula:
+
+                                            <strong>
+                                                {{ aluno["matricula"] }}
+                                            </strong>
+
+                                        </span>
+
+
+
+                                        {% if aluno.get("id_turma") %}
+
+                                            <span>
+
+                                                <i class="fa-solid fa-users"></i>
+
+                                                Turma:
+
+                                                <strong>
+
+                                                    {{ aluno["id_turma"] }}
+
+                                                </strong>
+
+                                            </span>
+
+                                        {% endif %}
+
+
+
+                                        {% if aluno.get("curso_nome") %}
+
+                                            <span>
+
+                                                <i class="fa-solid fa-book-open"></i>
+
+                                                Curso:
+
+                                                <strong>
+
+                                                    {{ aluno["curso_nome"] }}
+
+                                                </strong>
+
+                                            </span>
+
+                                        {% endif %}
+
+
+                                    </div>
+
+
+                                </div>
+
+
+
+                                <!-- BOTÃO -->
+
+                                <div class="acao-aluno">
+
+
+                                    <a
+                                        href="{{ url_for('ficha19', aluno_id=aluno['id']) }}"
+                                        class="botao-consultar"
+                                    >
+
+                                        <i class="fa-regular fa-file-lines"></i>
+
+                                        Consultar documento
+
+                                    </a>
+
+
+                                </div>
+
+
+                            </article>
+
+
+                        {% endfor %}
+
+
+                    </div>
+
+
+
+                {% else %}
+
+
+                    <!-- NENHUM ALUNO -->
+
+                    <div class="estado-vazio">
+
+
+                        <div class="icone-vazio">
+
+                            <i class="fa-solid fa-user-slash"></i>
+
+                        </div>
+
+
+                        <h2>
+                            Aluno não encontrado
+                        </h2>
+
+
+                        <p>
+
+                            Não encontramos nenhum aluno com o nome
+                            ou matrícula informados.
+
+                        </p>
+
+
+                        <span>
+
+                            Confira os dados digitados e tente novamente.
+
+                        </span>
+
+
+                    </div>
+
+
+                {% endif %}
+
+
+
+            {% else %}
+
+
+                <!-- ESTADO INICIAL -->
+
+                <div class="estado-inicial">
+
+
+                    <div class="icone-inicial">
+
+                        <i class="fa-solid fa-magnifying-glass"></i>
+
+                    </div>
+
+
+                    <h2>
+                        Pesquise um aluno
+                    </h2>
+
+
+                    <p>
+
+                        Utilize a barra acima para localizar rapidamente
+                        um aluno cadastrado no eDOC.
+
+                    </p>
+
+
+                    <div class="dica-pesquisa">
+
+                        <i class="fa-regular fa-lightbulb"></i>
+
+                        Você pode pesquisar pelo nome completo,
+                        parte do nome ou matrícula.
+
+                    </div>
+
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
     </main>
+
 
 </body>
 

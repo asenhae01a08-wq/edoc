@@ -1,88 +1,149 @@
 * {
+
     margin: 0;
+
     padding: 0;
+
     box-sizing: border-box;
+
 }
 
+
 :root {
+
     --azul-principal: #0c4770;
+
+    --azul-escuro: #073450;
+
     --azul-claro: #e9f3fa;
+
     --azul-hover: #126596;
 
     --branco: #ffffff;
+
     --fundo: #f1f4f7;
 
     --texto: #26333d;
+
     --texto-claro: #667580;
 
     --borda: #d8e0e6;
 
-    --sombra: 0 4px 15px rgba(16, 51, 75, 0.1);
+    --sombra:
+        0 4px 15px
+        rgba(16, 51, 75, 0.1);
+
 }
+
+
 
 html,
 body {
+
     width: 100%;
+
     min-height: 100%;
+
 }
+
+
 
 body {
+
     min-height: 100vh;
 
-    padding: 30px 0;
+    padding:
+        30px
+        0;
 
-    background: var(--fundo);
+    background:
+        var(--fundo);
 
-    color: var(--texto);
+    color:
+        var(--texto);
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
 }
 
 
-/* =========================
-   CARD PRINCIPAL
-========================= */
+
+/* ==========================================
+   CONTAINER
+========================================== */
 
 .container {
-    width: min(1100px, 92%);
 
-    margin: 0 auto;
+    width:
+        min(
+            1100px,
+            92%
+        );
 
-    padding: 32px 45px 50px;
+    min-height: 620px;
+
+    margin:
+        0
+        auto;
+
+    padding:
+        32px
+        45px
+        50px;
 
     position: relative;
 
-    background: var(--branco);
+    background:
+        var(--branco);
 
-    border: 1px solid var(--borda);
+    border:
+        1px solid
+        var(--borda);
+
     border-radius: 12px;
 
-    box-shadow: var(--sombra);
+    box-shadow:
+        var(--sombra);
+
 }
 
 
-/* =========================
+
+/* ==========================================
    VOLTAR
-========================= */
+========================================== */
 
 .voltar {
+
     width: 46px;
+
     height: 46px;
 
     position: absolute;
 
     top: 30px;
+
     left: 35px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    background: var(--azul-claro);
+    background:
+        var(--azul-claro);
 
-    color: var(--azul-principal);
+    color:
+        var(--azul-principal);
 
-    border: 1px solid #c9ddea;
+    border:
+        1px solid
+        #c9ddea;
+
     border-radius: 10px;
 
     text-decoration: none;
@@ -90,49 +151,78 @@ body {
     font-size: 19px;
 
     transition: 0.2s;
+
 }
+
 
 .voltar:hover {
-    background: var(--azul-principal);
 
-    color: var(--branco);
+    background:
+        var(--azul-principal);
 
-    transform: translateX(-3px);
+    color:
+        var(--branco);
+
+    transform:
+        translateX(-3px);
+
 }
 
 
-/* =========================
+
+/* ==========================================
    LOGO
-========================= */
+========================================== */
 
 .logo {
+
     width: 100%;
 
+    margin:
+        5px
+        auto
+        20px;
+
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
+
     justify-content: center;
 
     text-align: center;
 
-    margin: 5px auto 20px;
 }
 
+
+
 .espaco-logo {
+
     width: 48px;
+
     height: 48px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
-    margin: 0 auto;
+    margin:
+        0
+        auto;
 
     overflow: hidden;
+
 }
 
+
+
 .espaco-logo img {
+
     width: 48px;
+
     height: 48px;
 
     display: block;
@@ -140,203 +230,967 @@ body {
     object-fit: contain;
 
     padding: 3px;
+
 }
 
+
+
 .logo h2 {
+
     width: 100%;
 
-    margin: 7px 0 0;
+    margin:
+        7px
+        0
+        0;
 
-    color: var(--azul-principal);
+    color:
+        var(--azul-principal);
 
     text-align: center;
 
     font-size: 22px;
+
     line-height: 1.1;
+
 }
 
-/* =========================
+
+
+/* ==========================================
    TÍTULO
-========================= */
+========================================== */
 
 .container > h1 {
+
     margin-bottom: 8px;
 
     text-align: center;
 
-    color: var(--texto);
+    color:
+        var(--texto);
 
     font-size: 30px;
+
 }
+
+
 
 .subtitulo {
-    margin-bottom: 28px;
+
+    margin-bottom: 30px;
 
     text-align: center;
 
-    color: var(--texto-claro);
+    color:
+        var(--texto-claro);
 
     font-size: 15px;
+
 }
 
 
-/* =========================
-   TURMAS
-========================= */
 
-.turmas {
+/* ==========================================
+   PESQUISA
+========================================== */
+
+.area-pesquisa {
+
     width: 100%;
 
-    max-width: 720px;
+    max-width: 760px;
 
-    margin: 0 auto;
+    margin:
+        0
+        auto
+        32px;
 
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 20px;
 }
 
 
-/* =========================
-   CARDS
-========================= */
 
-.card {
-    min-height: 180px;
+.form-pesquisa {
 
-    padding: 24px;
+    width: 100%;
 
     display: flex;
-    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 10px;
+
+}
+
+
+
+.campo-pesquisa {
+
+    min-width: 0;
+
+    flex: 1;
+
+    height: 52px;
+
+    display: flex;
 
     align-items: center;
-    justify-content: center;
 
-    background: var(--branco);
+    background:
+        var(--branco);
 
-    color: var(--texto);
+    border:
+        1px solid
+        #aebbc4;
 
-    border: 1px solid var(--borda);
-    border-radius: 10px;
-
-    text-align: center;
-    text-decoration: none;
-
-    box-shadow:
-        0 2px 9px
-        rgba(20, 55, 80, 0.06);
+    border-radius: 9px;
 
     transition: 0.2s;
+
 }
 
-.card:hover {
-    border-color: #91bdd7;
 
-    box-shadow: var(--sombra);
 
-    transform: translateY(-4px);
+.campo-pesquisa:focus-within {
+
+    border-color:
+        var(--azul-principal);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(12, 71, 112, 0.10);
+
 }
 
-.icone-card {
-    width: 58px;
-    height: 58px;
+
+
+.campo-pesquisa > i {
+
+    width: 50px;
+
+    flex-shrink: 0;
+
+    color:
+        var(--azul-principal);
+
+    text-align: center;
+
+    font-size: 16px;
+
+}
+
+
+
+.campo-pesquisa input {
+
+    min-width: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    padding-right: 15px;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color:
+        var(--texto);
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+}
+
+
+
+.campo-pesquisa input::placeholder {
+
+    color:
+        #8a979f;
+
+}
+
+
+
+.botao-pesquisar {
+
+    min-width: 135px;
+
+    height: 52px;
+
+    padding:
+        0
+        20px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    background:
+        var(--azul-principal);
+
+    color:
+        var(--branco);
+
+    border: none;
+
+    border-radius: 9px;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+}
+
+
+
+.botao-pesquisar:hover {
+
+    background:
+        var(--azul-hover);
+
+}
+
+
+
+/* ==========================================
+   RESULTADOS
+========================================== */
+
+.area-resultados {
+
+    width: 100%;
+
+    max-width: 850px;
+
+    margin:
+        0
+        auto;
+
+}
+
+
+
+.cabecalho-resultados {
 
     margin-bottom: 14px;
 
     display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+
+.cabecalho-resultados span {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color:
+        var(--azul-principal);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+}
+
+
+
+.cabecalho-resultados h2 {
+
+    font-size: 18px;
+
+}
+
+
+
+.quantidade {
+
+    padding:
+        6px
+        10px;
+
+    background:
+        var(--azul-claro);
+
+    color:
+        var(--azul-principal);
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* ==========================================
+   LISTA
+========================================== */
+
+.lista-alunos {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+}
+
+
+
+/* ==========================================
+   CARD DO ALUNO
+========================================== */
+
+.aluno-card {
+
+    width: 100%;
+
+    min-height: 100px;
+
+    padding: 17px;
+
+    display: flex;
+
     align-items: center;
-    justify-content: center;
 
-    background: var(--azul-claro);
+    gap: 15px;
 
-    color: var(--azul-principal);
+    background:
+        var(--branco);
 
-    border: 1px solid #c9ddea;
-    border-radius: 50%;
+    border:
+        1px solid
+        var(--borda);
 
-    font-size: 23px;
+    border-radius: 9px;
+
+    box-shadow:
+        0 2px 7px
+        rgba(20, 55, 80, 0.05);
 
     transition: 0.2s;
+
 }
 
-.card:hover .icone-card {
-    background: var(--azul-principal);
 
-    color: var(--branco);
+
+.aluno-card:hover {
+
+    border-color:
+        #a8c7da;
+
+    box-shadow:
+        0 4px 12px
+        rgba(20, 55, 80, 0.09);
+
 }
 
-.card h3 {
-    margin-bottom: 8px;
 
-    color: var(--azul-principal);
 
-    font-size: 22px;
+/* ==========================================
+   ÍCONE
+========================================== */
+
+.aluno-icone {
+
+    width: 50px;
+
+    height: 50px;
+
+    min-width: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        var(--azul-claro);
+
+    color:
+        var(--azul-principal);
+
+    border:
+        1px solid
+        #c9ddea;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
 }
 
-.card span {
-    max-width: 230px;
 
-    color: var(--texto-claro);
+
+/* ==========================================
+   INFORMAÇÕES
+========================================== */
+
+.aluno-informacoes {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+
+.aluno-informacoes h3 {
+
+    margin-bottom: 9px;
+
+    color:
+        var(--texto);
+
+    font-size: 15px;
+
+}
+
+
+
+.dados-aluno {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap:
+        7px
+        18px;
+
+}
+
+
+
+.dados-aluno span {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color:
+        var(--texto-claro);
+
+    font-size: 11px;
+
+}
+
+
+
+.dados-aluno i {
+
+    color:
+        var(--azul-principal);
+
+    font-size: 10px;
+
+}
+
+
+
+.dados-aluno strong {
+
+    color:
+        var(--texto);
+
+    font-weight: 600;
+
+}
+
+
+
+/* ==========================================
+   BOTÃO CONSULTAR
+========================================== */
+
+.acao-aluno {
+
+    flex-shrink: 0;
+
+}
+
+
+
+.botao-consultar {
+
+    min-height: 40px;
+
+    padding:
+        0
+        15px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    background:
+        var(--azul-principal);
+
+    color:
+        var(--branco);
+
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    transition: 0.2s;
+
+}
+
+
+
+.botao-consultar:hover {
+
+    background:
+        var(--azul-hover);
+
+}
+
+
+
+/* ==========================================
+   ESTADO INICIAL / VAZIO
+========================================== */
+
+.estado-inicial,
+.estado-vazio {
+
+    width: 100%;
+
+    max-width: 560px;
+
+    margin:
+        15px
+        auto
+        0;
+
+    padding:
+        38px
+        25px;
+
+    text-align: center;
+
+    background:
+        #fafcfd;
+
+    border:
+        1px dashed
+        #c9d7e0;
+
+    border-radius: 10px;
+
+}
+
+
+
+.icone-inicial,
+.icone-vazio {
+
+    width: 62px;
+
+    height: 62px;
+
+    margin:
+        0
+        auto
+        15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        var(--azul-claro);
+
+    color:
+        var(--azul-principal);
+
+    border-radius: 50%;
+
+    font-size: 24px;
+
+}
+
+
+
+.estado-inicial h2,
+.estado-vazio h2 {
+
+    margin-bottom: 7px;
+
+    color:
+        var(--texto);
+
+    font-size: 18px;
+
+}
+
+
+
+.estado-inicial > p,
+.estado-vazio > p {
+
+    max-width: 430px;
+
+    margin:
+        0
+        auto;
+
+    color:
+        var(--texto-claro);
 
     font-size: 13px;
 
-    line-height: 1.4;
+    line-height: 1.5;
+
 }
 
 
-/* =========================
-   RESPONSIVO
-========================= */
+
+.estado-vazio > span {
+
+    display: block;
+
+    margin-top: 8px;
+
+    color:
+        var(--texto-claro);
+
+    font-size: 11px;
+
+}
+
+
+
+.dica-pesquisa {
+
+    max-width: 410px;
+
+    margin:
+        18px
+        auto
+        0;
+
+    padding:
+        10px
+        13px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    background:
+        var(--branco);
+
+    color:
+        var(--texto-claro);
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 7px;
+
+    font-size: 11px;
+
+}
+
+
+
+.dica-pesquisa i {
+
+    color:
+        #c88308;
+
+}
+
+
+
+/* ==========================================
+   TABLET
+========================================== */
 
 @media (max-width: 750px) {
 
+
     body {
-        padding: 18px 0;
+
+        padding:
+            18px
+            0;
+
     }
+
 
     .container {
+
         width: 94%;
 
-        padding: 28px 20px 40px;
+        min-height: calc(100vh - 36px);
+
+        padding:
+            28px
+            20px
+            40px;
+
     }
+
 
     .voltar {
+
         top: 20px;
+
         left: 20px;
+
     }
 
-   .espaco-logo {
-    width: 48px;
-    height: 48px;
-}
 
-.espaco-logo img {
-    width: 48px;
-    height: 48px;
-}
-
-.logo h2 {
-    font-size: 22px;
-}
     .container > h1 {
+
         font-size: 25px;
+
     }
+
 
     .subtitulo {
+
         font-size: 14px;
+
     }
 
-    .turmas {
-        grid-template-columns: 1fr;
 
-        max-width: 500px;
+    .form-pesquisa {
+
+        flex-direction: column;
+
     }
 
-    .card {
-        min-height: 155px;
+
+    .botao-pesquisar {
+
+        width: 100%;
+
+    }
+
+
+    .aluno-card {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .acao-aluno {
+
+        width: 100%;
+
+        padding-left: 65px;
+
+    }
+
+
+    .botao-consultar {
+
+        width: 100%;
+
+    }
+
+}
+
+
+
+/* ==========================================
+   CELULAR
+========================================== */
+
+@media (max-width: 500px) {
+
+
+    .container {
+
+        padding:
+            25px
+            15px
+            32px;
+
+    }
+
+
+    .voltar {
+
+        width: 42px;
+
+        height: 42px;
+
+        top: 15px;
+
+        left: 15px;
+
+        font-size: 16px;
+
+    }
+
+
+    .espaco-logo,
+    .espaco-logo img {
+
+        width: 44px;
+
+        height: 44px;
+
+    }
+
+
+    .logo h2 {
+
+        font-size: 20px;
+
+    }
+
+
+    .container > h1 {
+
+        font-size: 22px;
+
+    }
+
+
+    .subtitulo {
+
+        margin-bottom: 24px;
+
+        font-size: 13px;
+
+    }
+
+
+    .campo-pesquisa {
+
+        height: 48px;
+
+    }
+
+
+    .botao-pesquisar {
+
+        height: 48px;
+
+    }
+
+
+    .cabecalho-resultados {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 8px;
+
+    }
+
+
+    .aluno-card {
+
+        padding: 14px;
+
+        gap: 11px;
+
+    }
+
+
+    .aluno-icone {
+
+        width: 44px;
+
+        height: 44px;
+
+        min-width: 44px;
+
+        font-size: 17px;
+
+    }
+
+
+    .aluno-informacoes h3 {
+
+        font-size: 14px;
+
+    }
+
+
+    .dados-aluno {
+
+        flex-direction: column;
+
+        gap: 5px;
+
+    }
+
+
+    .acao-aluno {
+
+        padding-left: 55px;
+
+    }
+
+
+    .estado-inicial,
+    .estado-vazio {
+
+        padding:
+            30px
+            18px;
+
     }
 
 }

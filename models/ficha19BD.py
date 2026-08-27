@@ -749,3 +749,272 @@ def buscar_dados_ficha_por_aluno(aluno_id):
     finally:
         cursor.close()
         conexao.close()
+
+# ==========================================================
+# ADIÇÕES DE COMPATIBILIDADE
+# Mantém todo o código anterior e apenas adiciona uma versão
+# segura da consulta da Ficha 19 para bancos onde algumas
+# tabelas ainda não estejam disponíveis.
+# ==========================================================
+
+def _tabela_existe(cursor, tabela):
+    """
+    Verifica se uma tabela existe no banco atual.
+    Apenas consulta o information_schema.
+    Não altera nenhum dado.
+    """
+
+    cursor.execute(
+        """
+        SELECT COUNT(*) AS total
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = %s
+        """,
+        (tabela,),
+    )
+
+    resultado = cursor.fetchone()
+
+    return bool(
+        resultado
+        and resultado.get("total", 0) > 0
+    )
+
+
+def buscar_dados_ficha_por_aluno(aluno_id):
+    """
+    Versão compatível da consulta da Ficha 19.
+
+    Mantém a função original acima no arquivo e redefine
+    somente o comportamento final utilizado pelo sistema.
+
+    Consulta apenas as tabelas que realmente existem.
+    Não cria, altera ou exclui dados do banco.
+    """
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        return None
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+
+        # ==================================================
+        # 1 - ALUNO
+        # ==================================================
+
+        cursor.execute(
+            """
+            SELECT *
+            FROM alunos
+            WHERE id = %s
+            LIMIT 1
+            """,
+            (aluno_id,),
+        )
+
+        aluno = cursor.fetchone()
+
+        if aluno is None:
+            return None
+
+        # Campos que algumas telas esperam receber.
+        aluno["curso_nome"] = None
+        aluno["escola_nome"] = None
+        aluno["escola_cidade"] = None
+        aluno["escola_estado"] = None
+
+
+        # ==================================================
+        # 2 - CURSO, SE A TABELA EXISTIR
+        # ==================================================
+
+        if (
+            _tabela_existe(cursor, "cursos")
+            and aluno.get("curso_id")
+        ):
+            cursor.execute(
+                """
+                SELECT nome
+                FROM cursos
+                WHERE id = %s
+                LIMIT 1
+                """,
+                (aluno["curso_id"],),
+            )
+
+            curso = cursor.fetchone()
+
+            if curso:
+                aluno["curso_nome"] = curso.get("nome")
+
+
+        # ==================================================
+        # 3 - ESCOLA, SE A TABELA EXISTIR
+        # ==================================================
+
+        if (
+            _tabela_existe(cursor, "escolas")
+            and aluno.get("escola_id")
+        ):
+            cursor.execute(
+                """
+                SELECT
+                    nome,
+                    cidade,
+                    estado
+                FROM escolas
+                WHERE id = %s
+                LIMIT 1
+                """,
+                (aluno["escola_id"],),
+            )
+
+            escola = cursor.fetchone()
+
+            if escola:
+                aluno["escola_nome"] = escola.get("nome")
+                aluno["escola_cidade"] = escola.get("cidade")
+                aluno["escola_estado"] = escola.get("estado")
+
+
+        # ==================================================
+        # VALORES PADRÃO
+        # ==================================================
+
+        historico = None
+        base_comum = []
+        itinerario_banco = []
+        extras = {}
+
+
+        # ==================================================
+        # 4 - HISTÓRICO GERAL, SE EXISTIR
+        # ==================================================
+
+        if _tabela_existe(
+            cursor,
+            "historico_escolar_geral"
+        ):
+            cursor.execute(
+                """
+                SELECT *
+                FROM historico_escolar_geral
+                WHERE aluno_id = %s
+                ORDER BY id DESC
+                LIMIT 1
+                """,
+                (aluno_id,),
+            )
+
+            historico = cursor.fetchone()
+
+            if historico and historico.get("dados_extras"):
+
+                bruto = historico.get("dados_extras")
+
+                try:
+                    if isinstance(bruto, str):
+                        extras = json.loads(bruto)
+
+                    elif isinstance(bruto, dict):
+                        extras = bruto
+
+                except (TypeError, ValueError, json.JSONDecodeError):
+                    extras = {}
+
+
+        # ==================================================
+        # 5 - FORMAÇÃO GERAL BÁSICA, SE EXISTIR
+        # ==================================================
+
+        if (
+            _tabela_existe(
+                cursor,
+                "disciplinas_anuais_base_comum"
+            )
+            and _tabela_existe(
+                cursor,
+                "aluno_disciplina_base_comum"
+            )
+        ):
+            cursor.execute(
+                """
+                SELECT d.*
+                FROM disciplinas_anuais_base_comum d
+                INNER JOIN aluno_disciplina_base_comum ad
+                    ON ad.disciplina_id = d.id
+                WHERE ad.aluno_id = %s
+                ORDER BY d.ano_letivo, d.nome
+                """,
+                (aluno_id,),
+            )
+
+            base_comum = cursor.fetchall()
+
+
+        # ==================================================
+        # 6 - ITINERÁRIO FORMATIVO, SE EXISTIR
+        # ==================================================
+
+        if (
+            _tabela_existe(
+                cursor,
+                "disciplinas_anuais_itinerario_formativo"
+            )
+            and _tabela_existe(
+                cursor,
+                "aluno_disciplina_itinerario"
+            )
+        ):
+            cursor.execute(
+                """
+                SELECT d.*
+                FROM disciplinas_anuais_itinerario_formativo d
+                INNER JOIN aluno_disciplina_itinerario ad
+                    ON ad.disciplina_id = d.id
+                WHERE ad.aluno_id = %s
+                ORDER BY d.periodo_letivo, d.id
+                """,
+                (aluno_id,),
+            )
+
+            itinerario_banco = cursor.fetchall()
+
+
+        # ==================================================
+        # 7 - DADOS PARA EXIBIÇÃO
+        # ==================================================
+
+        itinerario_exibicao = (
+            extras.get("itinerario")
+            or _lista_segura(itinerario_banco)
+        )
+
+        historico_seguro = _registro_seguro(historico)
+
+        if historico_seguro:
+            historico_seguro.pop(
+                "dados_extras",
+                None
+            )
+
+
+        # ==================================================
+        # 8 - RETORNO
+        # ==================================================
+
+        return {
+            "aluno": _registro_seguro(aluno),
+            "historico": historico_seguro,
+            "base_comum": _lista_segura(base_comum),
+            "itinerario": itinerario_exibicao,
+            "extras": extras,
+        }
+
+    finally:
+        cursor.close()
+        conexao.close()

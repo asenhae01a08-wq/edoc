@@ -1,0 +1,431 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --azul-principal: #0c4770;
+    --azul-escuro: #073450;
+    --azul-claro: #e9f3fa;
+    --azul-hover: #126596;
+
+    --branco: #ffffff;
+    --fundo: #f1f4f7;
+
+    --texto: #26333d;
+    --texto-claro: #667580;
+
+    --borda: #d8e0e6;
+
+    --sombra:
+        0 4px 15px
+        rgba(16, 51, 75, 0.1);
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    padding: 30px 0;
+
+    background: var(--fundo);
+
+    color: var(--texto);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
+
+
+/* ==========================================
+   CONTAINER
+========================================== */
+
+.container {
+    width: min(1100px, 92%);
+    min-height: 590px;
+
+    margin: 0 auto;
+
+    padding:
+        32px
+        45px
+        50px;
+
+    position: relative;
+
+    background: var(--branco);
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 12px;
+
+    box-shadow: var(--sombra);
+}
+
+
+/* ==========================================
+   VOLTAR
+========================================== */
+
+.voltar {
+    width: 46px;
+    height: 46px;
+
+    position: absolute;
+
+    top: 30px;
+    left: 35px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: var(--azul-claro);
+
+    color: var(--azul-principal);
+
+    border:
+        1px solid
+        #c9ddea;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-size: 19px;
+
+    transition: 0.2s;
+}
+
+.voltar:hover {
+    background: var(--azul-principal);
+
+    color: var(--branco);
+
+    transform: translateX(-3px);
+}
+
+
+/* ==========================================
+   LOGO
+========================================== */
+
+.logo {
+    width: 100%;
+
+    margin:
+        5px
+        auto
+        20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.espaco-logo {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.espaco-logo img {
+    width: 48px;
+    height: 48px;
+
+    padding: 3px;
+
+    display: block;
+
+    object-fit: contain;
+}
+
+.logo h2 {
+    margin-top: 7px;
+
+    color: var(--azul-principal);
+
+    font-size: 22px;
+
+    line-height: 1.1;
+}
+
+
+/* ==========================================
+   TÍTULO
+========================================== */
+
+.container > h1 {
+    margin-bottom: 8px;
+
+    text-align: center;
+
+    color: var(--texto);
+
+    font-size: 30px;
+}
+
+.subtitulo {
+    margin-bottom: 30px;
+
+    text-align: center;
+
+    color: var(--texto-claro);
+
+    font-size: 15px;
+}
+
+
+/* ==========================================
+   TURMAS
+========================================== */
+
+.turmas {
+    width: 100%;
+    max-width: 760px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.card {
+    min-height: 180px;
+
+    padding: 24px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    background: var(--branco);
+
+    color: var(--texto);
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 10px;
+
+    text-align: center;
+    text-decoration: none;
+
+    box-shadow:
+        0 2px 9px
+        rgba(20, 55, 80, 0.06);
+
+    transition: 0.2s;
+}
+
+.card:hover {
+    border-color: #91bdd7;
+
+    box-shadow: var(--sombra);
+
+    transform: translateY(-4px);
+}
+
+.icone-card {
+    width: 58px;
+    height: 58px;
+
+    margin-bottom: 14px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: var(--azul-claro);
+
+    color: var(--azul-principal);
+
+    border:
+        1px solid
+        #c9ddea;
+
+    border-radius: 50%;
+
+    font-size: 23px;
+
+    transition: 0.2s;
+}
+
+.card:hover .icone-card {
+    background: var(--azul-principal);
+
+    color: var(--branco);
+}
+
+.card h3 {
+    margin-bottom: 8px;
+
+    color: var(--azul-principal);
+
+    font-size: 22px;
+}
+
+.card span {
+    max-width: 250px;
+
+    color: var(--texto-claro);
+
+    font-size: 13px;
+
+    line-height: 1.4;
+}
+
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 750px) {
+
+    body {
+        padding: 18px 0;
+    }
+
+    .container {
+        width: 94%;
+
+        min-height:
+            calc(100vh - 36px);
+
+        padding:
+            28px
+            20px
+            40px;
+    }
+
+    .voltar {
+        top: 20px;
+        left: 20px;
+    }
+
+    .container > h1 {
+        font-size: 25px;
+    }
+
+    .subtitulo {
+        font-size: 14px;
+    }
+
+    .turmas {
+        max-width: 500px;
+
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        min-height: 150px;
+    }
+}
+
+
+/* ==========================================
+   CELULAR
+========================================== */
+
+@media (max-width: 500px) {
+
+    .container {
+        padding:
+            25px
+            15px
+            32px;
+    }
+
+    .voltar {
+        width: 42px;
+        height: 42px;
+
+        top: 15px;
+        left: 15px;
+
+        font-size: 16px;
+    }
+
+    .espaco-logo,
+    .espaco-logo img {
+        width: 44px;
+        height: 44px;
+    }
+
+    .logo h2 {
+        font-size: 20px;
+    }
+
+    .container > h1 {
+        font-size: 22px;
+    }
+
+    .subtitulo {
+        margin-bottom: 24px;
+
+        font-size: 13px;
+    }
+
+    .turmas {
+        gap: 12px;
+    }
+
+    .card {
+        min-height: 135px;
+
+        padding: 18px;
+    }
+
+    .icone-card {
+        width: 50px;
+        height: 50px;
+
+        margin-bottom: 10px;
+
+        font-size: 20px;
+    }
+
+    .card h3 {
+        font-size: 19px;
+    }
+
+    .card span {
+        font-size: 12px;
+    }
+}
