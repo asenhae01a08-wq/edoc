@@ -312,6 +312,10 @@ def login():
 # ÁREA DO ALUNO
 # ==========================================================
 
+# ==========================================================
+# ÁREA DO ALUNO
+# ==========================================================
+
 @app.route("/iniciala")
 @login_required_aluno
 def iniciala():
@@ -349,14 +353,80 @@ def iniciala():
         )
 
 
+    # ======================================================
+    # ORGANIZA CURSO E TURMA PARA EXIBIÇÃO
+    #
+    # Exemplo:
+    # 3º TDS A
+    #
+    # Curso:
+    # Técnico em Desenvolvimento de Sistemas
+    #
+    # Turma:
+    # 3º A
+    # ======================================================
+
+    turma_original = str(
+        aluno.get("id_turma")
+        or ""
+    ).strip()
+
+
+    turma_maiuscula = turma_original.upper()
+
+
+    # ======================================================
+    # TDS
+    # ======================================================
+
+    if "TDS" in turma_maiuscula:
+
+        aluno["curso_nome"] = (
+            "Técnico em Desenvolvimento de Sistemas"
+        )
+
+        aluno["id_turma"] = (
+            turma_original
+            .replace("TDS", "")
+            .replace("  ", " ")
+            .strip()
+        )
+
+
+    # ======================================================
+    # MARKETING
+    # ======================================================
+
+    elif "MKT" in turma_maiuscula:
+
+        aluno["curso_nome"] = (
+            "Técnico em Marketing"
+        )
+
+        aluno["id_turma"] = (
+            turma_original
+            .replace("MKT", "")
+            .replace("  ", " ")
+            .strip()
+        )
+
+
+    # ======================================================
+    # CASO NÃO TENHA TDS/MKT NA TURMA
+    # ======================================================
+
+    else:
+
+        aluno["curso_nome"] = (
+            aluno.get("curso_nome")
+            or "Não informado"
+        )
+
+
     return render_template(
         "iniciala.html",
         aluno=aluno
     )
-# ==========================================================
-# REDEFINIR SENHA - PRIMEIRO ACESSO
-# ==========================================================
-
 # ==========================================================
 # ÁREA DO PROFISSIONAL
 # ==========================================================
