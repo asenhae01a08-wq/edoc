@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 
 <head>
@@ -16,16 +15,62 @@
     </title>
 
 
+    <!-- ==========================================
+         CSS DA TELA
+    ========================================== -->
+
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style7.css') }}?v=30"
+        href="{{ url_for('static', filename='style7.css') }}?v=31"
     >
 
+
+    <!-- ==========================================
+         FONT AWESOME
+    ========================================== -->
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
+
+    <!-- ==========================================
+         CORREÇÕES DE PADRONIZAÇÃO
+    ========================================== -->
+
+    <style>
+
+        html,
+        body {
+            width: 100% !important;
+            min-height: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+
+        body {
+            min-height: 100vh !important;
+        }
+
+
+        /* Espaço somente DEPOIS do menu */
+
+        .container {
+            margin: 30px auto 0 !important;
+        }
+
+
+        /* Garante que o cabeçalho encoste no topo */
+
+        #edoc-cabecalho-profissional {
+            margin-top: 0 !important;
+            top: 0 !important;
+        }
+
+    </style>
 
 </head>
 
@@ -33,17 +78,31 @@
 <body>
 
 
+    <!-- ==========================================
+         CABEÇALHO PADRÃO DO PROFISSIONAL
+    ========================================== -->
+
+    {% include 'cabecalho_profissional.html' %}
+
+
+
+    <!-- ==========================================
+         CONTEÚDO PRINCIPAL
+    ========================================== -->
+
     <main class="container">
 
 
-        <!-- ==========================================
+
+        <!-- ======================================
              VOLTAR
-        ========================================== -->
+        ====================================== -->
 
         <a
             href="{{ url_for('inicialp') }}"
             class="voltar"
             aria-label="Voltar"
+            title="Voltar"
         >
 
             <i class="fa-solid fa-arrow-left"></i>
@@ -52,33 +111,9 @@
 
 
 
-        <!-- ==========================================
-             LOGO
-        ========================================== -->
-
-        <div class="logo">
-
-            <div class="espaco-logo">
-
-                <img
-                    src="{{ url_for('static', filename='img/logo.png') }}"
-                    alt="Logo do eDOC"
-                >
-
-            </div>
-
-
-            <h2>
-                eDOC
-            </h2>
-
-        </div>
-
-
-
-        <!-- ==========================================
+        <!-- ======================================
              TÍTULO
-        ========================================== -->
+        ====================================== -->
 
         <h1>
             Consultar documentos
@@ -93,9 +128,9 @@
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              PESQUISA
-        ========================================== -->
+        ====================================== -->
 
         <section class="area-pesquisa">
 
@@ -145,9 +180,9 @@
 
 
 
-        <!-- ==========================================
+        <!-- ======================================
              RESULTADOS
-        ========================================== -->
+        ====================================== -->
 
         <section class="area-resultados">
 
@@ -158,25 +193,35 @@
                 {% if alunos %}
 
 
+                    <!-- ==========================
+                         CABEÇALHO DOS RESULTADOS
+                    =========================== -->
+
                     <div class="cabecalho-resultados">
 
 
                         <div>
 
+
                             <span>
                                 RESULTADO DA PESQUISA
                             </span>
+
 
                             <h2>
                                 Alunos encontrados
                             </h2>
 
+
                         </div>
+
 
 
                         <div class="quantidade">
 
+
                             {{ alunos|length }}
+
 
                             {% if alunos|length == 1 %}
 
@@ -188,12 +233,17 @@
 
                             {% endif %}
 
+
                         </div>
 
 
                     </div>
 
 
+
+                    <!-- ==========================
+                         LISTA DOS ALUNOS
+                    =========================== -->
 
                     <div class="lista-alunos">
 
@@ -204,7 +254,10 @@
                             <article class="aluno-card">
 
 
-                                <!-- ÍCONE -->
+
+                                <!-- ==================
+                                     ÍCONE
+                                =================== -->
 
                                 <div class="aluno-icone">
 
@@ -214,7 +267,9 @@
 
 
 
-                                <!-- INFORMAÇÕES -->
+                                <!-- ==================
+                                     INFORMAÇÕES
+                                =================== -->
 
                                 <div class="aluno-informacoes">
 
@@ -226,30 +281,46 @@
                                     </h3>
 
 
+
                                     <div class="dados-aluno">
 
 
+
+                                        <!-- MATRÍCULA -->
+
                                         <span>
+
 
                                             <i class="fa-solid fa-id-card"></i>
 
+
                                             Matrícula:
 
+
                                             <strong>
+
                                                 {{ aluno["matricula"] }}
+
                                             </strong>
+
 
                                         </span>
 
 
 
+                                        <!-- TURMA -->
+
                                         {% if aluno.get("id_turma") %}
+
 
                                             <span>
 
+
                                                 <i class="fa-solid fa-users"></i>
 
+
                                                 Turma:
+
 
                                                 <strong>
 
@@ -257,19 +328,27 @@
 
                                                 </strong>
 
+
                                             </span>
+
 
                                         {% endif %}
 
 
 
+                                        <!-- CURSO -->
+
                                         {% if aluno.get("curso_nome") %}
+
 
                                             <span>
 
+
                                                 <i class="fa-solid fa-book-open"></i>
 
+
                                                 Curso:
+
 
                                                 <strong>
 
@@ -277,7 +356,9 @@
 
                                                 </strong>
 
+
                                             </span>
+
 
                                         {% endif %}
 
@@ -289,7 +370,9 @@
 
 
 
-                                <!-- BOTÃO -->
+                                <!-- ==================
+                                     AÇÃO
+                                =================== -->
 
                                 <div class="acao-aluno">
 
@@ -299,9 +382,12 @@
                                         class="botao-consultar"
                                     >
 
+
                                         <i class="fa-regular fa-file-lines"></i>
 
+
                                         Consultar documento
+
 
                                     </a>
 
@@ -322,7 +408,9 @@
                 {% else %}
 
 
-                    <!-- NENHUM ALUNO -->
+                    <!-- ==================================
+                         ALUNO NÃO ENCONTRADO
+                    ================================== -->
 
                     <div class="estado-vazio">
 
@@ -335,7 +423,9 @@
 
 
                         <h2>
+
                             Aluno não encontrado
+
                         </h2>
 
 
@@ -364,7 +454,9 @@
             {% else %}
 
 
-                <!-- ESTADO INICIAL -->
+                <!-- ==================================
+                     ESTADO INICIAL
+                ================================== -->
 
                 <div class="estado-inicial">
 
@@ -377,7 +469,9 @@
 
 
                     <h2>
+
                         Pesquise um aluno
+
                     </h2>
 
 
@@ -391,10 +485,13 @@
 
                     <div class="dica-pesquisa">
 
+
                         <i class="fa-regular fa-lightbulb"></i>
+
 
                         Você pode pesquisar pelo nome completo,
                         parte do nome ou matrícula.
+
 
                     </div>
 

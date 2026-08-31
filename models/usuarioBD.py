@@ -23,8 +23,13 @@ def verificarLogin(identificacao, senha):
         if identificacao.isdigit():
             cursor.execute(
                 """
-                SELECT id, nome, email, matricula
-                FROM alunos
+                SELECT
+    id,
+    nome,
+    email,
+    matricula,
+    primeiro_login
+FROM alunos
                 WHERE matricula = %s
                   AND senha = %s
                 LIMIT 1

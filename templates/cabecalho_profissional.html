@@ -1,0 +1,838 @@
+<style>
+
+/* =========================================================
+   EDOC - CABEÇALHO PADRÃO DO PROFISSIONAL
+========================================================= */
+
+#edoc-cabecalho-profissional,
+#edoc-cabecalho-profissional * {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+========================================================= */
+
+#edoc-cabecalho-profissional {
+    width: 100%;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 99999;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #d8e0e6;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================================
+   TOPO
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-topo {
+    width: min(1180px, 94%);
+
+    min-height: 84px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+   MARCA
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-marca {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    color: inherit;
+
+    text-decoration: none;
+}
+
+
+#edoc-cabecalho-profissional .edoc-logo {
+    width: 52px;
+    height: 52px;
+
+    min-width: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #f7f9fa;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 11px;
+}
+
+
+#edoc-cabecalho-profissional .edoc-logo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 5px;
+}
+
+
+#edoc-cabecalho-profissional .edoc-nome-sistema {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#edoc-cabecalho-profissional .edoc-nome-sistema strong {
+    margin: 0;
+    padding: 0;
+
+    color: #0c4770;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+#edoc-cabecalho-profissional .edoc-nome-sistema span {
+    margin-top: 5px;
+
+    color: #667580;
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   USUÁRIO
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-area-usuario {
+    position: relative;
+}
+
+
+#edoc-cabecalho-profissional .edoc-usuario {
+    min-height: 56px;
+
+    padding: 6px 7px 6px 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    background: transparent;
+
+    border: none;
+    border-radius: 9px;
+
+    color: #26333d;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+#edoc-cabecalho-profissional .edoc-usuario:hover,
+#edoc-cabecalho-profissional .edoc-usuario.edoc-ativo {
+    background: #f5f9fc;
+}
+
+
+#edoc-cabecalho-profissional .edoc-usuario:focus {
+    outline: none;
+}
+
+
+#edoc-cabecalho-profissional .edoc-dados-usuario {
+    display: flex;
+    flex-direction: column;
+
+    text-align: right;
+}
+
+
+#edoc-cabecalho-profissional .edoc-dados-usuario strong {
+    margin: 0;
+    padding: 0;
+
+    color: #26333d;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+#edoc-cabecalho-profissional .edoc-dados-usuario span {
+    margin-top: 3px;
+
+    color: #667580;
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   ÍCONE USUÁRIO
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-icone-usuario {
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e9f3fa;
+
+    color: #0c4770;
+
+    border: 1px solid #c9ddea;
+    border-radius: 50%;
+
+    font-size: 18px;
+}
+
+
+#edoc-cabecalho-profissional .edoc-seta-usuario {
+    color: #8796a1;
+
+    font-size: 9px;
+
+    transition: 0.2s ease;
+}
+
+
+#edoc-cabecalho-profissional
+.edoc-usuario.edoc-ativo
+.edoc-seta-usuario {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   MENU DO USUÁRIO
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-menu-usuario {
+    width: 160px;
+
+    position: absolute;
+
+    top: calc(100% + 4px);
+    right: 0;
+
+    display: none;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 8px;
+
+    box-shadow: 0 8px 22px rgba(16, 51, 75, 0.14);
+
+    z-index: 100000;
+}
+
+
+#edoc-cabecalho-profissional .edoc-menu-usuario.edoc-aberto {
+    display: block;
+}
+
+
+#edoc-cabecalho-profissional .edoc-opcao-sair {
+    min-height: 46px;
+
+    padding: 0 15px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    background: #ffffff;
+
+    color: #c0392b;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+#edoc-cabecalho-profissional .edoc-opcao-sair:hover {
+    background: #fff3f2;
+
+    color: #c0392b;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   BARRA AZUL
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-menu-principal {
+    width: 100%;
+
+    min-height: 48px;
+
+    background: #0c4770;
+}
+
+
+#edoc-cabecalho-profissional .edoc-menu-conteudo {
+    width: min(1180px, 94%);
+
+    min-height: 48px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   ITENS DO MENU
+========================================================= */
+
+#edoc-cabecalho-profissional .edoc-menu-item {
+    min-height: 48px;
+
+    padding: 0 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    background: transparent;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    border-left: 1px solid rgba(255, 255, 255, 0.10);
+
+    transition: 0.2s ease;
+}
+
+
+#edoc-cabecalho-profissional .edoc-menu-item:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+
+#edoc-cabecalho-profissional .edoc-menu-item i,
+#edoc-cabecalho-profissional .edoc-menu-item span {
+    color: #ffffff;
+}
+
+
+#edoc-cabecalho-profissional .edoc-menu-item:hover {
+    background: #126596;
+
+    color: #ffffff;
+
+    text-decoration: none;
+}
+
+
+#edoc-cabecalho-profissional .edoc-menu-item.edoc-menu-ativo {
+    background: #176f9e;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media screen and (max-width: 1050px) {
+
+    #edoc-cabecalho-profissional .edoc-menu-conteudo {
+        width: 100%;
+    }
+
+    #edoc-cabecalho-profissional .edoc-menu-item {
+        padding: 0 8px;
+
+        font-size: 10px;
+    }
+
+}
+
+
+@media screen and (max-width: 800px) {
+
+    #edoc-cabecalho-profissional .edoc-topo {
+        width: 92%;
+    }
+
+    #edoc-cabecalho-profissional .edoc-menu-principal {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    #edoc-cabecalho-profissional .edoc-menu-conteudo {
+        width: max-content;
+
+        min-width: 100%;
+
+        display: flex;
+    }
+
+    #edoc-cabecalho-profissional .edoc-menu-item {
+        min-width: max-content;
+
+        padding: 0 16px;
+    }
+
+}
+
+
+@media screen and (max-width: 560px) {
+
+    #edoc-cabecalho-profissional .edoc-topo {
+        width: 92%;
+
+        min-height: 72px;
+    }
+
+    #edoc-cabecalho-profissional .edoc-logo {
+        width: 44px;
+        height: 44px;
+
+        min-width: 44px;
+    }
+
+    #edoc-cabecalho-profissional .edoc-nome-sistema strong {
+        font-size: 21px;
+    }
+
+    #edoc-cabecalho-profissional .edoc-nome-sistema span {
+        display: none;
+    }
+
+    #edoc-cabecalho-profissional .edoc-dados-usuario {
+        display: none;
+    }
+
+    #edoc-cabecalho-profissional .edoc-usuario {
+        min-height: 48px;
+
+        padding: 4px;
+    }
+
+    #edoc-cabecalho-profissional .edoc-icone-usuario {
+        width: 38px;
+        height: 38px;
+
+        min-width: 38px;
+    }
+
+    #edoc-cabecalho-profissional .edoc-seta-usuario {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   IMPRESSÃO
+========================================================= */
+
+@media print {
+
+    #edoc-cabecalho-profissional {
+        display: none !important;
+    }
+
+}
+
+</style>
+
+
+
+<header id="edoc-cabecalho-profissional">
+
+
+    <!-- ==================================================
+         PARTE SUPERIOR
+    ================================================== -->
+
+    <div class="edoc-topo">
+
+
+        <!-- MARCA -->
+
+        <a
+            href="{{ url_for('inicialp') }}"
+            class="edoc-marca"
+        >
+
+
+            <div class="edoc-logo">
+
+                <img
+                    src="{{ url_for('static', filename='img/logo.png') }}"
+                    alt="Logo eDOC"
+                >
+
+            </div>
+
+
+            <div class="edoc-nome-sistema">
+
+                <strong>
+                    eDOC
+                </strong>
+
+                <span>
+                    Gestão Documental Escolar
+                </span>
+
+            </div>
+
+
+        </a>
+
+
+
+        <!-- USUÁRIO -->
+
+        <div class="edoc-area-usuario">
+
+
+            <button
+                type="button"
+                class="edoc-usuario"
+                id="edocBotaoUsuario"
+                onclick="edocAbrirMenuUsuario(event)"
+            >
+
+
+                <div class="edoc-dados-usuario">
+
+                    <strong>
+                        {{ session.get('nome', 'Profissional') }}
+                    </strong>
+
+                    <span>
+                        Profissional
+                    </span>
+
+                </div>
+
+
+                <div class="edoc-icone-usuario">
+
+                    <i class="fa-regular fa-user"></i>
+
+                </div>
+
+
+                <i
+                    class="fa-solid fa-chevron-down edoc-seta-usuario"
+                ></i>
+
+
+            </button>
+
+
+
+            <!-- MENU USUÁRIO -->
+
+            <div
+                class="edoc-menu-usuario"
+                id="edocMenuUsuario"
+            >
+
+
+                <a
+                    href="{{ url_for('logout') }}"
+                    class="edoc-opcao-sair"
+                >
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Sair
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ==================================================
+         MENU PRINCIPAL
+    ================================================== -->
+
+    <nav class="edoc-menu-principal">
+
+
+        <div class="edoc-menu-conteudo">
+
+
+
+            <!-- INÍCIO -->
+
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="
+                    edoc-menu-item
+                    {% if request.endpoint == 'inicialp' %}
+                        edoc-menu-ativo
+                    {% endif %}
+                "
+            >
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+                    Início
+                </span>
+
+            </a>
+
+
+
+            <!-- GERAR FICHA -->
+
+            <a
+                href="{{ url_for('gerar_fichas') }}"
+                class="
+                    edoc-menu-item
+                    {% if request.endpoint in ['gerar_fichas', 'ficha19'] %}
+                        edoc-menu-ativo
+                    {% endif %}
+                "
+            >
+
+                <i class="fa-regular fa-file-lines"></i>
+
+                <span>
+                    Gerar Ficha 19
+                </span>
+
+            </a>
+
+
+
+            <!-- CADASTRO -->
+
+            <a
+                href="{{ url_for('preenchimento') }}"
+                class="
+                    edoc-menu-item
+                    {% if request.endpoint == 'preenchimento' %}
+                        edoc-menu-ativo
+                    {% endif %}
+                "
+            >
+
+                <i class="fa-solid fa-pen"></i>
+
+                <span>
+                    Cadastrar estudantes
+                </span>
+
+            </a>
+
+
+
+            <!-- TURMAS -->
+
+            <a
+                href="{{ url_for('turmas_alunos') }}"
+                class="
+                    edoc-menu-item
+
+                    {% if request.endpoint in [
+                        'turmas_alunos',
+                        'turma_3tdsa',
+                        'turma_3tdsb',
+                        'turma_3mkta',
+                        'turma_3mktb'
+                    ] %}
+                        edoc-menu-ativo
+                    {% endif %}
+                "
+            >
+
+                <i class="fa-solid fa-users"></i>
+
+                <span>
+                    Turmas e alunos
+                </span>
+
+            </a>
+
+
+
+            <!-- CONSULTAR -->
+
+            <a
+                href="{{ url_for('consultar') }}"
+                class="
+                    edoc-menu-item
+                    {% if request.endpoint in [
+                        'consultar',
+                        'fichas_em_andamento'
+                    ] %}
+                        edoc-menu-ativo
+                    {% endif %}
+                "
+            >
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>
+                    Consultar documentos
+                </span>
+
+            </a>
+
+
+
+            <!-- SUPORTE -->
+
+            <a
+                href="{{ url_for('suporte') }}"
+                class="
+                    edoc-menu-item
+                    {% if request.endpoint == 'suporte' %}
+                        edoc-menu-ativo
+                    {% endif %}
+                "
+            >
+
+                <i class="fa-regular fa-circle-question"></i>
+
+                <span>
+                    Suporte
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+    </nav>
+
+
+</header>
+
+
+
+<script>
+
+function edocAbrirMenuUsuario(event) {
+
+    event.stopPropagation();
+
+
+    const menu =
+        document.getElementById("edocMenuUsuario");
+
+
+    const botao =
+        document.getElementById("edocBotaoUsuario");
+
+
+    if (!menu || !botao) {
+        return;
+    }
+
+
+    menu.classList.toggle("edoc-aberto");
+
+    botao.classList.toggle("edoc-ativo");
+
+}
+
+
+
+document.addEventListener(
+    "click",
+    function () {
+
+
+        const menu =
+            document.getElementById("edocMenuUsuario");
+
+
+        const botao =
+            document.getElementById("edocBotaoUsuario");
+
+
+        if (menu) {
+
+            menu.classList.remove("edoc-aberto");
+
+        }
+
+
+        if (botao) {
+
+            botao.classList.remove("edoc-ativo");
+
+        }
+
+
+    }
+);
+
+</script>

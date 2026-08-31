@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -19,53 +21,100 @@
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
 </head>
+
 
 <body>
 
+
     <main class="container">
 
+
         <section class="card">
-            <a
-    href="{{ url_for('login') }}"
-    class="botao-voltar"
-    title="Voltar"
->
-    <i class="fa-solid fa-arrow-left"></i>
-</a>
+
 
             <div class="logo">
+
                 <i class="fa-solid fa-key"></i>
+
             </div>
 
-            <h1>Recuperar senha</h1>
+
+            <h1>
+                Recuperar senha
+            </h1>
+
 
             <p class="subtitulo">
+
                 Digite o seu e-mail cadastrado.
                 Enviaremos as instruções para redefinir sua senha.
+
             </p>
 
-            {% with mensagens = get_flashed_messages() %}
+
+
+            {% with mensagens = get_flashed_messages(with_categories=true) %}
+
                 {% if mensagens %}
-                    {% for mensagem in mensagens %}
-                        <div class="mensagem">
+
+                    {% for categoria, mensagem in mensagens %}
+
+                        <div
+                            class="mensagem"
+                            style="
+                                {% if categoria == 'sucesso' %}
+                                    background:#edf8f4;
+                                    border:1px solid #bfe1d5;
+                                    color:#1d7259;
+                                {% else %}
+                                    background:#fff0f0;
+                                    border:1px solid #f1caca;
+                                    color:#a83838;
+                                {% endif %}
+
+                                padding:12px 14px;
+                                border-radius:8px;
+                                margin-bottom:18px;
+                                font-size:13px;
+                                line-height:1.5;
+                            "
+                        >
+
                             {{ mensagem }}
+
                         </div>
+
                     {% endfor %}
+
                 {% endif %}
+
             {% endwith %}
 
-            <form method="POST" action="{{ url_for('esqueci') }}">
+
+
+            <form
+                method="POST"
+                action="{{ url_for('esqueci') }}"
+            >
+
 
                 <div class="grupo">
 
+
                     <label for="email">
+
                         E-mail
+
                     </label>
+
 
                     <div class="campo">
 
+
                         <i class="fa-regular fa-envelope"></i>
+
 
                         <input
                             type="email"
@@ -76,12 +125,18 @@
                             required
                         >
 
+
                     </div>
 
-                </div>
-                
 
-                <button type="submit" class="btn">
+                </div>
+
+
+
+                <button
+                    type="submit"
+                    class="btn"
+                >
 
                     <i class="fa-solid fa-paper-plane"></i>
 
@@ -89,12 +144,34 @@
 
                 </button>
 
+
             </form>
+
+
+
+            <div class="voltar">
+
+
+                <a href="{{ url_for('login') }}">
+
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                    Voltar para o login
+
+
+                </a>
+
+
+            </div>
 
 
         </section>
 
+
     </main>
 
+
 </body>
+
 </html>

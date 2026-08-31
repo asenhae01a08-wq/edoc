@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        eDOC - Fichas 19 concluído
+    </title>
+
+
+    <!-- ==========================================
+         CSS DA TELA
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style8.css') }}"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style15.css') }}"
+    >
+
+
+    <!-- ==========================================
+         FONT AWESOME
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- ==========================================
+         CABEÇALHO PADRÃO DO PROFISSIONAL
+    ========================================== -->
+
+    {% include 'cabecalho_profissional.html' %}
+
+
+
+    <!-- ==========================================
+         CONTEÚDO PRINCIPAL
+    ========================================== -->
+
+    <main class="pagina-fichas">
+
+
+        <!-- ======================================
+             CABEÇALHO DA PÁGINA
+        ====================================== -->
+
+        <section class="cabecalho-pagina">
+
+
+            <!-- VOLTAR -->
+
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="botao-voltar-fichas"
+                title="Voltar"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </a>
+
+
+
+            <!-- TÍTULO -->
+
+            <div class="titulo-pagina">
+
+
+                <div class="icone-titulo">
+
+                    <i class="fa-regular fa-file-lines"></i>
+
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Fichas 19 concluído
+                    </h1>
+
+                    <p>
+                        Alunos que já possuem uma Ficha 19 importada.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- PESQUISA -->
+
+            <div class="campo-pesquisa">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <input
+                    type="text"
+                    id="pesquisaFicha"
+                    placeholder="Pesquisar aluno..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ======================================
+             PAINEL DAS FICHAS
+        ====================================== -->
+
+        <section class="painel-fichas">
+
+
+            {% if fichas %}
+
+
+                <div class="tabela-wrapper">
+
+
+                    <table class="tabela-fichas">
+
+
+                        <!-- CABEÇALHO DA TABELA -->
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Aluno
+                                </th>
+
+                                <th>
+                                    Matrícula
+                                </th>
+
+                                <th>
+                                    Turma
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th class="coluna-acoes">
+                                    Ações
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+
+                        <!-- CORPO DA TABELA -->
+
+                        <tbody id="corpoTabela">
+
+
+                            {% for ficha in fichas %}
+
+
+                                <tr class="linha-ficha">
+
+
+                                    <!-- ALUNO -->
+
+                                    <td>
+
+                                        <div class="aluno-info">
+
+
+                                            <div class="avatar-aluno">
+
+                                                <i class="fa-solid fa-user"></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {{ ficha.nome }}
+                                                </strong>
+
+                                                <span>
+                                                    Ficha 19
+                                                </span>
+
+                                            </div>
+
+
+                                        </div>
+
+                                    </td>
+
+
+
+                                    <!-- MATRÍCULA -->
+
+                                    <td>
+
+                                        {{ ficha.matricula }}
+
+                                    </td>
+
+
+
+                                    <!-- TURMA -->
+
+                                    <td>
+
+                                        {{ ficha.turma }}
+
+                                    </td>
+
+
+
+                                    <!-- STATUS -->
+
+                                    <td>
+
+                                        <span class="status-andamento-ficha">
+
+                                            concluído
+
+                                        </span>
+
+                                    </td>
+
+
+
+                                    <!-- AÇÕES -->
+
+                                    <td class="coluna-acoes">
+
+
+                                        <a
+                                            href="{{ url_for('ficha19', aluno_id=ficha.id) }}"
+                                            class="botao-consultar-ficha"
+                                        >
+
+                                            <i class="fa-regular fa-file-lines"></i>
+
+                                            Consultar documento
+
+                                        </a>
+
+
+                                    </td>
+
+
+                                </tr>
+
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+
+                    </table>
+
+
+                </div>
+
+
+
+            {% else %}
+
+
+                <!-- ==================================
+                     NENHUMA FICHA
+                ================================== -->
+
+                <div class="estado-vazio">
+
+
+                    <div class="icone-vazio">
+
+                        <i class="fa-regular fa-folder-open"></i>
+
+                    </div>
+
+
+                    <h2>
+                        Nenhuma Ficha 19 concluído
+                    </h2>
+
+
+                    <p>
+
+                        Quando uma Ficha 19 for importada,
+                        ela aparecerá automaticamente aqui.
+
+                    </p>
+
+
+                </div>
+
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- ==========================================
+         RODAPÉ
+    ========================================== -->
+
+    <footer>
+
+        <p>
+            eDOC — Sistema de Gestão Documental Escolar
+        </p>
+
+    </footer>
+
+
+
+    <!-- ==========================================
+         PESQUISA NA TABELA
+    ========================================== -->
+
+    <script>
+
+
+        const campoPesquisa =
+            document.getElementById("pesquisaFicha");
+
+
+        if (campoPesquisa) {
+
+
+            campoPesquisa.addEventListener(
+                "input",
+                function() {
+
+
+                    const termo =
+                        this.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    const linhas =
+                        document.querySelectorAll(
+                            ".linha-ficha"
+                        );
+
+
+                    linhas.forEach(
+                        function(linha) {
+
+
+                            const texto =
+                                linha.innerText
+                                    .toLowerCase();
+
+
+                            linha.style.display =
+                                texto.includes(termo)
+                                ? ""
+                                : "none";
+
+
+                        }
+                    );
+
+
+                }
+            );
+
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

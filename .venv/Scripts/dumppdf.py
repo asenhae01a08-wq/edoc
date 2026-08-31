@@ -1,4 +1,4 @@
-#!C:\Users\Aluno\Documents\GitHub\edoc\.venv\Scripts\python.exe
+#!C:\Users\PEDRO\Documents\rodrigok\edoc\.venv\Scripts\python.exe
 """Extract pdf structure in XML format"""
 
 import logging

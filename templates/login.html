@@ -14,20 +14,311 @@
         eDOC - Acesso
     </title>
 
+
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style2.css') }}?v=100"
+        href="{{ url_for('static', filename='style2.css') }}?v=101"
     >
+
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
 
+
+    <!-- ==========================================
+         ALERTAS FLUTUANTES
+    ========================================== -->
+
+    <style>
+
+        .edoc-alertas {
+
+            position: fixed;
+
+            top: 22px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: min(
+                470px,
+                calc(100% - 30px)
+            );
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+
+            z-index: 99999;
+
+            pointer-events: none;
+
+        }
+
+
+        .edoc-alerta {
+
+            width: 100%;
+
+            min-height: 52px;
+
+            padding:
+                13px
+                18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            line-height: 1.4;
+
+            text-align: center;
+
+            box-shadow:
+                0 8px 25px
+                rgba(20, 46, 63, 0.16);
+
+            animation:
+                edocEntradaAlerta
+                0.35s
+                ease;
+
+            transition:
+                opacity 0.4s ease,
+                transform 0.4s ease;
+
+        }
+
+
+
+        /* ==========================================
+           SUCESSO
+        ========================================== */
+
+        .edoc-alerta-sucesso {
+
+            background:
+                #e4f5ed;
+
+            color:
+                #14684f;
+
+            border:
+                1px solid
+                #a9d9c7;
+
+        }
+
+
+        .edoc-alerta-sucesso i {
+
+            color:
+                #1d8a68;
+
+            font-size: 17px;
+
+        }
+
+
+
+        /* ==========================================
+           ERRO
+        ========================================== */
+
+        .edoc-alerta-erro {
+
+            background:
+                #fff0f0;
+
+            color:
+                #9a2929;
+
+            border:
+                1px solid
+                #efbcbc;
+
+        }
+
+
+        .edoc-alerta-erro i {
+
+            color:
+                #b52b2b;
+
+            font-size: 16px;
+
+        }
+
+
+
+        /* ==========================================
+           SAÍDA
+        ========================================== */
+
+        .edoc-alerta-sumindo {
+
+            opacity: 0;
+
+            transform:
+                translateY(-15px);
+
+        }
+
+
+
+        /* ==========================================
+           ANIMAÇÃO DE ENTRADA
+        ========================================== */
+
+        @keyframes edocEntradaAlerta {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(-18px);
+
+            }
+
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+
+            }
+
+        }
+
+
+
+        /* ==========================================
+           CELULAR
+        ========================================== */
+
+        @media (max-width: 550px) {
+
+            .edoc-alertas {
+
+                top: 12px;
+
+                width:
+                    calc(100% - 20px);
+
+            }
+
+
+            .edoc-alerta {
+
+                min-height: 48px;
+
+                padding:
+                    11px
+                    14px;
+
+                font-size: 12px;
+
+            }
+
+        }
+
+    </style>
+
+
 </head>
 
 
 <body>
+
+
+    <!-- ==========================================
+         ALERTAS DO FLASK
+    ========================================== -->
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+        {% if mensagens %}
+
+            <div
+                class="edoc-alertas"
+                id="edocAlertas"
+            >
+
+                {% for categoria, mensagem in mensagens %}
+
+
+                    <div
+                        class="
+                            edoc-alerta
+
+                            {% if categoria == 'sucesso'
+                                  or categoria == 'success' %}
+
+                                edoc-alerta-sucesso
+
+                            {% else %}
+
+                                edoc-alerta-erro
+
+                            {% endif %}
+                        "
+                    >
+
+
+                        {% if categoria == 'sucesso'
+                              or categoria == 'success' %}
+
+
+                            <i
+                                class="fa-solid fa-circle-check"
+                            ></i>
+
+
+                        {% else %}
+
+
+                            <i
+                                class="fa-solid fa-circle-exclamation"
+                            ></i>
+
+
+                        {% endif %}
+
+
+                        <span>
+
+                            {{ mensagem }}
+
+                        </span>
+
+
+                    </div>
+
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    {% endwith %}
+
 
 
     <div class="pagina">
@@ -39,31 +330,45 @@
 
         <header class="banner">
 
+
             <div class="marca">
 
+
                 <div class="espaco-logo">
+
 
                     <img
                         src="{{ url_for('static', filename='img/logo.png') }}"
                         alt="Logo do eDOC"
                     >
 
+
                 </div>
+
 
 
                 <div class="texto-logo">
 
+
                     <h1>
+
                         eDOC
+
                     </h1>
 
+
                     <p>
+
                         Sistema de Gestão de Documentos Escolares
+
                     </p>
+
 
                 </div>
 
+
             </div>
+
 
         </header>
 
@@ -75,19 +380,26 @@
 
         <nav class="menu">
 
+
             <a
                 href="#"
                 class="ativo"
             >
+
                 Início
+
             </a>
+
 
 
             <a
                 href="{{ url_for('suporte') }}"
             >
+
                 Contato
+
             </a>
+
 
         </nav>
 
@@ -103,6 +415,7 @@
             <section class="area-acesso">
 
 
+
                 <!-- ==========================================
                      PAINEL
                 ========================================== -->
@@ -110,17 +423,27 @@
                 <div class="painel-login">
 
 
+
+                    <!-- CABEÇALHO -->
+
                     <div class="cabecalho-painel">
 
+
                         <h3>
+
                             Entrar no sistema
+
                         </h3>
+
 
                     </div>
 
 
 
+                    <!-- CORPO -->
+
                     <div class="corpo-painel">
+
 
 
                         <!-- ==========================================
@@ -130,27 +453,39 @@
                         <div class="apresentacao">
 
 
+
                             <div class="icone-usuario">
+
 
                                 <i class="fa-regular fa-user"></i>
 
+
                             </div>
+
 
 
                             <div class="texto-apresentacao">
 
+
                                 <h3>
+
                                     Bem-vindo ao eDOC
+
                                 </h3>
 
+
                                 <p>
+
                                     Consulte documentos escolares,
                                     acompanhe solicitações e acesse
                                     as funcionalidades disponíveis
                                     para o seu perfil.
+
                                 </p>
 
+
                             </div>
+
 
                         </div>
 
@@ -168,9 +503,13 @@
                         >
 
 
-                            <!-- MATRÍCULA / E-MAIL -->
+
+                            <!-- ======================================
+                                 MATRÍCULA / E-MAIL
+                            ====================================== -->
 
                             <div class="grupo">
+
 
                                 <label for="identificacao">
 
@@ -179,9 +518,12 @@
                                 </label>
 
 
+
                                 <div class="campo">
 
+
                                     <i class="fa-regular fa-user"></i>
+
 
                                     <input
                                         type="text"
@@ -192,15 +534,20 @@
                                         required
                                     >
 
+
                                 </div>
+
 
                             </div>
 
 
 
-                            <!-- SENHA -->
+                            <!-- ======================================
+                                 SENHA
+                            ====================================== -->
 
                             <div class="grupo">
+
 
                                 <label for="senha">
 
@@ -209,9 +556,12 @@
                                 </label>
 
 
+
                                 <div class="campo">
 
+
                                     <i class="fa-solid fa-lock"></i>
+
 
                                     <input
                                         type="password"
@@ -223,6 +573,7 @@
                                     >
 
 
+
                                     <button
                                         type="button"
                                         class="botao-olho"
@@ -231,42 +582,57 @@
                                         aria-label="Mostrar ou esconder senha"
                                     >
 
+
                                         <i
                                             class="fa-regular fa-eye"
                                             id="iconeSenha"
                                         ></i>
 
+
                                     </button>
 
+
                                 </div>
+
 
                             </div>
 
 
 
-                            <!-- ==========================================
+                            <!-- ======================================
                                  AÇÕES
-                            ========================================== -->
+                            ====================================== -->
 
                             <div class="acoes">
+
+
 
                                 <button
                                     type="submit"
                                     class="botao-entrar"
                                 >
 
-                                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                                    <i
+                                        class="fa-solid fa-right-to-bracket"
+                                    ></i>
+
 
                                     Entrar
+
 
                                 </button>
 
 
-                                <a href="{{ url_for('esqueci') }}">
+
+                                <a
+                                    href="{{ url_for('esqueci') }}"
+                                >
 
                                     Esqueci minha senha
 
                                 </a>
+
 
                             </div>
 
@@ -276,37 +642,8 @@
 
                     </div>
 
+
                 </div>
-
-
-
-                <!-- ==========================================
-                     MENSAGENS DO FLASK
-                ========================================== -->
-
-                {% with messages = get_flashed_messages() %}
-
-                    {% if messages %}
-
-                        <div class="flash-messages">
-
-                            {% for message in messages %}
-
-                                <p>
-
-                                    <i class="fa-solid fa-circle-exclamation"></i>
-
-                                    {{ message }}
-
-                                </p>
-
-                            {% endfor %}
-
-                        </div>
-
-                    {% endif %}
-
-                {% endwith %}
 
 
             </section>
@@ -322,9 +659,13 @@
 
         <footer class="rodape">
 
+
             <p>
+
                 eDOC — Sistema de Gestão de Documentos Escolares
+
             </p>
+
 
         </footer>
 
@@ -339,36 +680,136 @@
 
     <script>
 
+
         function mostrarSenha() {
 
+
             const campoSenha =
-                document.getElementById("senha");
+                document.getElementById(
+                    "senha"
+                );
+
 
             const iconeSenha =
-                document.getElementById("iconeSenha");
+                document.getElementById(
+                    "iconeSenha"
+                );
 
 
-            if (campoSenha.type === "password") {
 
-                campoSenha.type = "text";
+            if (
+                campoSenha.type === "password"
+            ) {
 
-                iconeSenha.classList.remove("fa-eye");
 
-                iconeSenha.classList.add("fa-eye-slash");
+                campoSenha.type =
+                    "text";
+
+
+                iconeSenha.classList.remove(
+                    "fa-eye"
+                );
+
+
+                iconeSenha.classList.add(
+                    "fa-eye-slash"
+                );
+
 
             }
 
             else {
 
-                campoSenha.type = "password";
 
-                iconeSenha.classList.remove("fa-eye-slash");
+                campoSenha.type =
+                    "password";
 
-                iconeSenha.classList.add("fa-eye");
+
+                iconeSenha.classList.remove(
+                    "fa-eye-slash"
+                );
+
+
+                iconeSenha.classList.add(
+                    "fa-eye"
+                );
+
 
             }
 
+
         }
+
+
+    </script>
+
+
+
+    <!-- ==========================================
+         ALERTA DESAPARECE AUTOMATICAMENTE
+    ========================================== -->
+
+    <script>
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                const alertas =
+                    document.querySelectorAll(
+                        ".edoc-alerta"
+                    );
+
+
+
+                alertas.forEach(
+                    function (alerta) {
+
+
+                        // ==================================
+                        // DEIXA VISÍVEL POR 3 SEGUNDOS
+                        // ==================================
+
+                        setTimeout(
+                            function () {
+
+
+                                alerta.classList.add(
+                                    "edoc-alerta-sumindo"
+                                );
+
+
+                            },
+                            3000
+                        );
+
+
+
+                        // ==================================
+                        // REMOVE DA PÁGINA
+                        // ==================================
+
+                        setTimeout(
+                            function () {
+
+
+                                alerta.remove();
+
+
+                            },
+                            3500
+                        );
+
+
+                    }
+                );
+
+
+            }
+        );
+
 
     </script>
 

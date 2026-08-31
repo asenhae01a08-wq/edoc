@@ -1,0 +1,445 @@
+/* =========================================================
+   EDOC - FICHAS 19 concluído
+   ========================================================= */
+
+.pagina-fichas {
+    width: 87%;
+    max-width: 1180px;
+    margin: 28px auto 45px;
+}
+
+/* =========================================================
+   CABEÇALHO DA PÁGINA
+   ========================================================= */
+
+.cabecalho-pagina {
+    min-height: 95px;
+    padding: 20px 22px;
+
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) 290px;
+    align-items: center;
+    gap: 18px;
+
+    background: #ffffff;
+    border: 1px solid #d8e0e6;
+    border-radius: 10px;
+
+    box-shadow: 0 3px 12px rgba(20, 55, 80, 0.06);
+}
+
+/* =========================================================
+   BOTÃO VOLTAR
+   ========================================================= */
+
+.botao-voltar-fichas {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    background: #e9f3fa;
+    color: #0c4770;
+
+    border: 1px solid #c9ddea;
+    border-radius: 10px;
+
+    text-decoration: none;
+    font-size: 17px;
+
+    transition: 0.2s ease;
+}
+
+.botao-voltar-fichas:hover {
+    background: #0c4770;
+    color: #ffffff;
+
+    transform: translateX(-3px);
+}
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
+.titulo-pagina {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icone-titulo {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f0e9ff;
+    color: #7950c7;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+}
+
+.titulo-pagina h1 {
+    margin: 0 0 5px;
+
+    color: #26333d;
+
+    font-size: 21px;
+}
+
+.titulo-pagina p {
+    margin: 0;
+
+    color: #667580;
+
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   PESQUISA
+   ========================================================= */
+
+.campo-pesquisa {
+    height: 42px;
+
+    padding: 0 14px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 8px;
+
+    transition: 0.2s ease;
+}
+
+.campo-pesquisa:focus-within {
+    border-color: #91bdd7;
+
+    box-shadow: 0 0 0 3px rgba(12, 71, 112, 0.08);
+}
+
+.campo-pesquisa i {
+    color: #667580;
+
+    font-size: 13px;
+}
+
+.campo-pesquisa input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #26333d;
+
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.campo-pesquisa input::placeholder {
+    color: #8a98a2;
+}
+
+/* =========================================================
+   PAINEL
+   ========================================================= */
+
+.painel-fichas {
+    margin-top: 18px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 10px;
+
+    box-shadow: 0 3px 12px rgba(20, 55, 80, 0.06);
+}
+
+/* =========================================================
+   TABELA
+   ========================================================= */
+
+.tabela-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.tabela-fichas {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.tabela-fichas thead {
+    background: #fafbfd;
+}
+
+.tabela-fichas th {
+    padding: 15px 20px;
+
+    color: #4f606d;
+
+    border-bottom: 1px solid #d8e0e6;
+
+    text-align: left;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.tabela-fichas td {
+    padding: 18px 20px;
+
+    color: #26333d;
+
+    border-bottom: 1px solid #edf1f4;
+
+    font-size: 12px;
+
+    vertical-align: middle;
+}
+
+.linha-ficha {
+    transition: 0.2s ease;
+}
+
+.linha-ficha:hover {
+    background: #fbfcfd;
+}
+
+.linha-ficha:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   ALUNO
+   ========================================================= */
+
+.aluno-info {
+    min-width: 220px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.avatar-aluno {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e9f3fa;
+    color: #0c4770;
+
+    border-radius: 50%;
+
+    font-size: 17px;
+}
+
+.aluno-info strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #26333d;
+
+    font-size: 13px;
+}
+
+.aluno-info span {
+    color: #667580;
+
+    font-size: 10px;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-andamento-ficha {
+    padding: 7px 11px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    background: #f0e9ff;
+    color: #7147bb;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+/* =========================================================
+   AÇÕES
+   ========================================================= */
+
+.coluna-acoes {
+    text-align: right !important;
+}
+
+.botao-consultar-ficha {
+    padding: 9px 13px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    color: #0c4770;
+    background: #ffffff;
+
+    border: 1px solid #91bdd7;
+    border-radius: 7px;
+
+    text-decoration: none;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.botao-consultar-ficha:hover {
+    background: #0c4770;
+    color: #ffffff;
+
+    border-color: #0c4770;
+}
+
+/* =========================================================
+   SEM FICHAS
+   ========================================================= */
+
+.estado-vazio {
+    padding: 65px 25px;
+
+    text-align: center;
+}
+
+.icone-vazio {
+    width: 64px;
+    height: 64px;
+
+    margin: 0 auto 17px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e9f3fa;
+    color: #0c4770;
+
+    border-radius: 50%;
+
+    font-size: 25px;
+}
+
+.estado-vazio h2 {
+    margin-bottom: 8px;
+
+    color: #26333d;
+
+    font-size: 18px;
+}
+
+.estado-vazio p {
+    max-width: 390px;
+
+    margin: 0 auto;
+
+    color: #667580;
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .pagina-fichas {
+        width: 92%;
+    }
+
+    .cabecalho-pagina {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .campo-pesquisa {
+        grid-column: 1 / -1;
+
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .pagina-fichas {
+        width: 94%;
+
+        margin-top: 18px;
+    }
+
+    .cabecalho-pagina {
+        padding: 15px;
+
+        gap: 12px;
+    }
+
+    .icone-titulo {
+        display: none;
+    }
+
+    .titulo-pagina h1 {
+        font-size: 17px;
+    }
+
+    .titulo-pagina p {
+        font-size: 11px;
+    }
+
+    .tabela-fichas th,
+    .tabela-fichas td {
+        padding: 14px;
+    }
+
+    .aluno-info {
+        min-width: 185px;
+    }
+}

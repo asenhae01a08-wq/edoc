@@ -336,7 +336,7 @@ def salvar_importacao_pdf(dados):
                 atualizacoes.append("curso_id = %s")
                 valores.append(curso_id)
 
-            atualizacoes.append("status_ficha19 = 'Pronta para emissão'")
+            atualizacoes.append("status_ficha19 = 'pronta para emissão'")
             atualizacoes.append("cargo_nivel = 'Aluno'")
 
             valores.append(aluno_existente["id"])
@@ -382,7 +382,7 @@ def salvar_importacao_pdf(dados):
                 VALUES (
                     %s, %s, %s, %s, %s, %s, %s, %s, %s,
                     %s, NULL, %s, %s, %s, NULL, %s, %s,
-                    'Pronta para emissão', 'Aluno'
+                    'pronta para emissão', 'Aluno'
                 )
                 """,
                 (

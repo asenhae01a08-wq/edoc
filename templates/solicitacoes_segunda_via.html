@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Solicitações de 2ª via</title>
+
+
+    <!-- CSS PRINCIPAL -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style8.css') }}?v=72"
+    >
+
+
+    <!-- CABEÇALHO PADRÃO -->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='cabecalho_profissional.css') }}?v=1"
+    >
+
+
+    <!-- FONT AWESOME -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- ==================================================
+         ESTILOS DA TELA DE 2ª VIA
+    ================================================== -->
+
+    <style>
+
+        :root {
+            --azul-principal: #0c4770;
+            --azul-escuro: #073450;
+            --azul-hover: #126596;
+            --azul-claro: #e9f3fa;
+            --branco: #ffffff;
+            --fundo: #f1f4f7;
+            --texto: #26333d;
+            --texto-claro: #667580;
+            --borda: #d8e0e6;
+            --verde: #1d8a68;
+            --amarelo: #c88308;
+            --vermelho: #d94a4a;
+        }
+
+
+        .pagina-segunda-via {
+            width: min(1180px, calc(100% - 40px));
+            margin: 34px auto 60px;
+        }
+
+
+        .cabecalho-pagina {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 26px;
+        }
+
+
+        .botao-voltar {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 10px;
+            background: var(--azul-claro);
+            color: var(--azul-principal);
+            border: 1px solid #c9ddea;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: .2s ease;
+        }
+
+
+        .botao-voltar:hover {
+            background: var(--azul-principal);
+            color: #ffffff;
+            transform: translateX(-3px);
+        }
+
+
+        .titulo-pagina {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+
+        .titulo-pagina h1 {
+            margin: 0;
+            color: var(--azul-escuro);
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+
+        .titulo-pagina p {
+            margin: 0;
+            color: var(--texto-claro);
+            font-size: 14px;
+        }
+
+
+        .resumo-solicitacoes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+
+        .resumo-card {
+            background: var(--branco);
+            border: 1px solid var(--borda);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 8px 22px rgba(21, 55, 80, 0.06);
+        }
+
+
+        .resumo-icone {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: var(--azul-claro);
+            color: var(--azul-principal);
+        }
+
+
+        .resumo-card.pendentes .resumo-icone {
+            background: #fff4dc;
+            color: var(--amarelo);
+        }
+
+
+        .resumo-card.analise .resumo-icone {
+            background: #eaf3fb;
+            color: var(--azul-hover);
+        }
+
+
+        .resumo-card.concluidas .resumo-icone {
+            background: #e8f5ef;
+            color: var(--verde);
+        }
+
+
+        .resumo-card strong {
+            display: block;
+            color: var(--azul-escuro);
+            font-size: 23px;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+
+        .resumo-card span {
+            color: var(--texto-claro);
+            font-size: 13px;
+        }
+
+
+        .painel-lista {
+            background: var(--branco);
+            border: 1px solid var(--borda);
+            border-radius: 18px;
+            box-shadow: 0 10px 28px rgba(21, 55, 80, 0.07);
+            overflow: hidden;
+        }
+
+
+        .barra-lista {
+            padding: 20px;
+            border-bottom: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+
+        .barra-lista h2 {
+            margin: 0;
+            color: var(--azul-escuro);
+            font-size: 18px;
+        }
+
+
+        .controles-lista {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+
+        .campo-busca {
+            min-width: 260px;
+            height: 42px;
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            padding: 0 14px;
+            outline: none;
+            color: var(--texto);
+            background: #ffffff;
+        }
+
+
+        .campo-busca:focus,
+        .filtro-status:focus {
+            border-color: var(--azul-hover);
+            box-shadow: 0 0 0 3px rgba(18, 101, 150, .10);
+        }
+
+
+        .filtro-status {
+            height: 42px;
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            padding: 0 12px;
+            color: var(--texto);
+            background: #ffffff;
+            outline: none;
+        }
+
+
+        .tabela-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+
+        .tabela-solicitacoes {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 920px;
+        }
+
+
+        .tabela-solicitacoes th {
+            text-align: left;
+            padding: 14px 16px;
+            background: #f8fafc;
+            color: var(--texto-claro);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            border-bottom: 1px solid var(--borda);
+        }
+
+
+        .tabela-solicitacoes td {
+            padding: 16px;
+            border-bottom: 1px solid #edf1f4;
+            color: var(--texto);
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+
+        .tabela-solicitacoes tbody tr:hover {
+            background: #fbfdff;
+        }
+
+
+        .nome-aluno {
+            font-weight: 800;
+            color: var(--azul-escuro);
+        }
+
+
+        .matricula-aluno {
+            color: var(--texto-claro);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 30px;
+            padding: 0 11px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+
+        .badge-status::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+
+        .status-pendente {
+            background: #fff4dc;
+            color: #9a6808;
+        }
+
+
+        .status-analise {
+            background: #eaf3fb;
+            color: var(--azul-hover);
+        }
+
+
+        .status-concluida {
+            background: #e8f5ef;
+            color: var(--verde);
+        }
+
+
+        .status-outro {
+            background: #eef1f4;
+            color: var(--texto-claro);
+        }
+
+
+        .btn-analisar {
+            height: 36px;
+            padding: 0 14px;
+            border: none;
+            border-radius: 9px;
+            background: var(--azul-principal);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: .2s ease;
+        }
+
+
+        .btn-analisar:hover {
+            background: var(--azul-hover);
+            transform: translateY(-1px);
+        }
+
+
+        .estado-vazio {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--texto-claro);
+        }
+
+
+        .estado-vazio i {
+            display: block;
+            font-size: 34px;
+            margin-bottom: 14px;
+            color: #aab9c4;
+        }
+
+
+        .estado-vazio h3 {
+            margin: 0 0 7px;
+            color: var(--azul-escuro);
+        }
+
+
+        .modal-fundo {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 52, 80, .46);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 9999;
+        }
+
+
+        .modal-fundo.aberto {
+            display: flex;
+        }
+
+
+        .modal-card {
+            width: min(560px, 100%);
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .22);
+            overflow: hidden;
+        }
+
+
+        .modal-topo {
+            padding: 20px 22px;
+            border-bottom: 1px solid var(--borda);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+
+        .modal-topo h3 {
+            margin: 0;
+            color: var(--azul-escuro);
+            font-size: 19px;
+        }
+
+
+        .fechar-modal {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #f1f4f7;
+            color: var(--texto-claro);
+            font-size: 16px;
+        }
+
+
+        .modal-conteudo {
+            padding: 22px;
+        }
+
+
+        .detalhe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+
+        .detalhe-item {
+            padding: 13px 14px;
+            background: #f8fafc;
+            border: 1px solid #edf1f4;
+            border-radius: 10px;
+        }
+
+
+        .detalhe-item.total {
+            grid-column: 1 / -1;
+        }
+
+
+        .detalhe-item small {
+            display: block;
+            color: var(--texto-claro);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+
+        .detalhe-item span {
+            color: var(--texto);
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+
+
+        .acoes-status-solicitacao {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--borda);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-status-solicitacao {
+            min-height: 40px;
+            padding: 0 16px;
+            border: 0;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: .2s ease;
+        }
+
+        .btn-iniciar-analise {
+            background: var(--azul-principal);
+            color: #ffffff;
+        }
+
+        .btn-iniciar-analise:hover {
+            background: var(--azul-hover);
+        }
+
+        .btn-concluir {
+            background: var(--verde);
+            color: #ffffff;
+        }
+
+        .btn-concluir:hover {
+            filter: brightness(.95);
+        }
+
+        .mensagem-concluida {
+            color: var(--verde);
+            font-size: 13px;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        @media (max-width: 780px) {
+
+            .pagina-segunda-via {
+                width: min(100% - 24px, 1180px);
+                margin-top: 22px;
+            }
+
+            .resumo-solicitacoes {
+                grid-template-columns: 1fr;
+            }
+
+            .controles-lista {
+                width: 100%;
+            }
+
+            .campo-busca,
+            .filtro-status {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .detalhe-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detalhe-item.total {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ======================================================
+     CABEÇALHO PADRÃO DO PROFISSIONAL
+====================================================== -->
+
+{% include 'cabecalho_profissional.html' %}
+
+
+<main class="pagina-segunda-via">
+
+
+    <!-- ==================================================
+         TÍTULO
+    ================================================== -->
+
+    <section class="cabecalho-pagina">
+
+        <a
+            href="{{ url_for('inicialp') }}"
+            class="botao-voltar"
+            title="Voltar"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+
+        <div class="titulo-pagina">
+
+            <h1>
+                Solicitações de 2ª via
+            </h1>
+
+            <p>
+                Consulte os pedidos enviados pelos estudantes.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         CONTADORES
+    ================================================== -->
+
+    {% set pendentes = namespace(total=0) %}
+    {% set analise = namespace(total=0) %}
+    {% set concluidas = namespace(total=0) %}
+
+    {% for solicitacao in solicitacoes %}
+
+        {% if solicitacao.status == 'Pendente' %}
+            {% set pendentes.total = pendentes.total + 1 %}
+        {% elif solicitacao.status == 'Em análise' %}
+            {% set analise.total = analise.total + 1 %}
+        {% elif solicitacao.status == 'Concluída' %}
+            {% set concluidas.total = concluidas.total + 1 %}
+        {% endif %}
+
+    {% endfor %}
+
+
+    <section class="resumo-solicitacoes">
+
+
+        <div class="resumo-card pendentes">
+
+            <div class="resumo-icone">
+                <i class="fa-regular fa-clock"></i>
+            </div>
+
+            <div>
+                <strong>{{ pendentes.total }}</strong>
+                <span>Solicitações pendentes</span>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card analise">
+
+            <div class="resumo-icone">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+
+            <div>
+                <strong>{{ analise.total }}</strong>
+                <span>Em análise</span>
+            </div>
+
+        </div>
+
+
+        <div class="resumo-card concluidas">
+
+            <div class="resumo-icone">
+                <i class="fa-solid fa-check"></i>
+            </div>
+
+            <div>
+                <strong>{{ concluidas.total }}</strong>
+                <span>Concluídas</span>
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ==================================================
+         LISTA
+    ================================================== -->
+
+    <section class="painel-lista">
+
+
+        <div class="barra-lista">
+
+            <h2>
+                Pedidos recebidos
+            </h2>
+
+
+            <div class="controles-lista">
+
+                <input
+                    type="text"
+                    id="campoBusca"
+                    class="campo-busca"
+                    placeholder="Buscar por nome ou matrícula..."
+                >
+
+
+                <select
+                    id="filtroStatus"
+                    class="filtro-status"
+                >
+
+                    <option value="">
+                        Todos os status
+                    </option>
+
+                    <option value="Pendente">
+                        Pendente
+                    </option>
+
+                    <option value="Em análise">
+                        Em análise
+                    </option>
+
+                    <option value="Concluída">
+                        Concluída
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        {% if solicitacoes %}
+
+            <div class="tabela-wrapper">
+
+                <table
+                    class="tabela-solicitacoes"
+                    id="tabelaSolicitacoes"
+                >
+
+                    <thead>
+
+                        <tr>
+                            <th>Aluno</th>
+                            <th>Turma</th>
+                            <th>Motivo</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Ação</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for solicitacao in solicitacoes %}
+
+                        <tr
+                            data-nome="{{ solicitacao.nome|lower }}"
+                            data-matricula="{{ solicitacao.matricula }}"
+                            data-status="{{ solicitacao.status }}"
+                        >
+
+                            <td>
+
+                                <div class="nome-aluno">
+                                    {{ solicitacao.nome }}
+                                </div>
+
+                                <div class="matricula-aluno">
+                                    Matrícula:
+                                    {{ solicitacao.matricula }}
+                                </div>
+
+                            </td>
+
+
+                            <td>
+                                {{ solicitacao.turma or '-' }}
+                            </td>
+
+
+                            <td>
+                                {{ solicitacao.motivo }}
+                            </td>
+
+
+                            <td>
+
+                                {% if solicitacao.data_solicitacao %}
+
+                                    {{ solicitacao.data_solicitacao.strftime('%d/%m/%Y %H:%M') }}
+
+                                {% else %}
+
+                                    -
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if solicitacao.status == 'Pendente' %}
+
+                                    <span class="badge-status status-pendente">
+                                        Pendente
+                                    </span>
+
+                                {% elif solicitacao.status == 'Em análise' %}
+
+                                    <span class="badge-status status-analise">
+                                        Em análise
+                                    </span>
+
+                                {% elif solicitacao.status == 'Concluída' %}
+
+                                    <span class="badge-status status-concluida">
+                                        Concluída
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge-status status-outro">
+                                        {{ solicitacao.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="btn-analisar"
+                                    onclick='abrirDetalhes(
+                                        {{ solicitacao.id|tojson }},
+                                        {{ solicitacao.nome|tojson }},
+                                        {{ solicitacao.matricula|tojson }},
+                                        {{ (solicitacao.turma or "-")|tojson }},
+                                        {{ solicitacao.motivo|tojson }},
+                                        {{ (solicitacao.observacao or "Nenhuma observação informada.")|tojson }},
+                                        {{ solicitacao.status|tojson }},
+                                        {{ (solicitacao.data_solicitacao.strftime("%d/%m/%Y %H:%M") if solicitacao.data_solicitacao else "-")|tojson }}
+                                    )'
+                                >
+
+                                    <i class="fa-solid fa-eye"></i>
+
+                                    Analisar
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="estado-vazio">
+
+                <i class="fa-regular fa-folder-open"></i>
+
+                <h3>
+                    Nenhuma solicitação encontrada
+                </h3>
+
+                <p>
+                    Quando um aluno solicitar uma 2ª via,
+                    o pedido aparecerá aqui.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+
+    </section>
+
+
+</main>
+
+
+<!-- ======================================================
+     MODAL DE DETALHES
+====================================================== -->
+
+<div
+    class="modal-fundo"
+    id="modalDetalhes"
+    onclick="fecharAoFundo(event)"
+>
+
+    <div class="modal-card">
+
+        <div class="modal-topo">
+
+            <h3>
+                Detalhes da solicitação
+            </h3>
+
+
+            <button
+                type="button"
+                class="fechar-modal"
+                onclick="fecharDetalhes()"
+                aria-label="Fechar"
+            >
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="modal-conteudo">
+
+            <div class="detalhe-grid">
+
+
+                <div class="detalhe-item">
+
+                    <small>
+                        Aluno
+                    </small>
+
+                    <span id="detalheNome"></span>
+
+                </div>
+
+
+                <div class="detalhe-item">
+
+                    <small>
+                        Matrícula
+                    </small>
+
+                    <span id="detalheMatricula"></span>
+
+                </div>
+
+
+                <div class="detalhe-item">
+
+                    <small>
+                        Turma
+                    </small>
+
+                    <span id="detalheTurma"></span>
+
+                </div>
+
+
+                <div class="detalhe-item">
+
+                    <small>
+                        Data da solicitação
+                    </small>
+
+                    <span id="detalheData"></span>
+
+                </div>
+
+
+                <div class="detalhe-item total">
+
+                    <small>
+                        Motivo
+                    </small>
+
+                    <span id="detalheMotivo"></span>
+
+                </div>
+
+
+                <div class="detalhe-item total">
+
+                    <small>
+                        Observação do aluno
+                    </small>
+
+                    <span id="detalheObservacao"></span>
+
+                </div>
+
+
+                <div class="detalhe-item total">
+
+                    <small>
+                        Status atual
+                    </small>
+
+                    <span id="detalheStatus"></span>
+
+                </div>
+
+
+            </div>
+
+            <div class="acoes-status-solicitacao">
+
+                <form
+                    id="formIniciarAnalise"
+                    method="POST"
+                    style="display: none;"
+                >
+                    <button
+                        type="submit"
+                        class="btn-status-solicitacao btn-iniciar-analise"
+                    >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Iniciar análise
+                    </button>
+                </form>
+
+                <form
+                    id="formConcluirSolicitacao"
+                    method="POST"
+                    style="display: none;"
+                >
+                    <button
+                        type="submit"
+                        class="btn-status-solicitacao btn-concluir"
+                    >
+                        <i class="fa-solid fa-check"></i>
+                        Concluir solicitação
+                    </button>
+                </form>
+
+                <div
+                    id="mensagemSolicitacaoConcluida"
+                    class="mensagem-concluida"
+                >
+                    <i class="fa-solid fa-circle-check"></i>
+                    Solicitação já concluída
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     RODAPÉ
+====================================================== -->
+
+<footer>
+
+    <p>
+        eDOC — Sistema de Gestão Documental Escolar
+    </p>
+
+</footer>
+
+
+<script>
+
+    const campoBusca = document.getElementById(
+        "campoBusca"
+    );
+
+    const filtroStatus = document.getElementById(
+        "filtroStatus"
+    );
+
+
+    function filtrarTabela() {
+
+        const busca = (
+            campoBusca?.value || ""
+        ).toLowerCase().trim();
+
+        const status = (
+            filtroStatus?.value || ""
+        ).trim();
+
+        const linhas = document.querySelectorAll(
+            "#tabelaSolicitacoes tbody tr"
+        );
+
+
+        linhas.forEach(function (linha) {
+
+            const nome = (
+                linha.dataset.nome || ""
+            ).toLowerCase();
+
+            const matricula = (
+                linha.dataset.matricula || ""
+            ).toLowerCase();
+
+            const statusLinha = (
+                linha.dataset.status || ""
+            );
+
+
+            const correspondeBusca =
+                !busca
+                || nome.includes(busca)
+                || matricula.includes(busca);
+
+
+            const correspondeStatus =
+                !status
+                || statusLinha === status;
+
+
+            linha.style.display =
+                correspondeBusca && correspondeStatus
+                ? ""
+                : "none";
+
+        });
+
+    }
+
+
+    campoBusca?.addEventListener(
+        "input",
+        filtrarTabela
+    );
+
+
+    filtroStatus?.addEventListener(
+        "change",
+        filtrarTabela
+    );
+
+
+    function abrirDetalhes(
+        id,
+        nome,
+        matricula,
+        turma,
+        motivo,
+        observacao,
+        status,
+        data
+    ) {
+
+        document.getElementById(
+            "detalheNome"
+        ).textContent = nome;
+
+        document.getElementById(
+            "detalheMatricula"
+        ).textContent = matricula;
+
+        document.getElementById(
+            "detalheTurma"
+        ).textContent = turma;
+
+        document.getElementById(
+            "detalheMotivo"
+        ).textContent = motivo;
+
+        document.getElementById(
+            "detalheObservacao"
+        ).textContent = observacao;
+
+        document.getElementById(
+            "detalheStatus"
+        ).textContent = status;
+
+        document.getElementById(
+            "detalheData"
+        ).textContent = data;
+
+
+        const formIniciar = document.getElementById(
+            "formIniciarAnalise"
+        );
+
+        const formConcluir = document.getElementById(
+            "formConcluirSolicitacao"
+        );
+
+        const mensagemConcluida = document.getElementById(
+            "mensagemSolicitacaoConcluida"
+        );
+
+
+        formIniciar.style.display = "none";
+        formConcluir.style.display = "none";
+        mensagemConcluida.style.display = "none";
+
+
+        if (status === "Pendente") {
+
+            formIniciar.action =
+                "/solicitacoes-segunda-via/"
+                + id
+                + "/iniciar-analise";
+
+            formIniciar.style.display = "block";
+
+        } else if (status === "Em análise") {
+
+            formConcluir.action =
+                "/solicitacoes-segunda-via/"
+                + id
+                + "/concluir";
+
+            formConcluir.style.display = "block";
+
+        } else if (status === "Concluída") {
+
+            mensagemConcluida.style.display = "flex";
+
+        }
+
+
+        document.getElementById(
+            "modalDetalhes"
+        ).classList.add(
+            "aberto"
+        );
+
+    }
+
+
+    function fecharDetalhes() {
+
+        document.getElementById(
+            "modalDetalhes"
+        ).classList.remove(
+            "aberto"
+        );
+
+    }
+
+
+    function fecharAoFundo(event) {
+
+        if (
+            event.target.id === "modalDetalhes"
+        ) {
+
+            fecharDetalhes();
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Escape") {
+
+                fecharDetalhes();
+
+            }
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

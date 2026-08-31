@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eDOC - Meus Documentos</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style3.css') }}?v=50">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f1f4f7;
+        }
+
+        .menu-principal {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr) !important;
+        }
+
+        .menu-principal .menu-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .contador-documentos {
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: #0c4770;
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .pagina-documentos {
+            width: min(1180px, 92%);
+            margin: 30px auto 48px;
+        }
+
+        .cabecalho-pagina-documentos {
+            margin-bottom: 24px;
+        }
+
+        .cabecalho-pagina-documentos h1 {
+            margin: 0 0 7px;
+            color: #17334b;
+            font-size: 29px;
+            font-weight: 700;
+        }
+
+        .cabecalho-pagina-documentos p {
+            margin: 0;
+            color: #667580;
+            font-size: 14px;
+        }
+
+        .card-ficha {
+            width: 100%;
+            padding: 26px 28px;
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(16, 51, 75, 0.08);
+        }
+
+        .topo-ficha {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 23px;
+        }
+
+        .identificacao-ficha {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .icone-ficha {
+            width: 57px;
+            height: 57px;
+            min-width: 57px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9f3fa;
+            color: #0c4770;
+            border: 1px solid #c9ddea;
+            border-radius: 50%;
+            font-size: 23px;
+        }
+
+        .identificacao-ficha h2 {
+            margin: 0 0 5px;
+            color: #17334b;
+            font-size: 20px;
+        }
+
+        .identificacao-ficha p {
+            margin: 0;
+            color: #667580;
+            font-size: 13px;
+        }
+
+        .selo-status {
+            min-height: 40px;
+            padding: 0 17px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 22px;
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .selo-pronto {
+            background: #daf3e4;
+            color: #177646;
+            border: 1px solid #c0e7cf;
+        }
+
+        .selo-fabricacao {
+            background: #fff4d9;
+            color: #b56d00;
+            border: 1px solid #efd497;
+        }
+
+        .selo-pendente {
+            background: #edf1f4;
+            color: #667580;
+            border: 1px solid #d8e0e6;
+        }
+
+        .alerta-pronto {
+            margin-bottom: 20px;
+            padding: 17px 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            background: #edf9f1;
+            color: #1c6141;
+            border: 1px solid #65c88d;
+            border-radius: 8px;
+        }
+
+        .alerta-pronto > i {
+            width: 29px;
+            height: 29px;
+            min-width: 29px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1d8a68;
+            color: #ffffff;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+
+        .alerta-pronto strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #174d36;
+            font-size: 16px;
+        }
+
+        .alerta-pronto p,
+        .mensagem-documento {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .mensagem-documento {
+            margin-bottom: 8px;
+            color: #26333d;
+            font-size: 14px;
+        }
+
+        .linha-progresso {
+            position: relative;
+            margin: 37px 70px 10px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .linha-progresso::before {
+            content: "";
+            position: absolute;
+            top: 17px;
+            left: 16.66%;
+            right: 16.66%;
+            height: 3px;
+            background: #d4dde4;
+            z-index: 0;
+        }
+
+        .card-ficha.pronto .linha-progresso::before {
+            background: #1d8a68;
+        }
+
+        .etapa {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .circulo-etapa {
+            width: 35px;
+            height: 35px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: #a4b0b9;
+            border: 2px solid #b8c5ce;
+            border-radius: 50%;
+            font-size: 13px;
+        }
+
+        .etapa strong {
+            color: #405a6d;
+            font-size: 11px;
+        }
+
+        .etapa small {
+            margin-top: 5px;
+            color: #83929d;
+            font-size: 10px;
+        }
+
+        .etapa.concluida .circulo-etapa {
+            background: #0c4770;
+            color: #ffffff;
+            border-color: #0c4770;
+        }
+
+        .etapa.atual .circulo-etapa {
+            background: #ffffff;
+            color: #1680ca;
+            border: 3px solid #1680ca;
+            box-shadow: 0 0 0 3px #e4f2fc;
+        }
+
+        .etapa.atual strong,
+        .etapa.atual small {
+            color: #1680ca;
+        }
+
+        .card-ficha.pronto .etapa.concluida .circulo-etapa {
+            background: #1d8a68;
+            border-color: #1d8a68;
+        }
+
+        .card-ficha.pronto .etapa.concluida strong {
+            color: #176f51;
+        }
+
+        .aviso-interno {
+            margin-top: 29px;
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #edf7fd;
+            color: #0c4770;
+            border: 1px solid #bdddf0;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .centro-atualizacoes {
+            margin-top: 22px;
+            padding: 23px;
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(16, 51, 75, 0.06);
+        }
+
+        .cabecalho-atualizacoes {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .titulo-atualizacoes {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icone-atualizacoes {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9f3fa;
+            color: #0c4770;
+            border: 1px solid #c9ddea;
+            border-radius: 50%;
+            font-size: 17px;
+        }
+
+        .titulo-atualizacoes h3 {
+            margin: 0 0 3px;
+            color: #17334b;
+            font-size: 16px;
+        }
+
+        .titulo-atualizacoes p {
+            margin: 0;
+            color: #667580;
+            font-size: 12px;
+        }
+
+        .badge-nova {
+            min-width: 24px;
+            height: 24px;
+            padding: 0 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #1d8a68;
+            color: #ffffff;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .lista-atualizacoes {
+            display: grid;
+            gap: 11px;
+        }
+
+        .atualizacao-item {
+            padding: 15px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            background: #f8fafb;
+            border: 1px solid #e0e7ec;
+            border-radius: 9px;
+        }
+
+        .atualizacao-item.nova {
+            background: #effaf3;
+            border-color: #bde3cb;
+        }
+
+        .atualizacao-icone {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9f3fa;
+            color: #0c4770;
+            border-radius: 50%;
+            font-size: 13px;
+        }
+
+        .atualizacao-item.nova .atualizacao-icone {
+            background: #d9f1e3;
+            color: #1d8a68;
+        }
+
+        .atualizacao-conteudo {
+            flex: 1;
+        }
+
+        .atualizacao-conteudo strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #26333d;
+            font-size: 13px;
+        }
+
+        .atualizacao-conteudo p {
+            margin: 0;
+            color: #667580;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .rotulo-novo {
+            color: #1d8a68;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .sem-atualizacoes {
+            padding: 20px;
+            text-align: center;
+            color: #667580;
+            font-size: 12px;
+            background: #f8fafb;
+            border: 1px dashed #cbd7df;
+            border-radius: 9px;
+        }
+
+        .rodape-documentos {
+            min-height: 67px;
+            margin-top: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0c4770;
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        @media (max-width: 750px) {
+            .topo-ficha {
+                flex-direction: column;
+            }
+
+            .selo-status {
+                align-self: flex-start;
+            }
+
+            .linha-progresso {
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+        }
+
+        /* =========================================================
+           SOLICITAÇÃO DE 2ª VIA
+        ========================================================= */
+
+        .area-segunda-via {
+            margin-top: 16px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .segunda-via-liberada,
+        .segunda-via-bloqueada {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .btn-segunda-via {
+            min-height: 42px;
+            padding: 0 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #ffffff;
+            color: #0c4770;
+            border: 1px solid #0c4770;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .btn-segunda-via:hover {
+            background: #0c4770;
+            color: #ffffff;
+        }
+
+        .btn-segunda-via.desativado {
+            background: #f3f5f7;
+            color: #9aa6af;
+            border-color: #d8e0e6;
+            cursor: not-allowed;
+        }
+
+        .btn-segunda-via.desativado:hover {
+            background: #f3f5f7;
+            color: #9aa6af;
+        }
+
+        .texto-segunda-via-bloqueada {
+            color: #7c8993;
+            font-size: 11px;
+        }
+
+        .modal-segunda-via {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(7, 52, 80, 0.42);
+        }
+
+        .modal-segunda-via.aberto {
+            display: flex;
+        }
+
+        .modal-segunda-via-conteudo {
+            position: relative;
+            width: min(520px, 100%);
+            padding: 27px;
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 13px;
+            box-shadow: 0 20px 55px rgba(7, 52, 80, 0.2);
+            animation: aparecerModalSegundaVia 0.18s ease;
+        }
+
+        @keyframes aparecerModalSegundaVia {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .fechar-modal-segunda-via {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: #667580;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .fechar-modal-segunda-via:hover {
+            background: #f1f4f7;
+            color: #0c4770;
+        }
+
+        .cabecalho-modal-segunda-via {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 23px;
+            padding-right: 34px;
+        }
+
+        .icone-modal-segunda-via {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9f3fa;
+            color: #0c4770;
+            border: 1px solid #c9ddea;
+            border-radius: 10px;
+            font-size: 17px;
+        }
+
+        .cabecalho-modal-segunda-via h2 {
+            margin: 0 0 4px;
+            color: #17334b;
+            font-size: 19px;
+        }
+
+        .cabecalho-modal-segunda-via p {
+            margin: 0;
+            color: #667580;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .grupo-segunda-via {
+            margin-bottom: 20px;
+        }
+
+        .titulo-campo-segunda-via {
+            display: block;
+            margin-bottom: 10px;
+            color: #26333d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .opcao-segunda-via {
+            min-height: 41px;
+            margin-bottom: 7px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #26333d;
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .opcao-segunda-via:hover {
+            background: #f8fafb;
+            border-color: #c9ddea;
+        }
+
+        .opcao-segunda-via input {
+            accent-color: #0c4770;
+        }
+
+        .observacao-segunda-via {
+            width: 100%;
+            min-height: 95px;
+            padding: 11px 12px;
+            resize: vertical;
+            box-sizing: border-box;
+            color: #26333d;
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
+            font-size: 13px;
+        }
+
+        .observacao-segunda-via:focus {
+            border-color: #0c4770;
+            box-shadow: 0 0 0 3px rgba(12, 71, 112, 0.08);
+        }
+
+        .contador-segunda-via {
+            display: block;
+            margin-top: 5px;
+            text-align: right;
+            color: #87949e;
+            font-size: 10px;
+        }
+
+        .acoes-modal-segunda-via {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+        .btn-cancelar-segunda-via,
+        .btn-confirmar-segunda-via {
+            min-height: 41px;
+            padding: 0 17px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-cancelar-segunda-via {
+            background: #ffffff;
+            color: #667580;
+            border: 1px solid #d8e0e6;
+        }
+
+        .btn-confirmar-segunda-via {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #0c4770;
+            color: #ffffff;
+            border: 1px solid #0c4770;
+        }
+
+        .btn-confirmar-segunda-via:hover {
+            background: #073450;
+        }
+
+        .toast-segunda-via {
+            position: fixed;
+            left: 24px;
+            bottom: 24px;
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            gap: 11px;
+            max-width: 390px;
+            padding: 15px 17px;
+            background: #effaf3;
+            color: #176f51;
+            border: 1px solid #9ed5b3;
+            border-radius: 9px;
+            box-shadow: 0 8px 28px rgba(16, 51, 75, 0.14);
+            font-size: 12px;
+        }
+
+        .toast-segunda-via.mostrar {
+            display: flex;
+        }
+
+        .toast-segunda-via i {
+            font-size: 18px;
+        }
+
+
+        .acompanhamento-segunda-via {
+            margin-top: 16px;
+            padding: 18px;
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 10px;
+        }
+
+        .topo-acompanhamento-segunda-via {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .titulo-acompanhamento-segunda-via {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .titulo-acompanhamento-segunda-via i {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e9f3fa;
+            color: #0c4770;
+            border-radius: 9px;
+        }
+
+        .titulo-acompanhamento-segunda-via h3 {
+            margin: 0 0 3px;
+            color: #17334b;
+            font-size: 15px;
+        }
+
+        .titulo-acompanhamento-segunda-via p {
+            margin: 0;
+            color: #667580;
+            font-size: 11px;
+        }
+
+        .status-pedido-segunda-via {
+            min-height: 30px;
+            padding: 0 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-pedido-segunda-via::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .pedido-pendente {
+            background: #fff4dc;
+            color: #9a6808;
+        }
+
+        .pedido-analise {
+            background: #eaf3fb;
+            color: #126596;
+        }
+
+        .pedido-concluido {
+            background: #e8f5ef;
+            color: #1d8a68;
+        }
+
+        .detalhes-pedido-segunda-via {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .detalhe-pedido {
+            padding: 12px;
+            background: #f8fafb;
+            border: 1px solid #e4eaee;
+            border-radius: 8px;
+        }
+
+        .detalhe-pedido.total {
+            grid-column: 1 / -1;
+        }
+
+        .detalhe-pedido small {
+            display: block;
+            margin-bottom: 4px;
+            color: #7c8993;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .detalhe-pedido span {
+            color: #26333d;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .mensagem-status-segunda-via {
+            margin-top: 12px;
+            padding: 12px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .mensagem-status-segunda-via.pendente {
+            background: #fff9ec;
+            color: #7b5a14;
+            border: 1px solid #eedcae;
+        }
+
+        .mensagem-status-segunda-via.analise {
+            background: #edf7fd;
+            color: #0c4770;
+            border: 1px solid #bdddf0;
+        }
+
+        .mensagem-status-segunda-via.concluida {
+            background: #edf9f1;
+            color: #176f51;
+            border: 1px solid #bde3cb;
+        }
+
+        @media (max-width: 750px) {
+            .area-segunda-via,
+            .segunda-via-liberada,
+            .segunda-via-bloqueada {
+                width: 100%;
+                align-items: stretch;
+            }
+
+            .btn-segunda-via {
+                width: 100%;
+            }
+
+            .modal-segunda-via-conteudo {
+                padding: 22px;
+            }
+
+            .acoes-modal-segunda-via {
+                flex-direction: column-reverse;
+            }
+
+            .btn-cancelar-segunda-via,
+            .btn-confirmar-segunda-via {
+                width: 100%;
+            }
+
+            .toast-segunda-via {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                max-width: none;
+            }
+
+            .topo-acompanhamento-segunda-via {
+                flex-direction: column;
+            }
+
+            .detalhes-pedido-segunda-via {
+                grid-template-columns: 1fr;
+            }
+
+            .detalhe-pedido.total {
+                grid-column: auto;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <header class="cabecalho">
+        <div class="topo">
+            <a href="{{ url_for('iniciala') }}" class="marca">
+                <div class="espaco-logo">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo eDOC">
+                </div>
+
+                <div class="nome-sistema">
+                    <strong>eDOC</strong>
+                    <span>Gestão Documental Escolar</span>
+                </div>
+            </a>
+
+            <div class="area-usuario">
+                <button
+                    type="button"
+                    class="usuario"
+                    id="botaoUsuario"
+                    onclick="abrirMenuUsuario(event)"
+                >
+                    <div class="dados-usuario">
+                        <strong>{{ aluno["nome"] }}</strong>
+                        <span>Aluno</span>
+                    </div>
+
+                    <div class="icone-usuario">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-down seta-usuario"></i>
+                </button>
+
+                <div class="menu-usuario" id="menuUsuario">
+                    <a href="{{ url_for('logout') }}" class="opcao-sair">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Sair
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <nav class="menu-principal">
+            <a href="{{ url_for('iniciala') }}" class="menu-item">
+                <i class="fa-solid fa-house"></i>
+                Início
+            </a>
+
+            <a href="{{ url_for('meus_documentos_aluno') }}" class="menu-item ativo">
+                <i class="fa-regular fa-file-lines"></i>
+                Meus documentos
+
+                {% if status == 'Pronta para emissão' %}
+                    <span class="contador-documentos">1</span>
+                {% endif %}
+            </a>
+
+            <a href="{{ url_for('suporte') }}" class="menu-item">
+                <i class="fa-regular fa-circle-question"></i>
+                Suporte
+            </a>
+        </nav>
+    </header>
+
+    <main class="pagina-documentos">
+        <div class="cabecalho-pagina-documentos">
+            <h1>Meus documentos</h1>
+            <p>Acompanhe o andamento dos seus documentos escolares.</p>
+        </div>
+
+        <article class="card-ficha {% if status == 'Pronta para emissão' %}pronto{% endif %}">
+            <div class="topo-ficha">
+                <div class="identificacao-ficha">
+                    <div class="icone-ficha">
+                        <i class="fa-regular fa-file-lines"></i>
+                    </div>
+
+                    <div>
+                        <h2>Ficha 19</h2>
+                        <p>Histórico Escolar</p>
+                    </div>
+                </div>
+
+                {% if status == 'Pronta para emissão' %}
+                    <span class="selo-status selo-pronto">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Pronta para emissão
+                    </span>
+                {% elif status == 'Em fabricação' %}
+                    <span class="selo-status selo-fabricacao">
+                        <i class="fa-solid fa-circle"></i>
+                        Em fabricação
+                    </span>
+                {% else %}
+                    <span class="selo-status selo-pendente">
+                        <i class="fa-regular fa-circle"></i>
+                        Não informado
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if status == 'Pronta para emissão' %}
+                <div class="alerta-pronto">
+                    <i class="fa-solid fa-check"></i>
+                    <div>
+                        <strong>Sua Ficha 19 está pronta para emissão!</strong>
+                        <p>Procure a secretaria escolar para realizar a emissão.</p>
+                    </div>
+                </div>
+            {% elif status == 'Em fabricação' %}
+                <p class="mensagem-documento">
+                    Sua Ficha 19 está sendo preparada pela secretaria escolar.
+                </p>
+            {% else %}
+                <p class="mensagem-documento">
+                    Ainda não há uma Ficha 19 em processamento para este aluno.
+                </p>
+            {% endif %}
+
+            <div class="linha-progresso">
+                <div class="etapa {% if status in ['Em fabricação', 'Pronta para emissão'] %}concluida{% endif %}">
+                    <div class="circulo-etapa">
+                        {% if status in ['Em fabricação', 'Pronta para emissão'] %}
+                            <i class="fa-solid fa-check"></i>
+                        {% else %}
+                            <i class="fa-regular fa-circle"></i>
+                        {% endif %}
+                    </div>
+                    <strong>Início do processamento</strong>
+                    <small>{% if status in ['Em fabricação', 'Pronta para emissão'] %}Concluído{% else %}Pendente{% endif %}</small>
+                </div>
+
+                <div class="etapa {% if status == 'Pronta para emissão' %}concluida{% elif status == 'Em fabricação' %}atual{% endif %}">
+                    <div class="circulo-etapa">
+                        {% if status == 'Pronta para emissão' %}
+                            <i class="fa-solid fa-check"></i>
+                        {% elif status == 'Em fabricação' %}
+                            <i class="fa-solid fa-circle"></i>
+                        {% else %}
+                            <i class="fa-regular fa-circle"></i>
+                        {% endif %}
+                    </div>
+                    <strong>Em fabricação</strong>
+                    <small>
+                        {% if status == 'Pronta para emissão' %}Concluído{% elif status == 'Em fabricação' %}concluído{% else %}Pendente{% endif %}
+                    </small>
+                </div>
+
+                <div class="etapa {% if status == 'Pronta para emissão' %}concluida{% endif %}">
+                    <div class="circulo-etapa">
+                        {% if status == 'Pronta para emissão' %}
+                            <i class="fa-solid fa-check"></i>
+                        {% else %}
+                            <i class="fa-regular fa-circle"></i>
+                        {% endif %}
+                    </div>
+                    <strong>Pronta para emissão</strong>
+                    <small>{% if status == 'Pronta para emissão' %}Concluído{% else %}Pendente{% endif %}</small>
+                </div>
+            </div>
+
+            <div class="aviso-interno">
+                <i class="fa-solid fa-circle-info"></i>
+                {% if status == 'Pronta para emissão' %}
+                    Documento finalizado pela secretaria escolar.
+                {% elif status == 'Em fabricação' %}
+                    Você será informado aqui quando sua Ficha 19 estiver pronta para emissão.
+                {% else %}
+                    Aguarde a secretaria iniciar o processamento da sua Ficha 19.
+                {% endif %}
+            </div>
+
+            <!-- SOLICITAÇÃO DE 2ª VIA -->
+            <div class="area-segunda-via">
+
+                {% if tem_solicitacao_aberta %}
+
+                    <div class="segunda-via-bloqueada">
+
+                        <button
+                            type="button"
+                            class="btn-segunda-via desativado"
+                            disabled
+                            aria-disabled="true"
+                        >
+                            <i class="fa-solid fa-clock"></i>
+                            Solicitação em andamento
+                        </button>
+
+                        <span class="texto-segunda-via-bloqueada">
+                            Aguarde a conclusão do pedido atual.
+                        </span>
+
+                    </div>
+
+                {% elif status == 'Pronta para emissão' %}
+
+                    <div class="segunda-via-liberada">
+
+                        <button
+                            type="button"
+                            class="btn-segunda-via"
+                            onclick="abrirModalSegundaVia()"
+                        >
+                            <i class="fa-solid fa-rotate"></i>
+                            Solicitar 2ª via
+                        </button>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="segunda-via-bloqueada">
+
+                        <button
+                            type="button"
+                            class="btn-segunda-via desativado"
+                            disabled
+                            aria-disabled="true"
+                        >
+                            <i class="fa-solid fa-lock"></i>
+                            Solicitar 2ª via
+                        </button>
+
+                        <span class="texto-segunda-via-bloqueada">
+                            Disponível após a emissão da 1ª via.
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            {% if solicitacao_segunda_via %}
+
+                <div class="acompanhamento-segunda-via">
+
+                    <div class="topo-acompanhamento-segunda-via">
+
+                        <div class="titulo-acompanhamento-segunda-via">
+
+                            <i class="fa-solid fa-rotate"></i>
+
+                            <div>
+                                <h3>Acompanhamento da 2ª via</h3>
+                                <p>Confira o andamento da sua solicitação.</p>
+                            </div>
+
+                        </div>
+
+
+                        {% if solicitacao_segunda_via.status == 'Pendente' %}
+
+                            <span class="status-pedido-segunda-via pedido-pendente">
+                                Pendente
+                            </span>
+
+                        {% elif solicitacao_segunda_via.status == 'Em análise' %}
+
+                            <span class="status-pedido-segunda-via pedido-analise">
+                                Em análise
+                            </span>
+
+                        {% elif solicitacao_segunda_via.status == 'Concluída' %}
+
+                            <span class="status-pedido-segunda-via pedido-concluido">
+                                Concluída
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="detalhes-pedido-segunda-via">
+
+                        <div class="detalhe-pedido">
+
+                            <small>Motivo</small>
+
+                            <span>
+                                {{ solicitacao_segunda_via.motivo }}
+                            </span>
+
+                        </div>
+
+
+                        <div class="detalhe-pedido">
+
+                            <small>Solicitada em</small>
+
+                            <span>
+                                {% if solicitacao_segunda_via.data_solicitacao %}
+                                    {{ solicitacao_segunda_via.data_solicitacao.strftime('%d/%m/%Y %H:%M') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </span>
+
+                        </div>
+
+
+                        {% if solicitacao_segunda_via.observacao %}
+
+                            <div class="detalhe-pedido total">
+
+                                <small>Observação</small>
+
+                                <span>
+                                    {{ solicitacao_segunda_via.observacao }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if solicitacao_segunda_via.status == 'Pendente' %}
+
+                        <div class="mensagem-status-segunda-via pendente">
+                            Sua solicitação foi recebida pela secretaria e aguarda análise.
+                        </div>
+
+                    {% elif solicitacao_segunda_via.status == 'Em análise' %}
+
+                        <div class="mensagem-status-segunda-via analise">
+                            Sua solicitação está sendo analisada pela secretaria escolar.
+                        </div>
+
+                    {% elif solicitacao_segunda_via.status == 'Concluída' %}
+
+                        <div class="mensagem-status-segunda-via concluida">
+                            Sua solicitação de 2ª via foi concluída. Procure a secretaria escolar para emissão ou retirada do documento.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+        </article>
+
+        <section class="centro-atualizacoes">
+            <div class="cabecalho-atualizacoes">
+                <div class="titulo-atualizacoes">
+                    <div class="icone-atualizacoes">
+                        <i class="fa-regular fa-bell"></i>
+                    </div>
+
+                    <div>
+                        <h3>Centro de atualizações</h3>
+                        <p>Acompanhe as mudanças no andamento da sua Ficha 19.</p>
+                    </div>
+                </div>
+
+                {% if status == 'Pronta para emissão' %}
+                    <span class="badge-nova">1 nova</span>
+                {% endif %}
+            </div>
+
+            <div class="lista-atualizacoes">
+                {% if status == 'Pronta para emissão' %}
+                    <div class="atualizacao-item nova">
+                        <div class="atualizacao-icone">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+
+                        <div class="atualizacao-conteudo">
+                            <strong>Documento finalizado</strong>
+                            <p>
+                                Sua Ficha 19 está pronta para emissão.
+                                Procure a secretaria escolar.
+                            </p>
+                        </div>
+
+                        <span class="rotulo-novo">Novo</span>
+                    </div>
+
+                    <div class="atualizacao-item">
+                        <div class="atualizacao-icone">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+
+                        <div class="atualizacao-conteudo">
+                            <strong>Processamento iniciado</strong>
+                            <p>
+                                Sua Ficha 19 foi recebida e entrou em fabricação.
+                            </p>
+                        </div>
+                    </div>
+
+                {% elif status == 'Em fabricação' %}
+                    <div class="atualizacao-item">
+                        <div class="atualizacao-icone">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+
+                        <div class="atualizacao-conteudo">
+                            <strong>Processamento iniciado</strong>
+                            <p>
+                                Sua Ficha 19 foi recebida e está sendo preparada pela secretaria escolar.
+                            </p>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="sem-atualizacoes">
+                        Nenhuma atualização disponível no momento.
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+
+    <!-- MODAL DE SOLICITAÇÃO DE 2ª VIA -->
+    <div class="modal-segunda-via" id="modalSegundaVia" aria-hidden="true">
+        <div class="modal-segunda-via-conteudo" role="dialog" aria-modal="true" aria-labelledby="tituloModalSegundaVia">
+            <button
+                type="button"
+                class="fechar-modal-segunda-via"
+                onclick="fecharModalSegundaVia()"
+                aria-label="Fechar"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="cabecalho-modal-segunda-via">
+                <div class="icone-modal-segunda-via">
+                    <i class="fa-solid fa-rotate"></i>
+                </div>
+
+                <div>
+                    <h2 id="tituloModalSegundaVia">Solicitar 2ª via da Ficha 19</h2>
+                    <p>Informe o motivo da solicitação para encaminhar o pedido à secretaria escolar.</p>
+                </div>
+            </div>
+
+            <form
+                id="formSegundaVia"
+                action="{{ url_for('solicitar_segunda_via') }}"
+                method="POST"
+            >
+                <div class="grupo-segunda-via">
+                    <span class="titulo-campo-segunda-via">Motivo da solicitação</span>
+
+                    <label class="opcao-segunda-via">
+                        <input type="radio" name="motivo" value="Perda do documento" required>
+                        <span>Perda do documento</span>
+                    </label>
+
+                    <label class="opcao-segunda-via">
+                        <input type="radio" name="motivo" value="Documento danificado">
+                        <span>Documento danificado</span>
+                    </label>
+
+                    <label class="opcao-segunda-via">
+                        <input type="radio" name="motivo" value="Correção de informações">
+                        <span>Correção de informações</span>
+                    </label>
+
+                    <label class="opcao-segunda-via">
+                        <input type="radio" name="motivo" value="Outro">
+                        <span>Outro</span>
+                    </label>
+                </div>
+
+                <div class="grupo-segunda-via">
+                    <label class="titulo-campo-segunda-via" for="observacaoSegundaVia">
+                        Observação <span style="font-weight: 400; color: #7c8993;">(opcional)</span>
+                    </label>
+
+                    <textarea
+                        class="observacao-segunda-via"
+                        id="observacaoSegundaVia"
+                        name="observacao"
+                        maxlength="200"
+                        placeholder="Descreva aqui sua observação..."
+                    ></textarea>
+
+                    <small class="contador-segunda-via" id="contadorSegundaVia">0/200</small>
+                </div>
+
+                <div class="acoes-modal-segunda-via">
+                    <button
+                        type="button"
+                        class="btn-cancelar-segunda-via"
+                        onclick="fecharModalSegundaVia()"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-confirmar-segunda-via">
+                        <i class="fa-regular fa-paper-plane"></i>
+                        Solicitar 2ª via
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONFIRMAÇÃO VISUAL DA PROTOTIPAGEM -->
+    <div class="toast-segunda-via" id="toastSegundaVia">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+            <strong>Solicitação enviada!</strong><br>
+            Sua solicitação de 2ª via foi encaminhada à secretaria.
+        </div>
+    </div>
+
+    <footer class="rodape-documentos">
+        eDOC — Sistema de Gestão de Documentos Escolares
+    </footer>
+
+    <script>
+        function abrirMenuUsuario(event) {
+            event.stopPropagation();
+
+            const menu = document.getElementById("menuUsuario");
+            const botao = document.getElementById("botaoUsuario");
+
+            if (!menu || !botao) {
+                return;
+            }
+
+            menu.classList.toggle("aberto");
+            botao.classList.toggle("ativo");
+        }
+
+        document.addEventListener("click", function () {
+            const menu = document.getElementById("menuUsuario");
+            const botao = document.getElementById("botaoUsuario");
+
+            if (menu) {
+                menu.classList.remove("aberto");
+            }
+
+            if (botao) {
+                botao.classList.remove("ativo");
+            }
+        });
+
+        function abrirModalSegundaVia() {
+            const modal = document.getElementById("modalSegundaVia");
+
+            if (!modal) {
+                return;
+            }
+
+            modal.classList.add("aberto");
+            modal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        }
+
+        function fecharModalSegundaVia() {
+            const modal = document.getElementById("modalSegundaVia");
+
+            if (!modal) {
+                return;
+            }
+
+            modal.classList.remove("aberto");
+            modal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        }
+
+        const modalSegundaVia = document.getElementById("modalSegundaVia");
+
+        if (modalSegundaVia) {
+            modalSegundaVia.addEventListener("click", function (event) {
+                if (event.target === modalSegundaVia) {
+                    fecharModalSegundaVia();
+                }
+            });
+        }
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                fecharModalSegundaVia();
+            }
+        });
+
+        const observacaoSegundaVia = document.getElementById("observacaoSegundaVia");
+        const contadorSegundaVia = document.getElementById("contadorSegundaVia");
+
+        if (observacaoSegundaVia && contadorSegundaVia) {
+            observacaoSegundaVia.addEventListener("input", function () {
+                contadorSegundaVia.textContent = this.value.length + "/200";
+            });
+        }
+
+    </script>
+</body>
+</html>

@@ -14,109 +14,205 @@
         Ficha 19 - eDOC
     </title>
 
+
+    <!-- ==========================================
+         CSS DA FICHA 19
+    ========================================== -->
+
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='css/ficha19.css') }}"
     >
 
+
+    <!-- ==========================================
+         FONT AWESOME
+    ========================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <!-- ==========================================
+         AJUSTES DO CABEÇALHO / IMPRESSÃO
+    ========================================== -->
+
+    <style>
+
+        body {
+            margin: 0;
+        }
+
+
+        /* Cabeçalho sempre ocupando toda a largura */
+
+        #edoc-cabecalho-profissional {
+            width: 100%;
+        }
+
+
+        /* Não imprimir cabeçalhos e botões do sistema */
+
+        @media print {
+
+            #edoc-cabecalho-profissional,
+            .topo {
+                display: none !important;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
 
-<div class="viewer">
+    <!-- ==========================================
+         CABEÇALHO PADRÃO DO PROFISSIONAL
+    ========================================== -->
+
+    {% include 'cabecalho_profissional.html' %}
 
 
-    <div class="topo">
+
+    <!-- ==========================================
+         VISUALIZADOR DA FICHA 19
+    ========================================== -->
+
+    <div class="viewer">
 
 
-        <a
-            href="{{ url_for('turma_3tdsa') }}"
-            class="btn-voltar"
-        >
 
-            ← Voltar
+        <!-- ======================================
+             BARRA DE AÇÕES DA FICHA
+        ====================================== -->
 
-        </a>
+        <div class="topo">
 
 
-        <h2>
+            <!-- VOLTAR -->
 
-            Ficha 19
-
-        </h2>
-
-
-        <div class="acoes">
-
-
-            <button
-                onclick="window.print()"
-                class="btn"
+            <a
+                href="{{ url_for('turma_3tdsa') }}"
+                class="btn-voltar"
             >
 
-                🖨 Imprimir
+                <i class="fa-solid fa-arrow-left"></i>
 
-            </button>
+                Voltar
+
+            </a>
 
 
-            <button
-                class="btn"
-            >
 
-                📄 Gerar PDF
+            <!-- TÍTULO -->
 
-            </button>
+            <h2>
+
+                Ficha 19
+
+            </h2>
+
+
+
+            <!-- AÇÕES -->
+
+            <div class="acoes">
+
+
+                <!-- IMPRIMIR -->
+
+                <button
+                    type="button"
+                    onclick="window.print()"
+                    class="btn"
+                >
+
+                    <i class="fa-solid fa-print"></i>
+
+                    Imprimir
+
+                </button>
+
+
+
+                <!-- GERAR PDF -->
+
+                <button
+                    type="button"
+                    class="btn"
+                >
+
+                    <i class="fa-regular fa-file-pdf"></i>
+
+                    Gerar PDF
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ======================================
+             DOCUMENTO
+        ====================================== -->
+
+        <div class="documento">
+
+
+
+            <!-- ==============================
+                 PÁGINA 1
+            ============================== -->
+
+            {% include 'capa.html' %}
+
+
+
+            <!-- ==============================
+                 PÁGINA 2
+            ============================== -->
+
+            {% include 'formacao_geral.html' %}
+
+
+
+            <!-- ==============================
+                 PÁGINA 3
+            ============================== -->
+
+            {% include 'tecnica1.html' %}
+
+
+
+            <!-- ==============================
+                 PÁGINA 4
+            ============================== -->
+
+            {% include 'tecnica2.html' %}
+
+
+
+            <!-- ==============================
+                 PÁGINA 5
+            ============================== -->
+
+            {% include 'tecnica3.html' %}
 
 
         </div>
 
 
     </div>
-
-
-    <div class="documento">
-
-
-        <!-- ========================== -->
-        <!-- PÁGINA 1 -->
-        <!-- ========================== -->
-
-        {% include 'capa.html' %}
-
-
-        <!-- ========================== -->
-        <!-- PÁGINA 2 -->
-        <!-- ========================== -->
-
-        {% include 'formacao_geral.html' %}
-
-
-        <!-- ========================== -->
-        <!-- PÁGINA 3 -->
-        <!-- ========================== -->
-
-        {% include 'tecnica1.html' %}
-
-
-        <!-- ========================== -->
-        <!-- PÁGINA 4 -->
-        <!-- ========================== -->
-
-        {% include 'tecnica2.html' %}
-
-
-        <!-- ========================== -->
-        <!-- PÁGINA 5 -->
-        <!-- ========================== -->
-
-        {% include 'tecnica3.html' %}
-
-
-    </div>
-
-
-</div>
 
 
 </body>

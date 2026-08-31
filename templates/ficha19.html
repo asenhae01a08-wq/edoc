@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
@@ -11,10 +11,10 @@
 
     <title>eDOC - Ficha 19</title>
 
-   <link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='ficha19.css') }}"
->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='ficha19.css') }}"
+    >
 
     <link
         rel="stylesheet"
@@ -28,11 +28,20 @@
             padding: 0;
         }
 
+        html,
         body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.pagina-ficha19-edoc {
             background: #d9dde2;
             color: #000000;
             font-family: Arial, Helvetica, sans-serif;
-            padding: 100px 15px 40px;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         button,
@@ -49,17 +58,19 @@
         .barra-edoc {
             align-items: center;
             background: #ffffff;
-            border-bottom: 1px solid #cfd5dc;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+            border: 1px solid #d8e0e6;
+            border-left: none;
+            border-right: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             display: flex;
             gap: 12px;
             justify-content: space-between;
-            left: 0;
-            padding: 14px 24px;
-            position: fixed;
-            right: 0;
-            top: 0;
-            z-index: 1000;
+            margin: 0 0 18px;
+            padding: 10px 24px;
+            position: sticky;
+            width: 100%;
+            top: 132px;
+            z-index: 9000;
         }
 
         .identidade-edoc {
@@ -168,6 +179,136 @@
 
         .botao-imprimir {
             background: #287248;
+        }
+
+        .botao-finalizar {
+            background: #0c4770;
+        }
+
+        .botao-finalizar.finalizado,
+        .botao-finalizar:disabled {
+            background: #6f8594;
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        /* ================================================= */
+        /* CONFIRMAÇÃO DA FINALIZAÇÃO                        */
+        /* ================================================= */
+
+        .modal-finalizacao {
+            align-items: center;
+            background: rgba(14, 28, 39, 0.46);
+            display: none;
+            inset: 0;
+            justify-content: center;
+            padding: 20px;
+            position: fixed;
+            z-index: 20000;
+        }
+
+        .modal-finalizacao.aberto {
+            display: flex;
+        }
+
+        .modal-finalizacao-card {
+            background: #ffffff;
+            border: 1px solid #d8e0e6;
+            border-radius: 14px;
+            box-shadow: 0 18px 55px rgba(7, 52, 80, 0.24);
+            max-width: 470px;
+            padding: 28px 30px 26px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .modal-finalizacao-icone {
+            align-items: center;
+            background: #e9f3fa;
+            border: 1px solid #c9ddea;
+            border-radius: 50%;
+            color: #0c4770;
+            display: flex;
+            font-size: 22px;
+            height: 54px;
+            justify-content: center;
+            margin: 0 auto 18px;
+            width: 54px;
+        }
+
+        .modal-finalizacao-card h2 {
+            color: #17365d;
+            font-size: 18px;
+            margin: 0 0 12px;
+        }
+
+        .modal-finalizacao-card p {
+            color: #566875;
+            font-size: 13px;
+            line-height: 1.55;
+            margin: 0 auto;
+            max-width: 360px;
+        }
+
+        .modal-finalizacao-acoes {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .modal-finalizacao-acoes button {
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            min-width: 130px;
+            padding: 11px 18px;
+        }
+
+        .btn-cancelar-finalizacao {
+            background: #ffffff;
+            border: 1px solid #c9d5de;
+            color: #405867;
+        }
+
+        .btn-confirmar-finalizacao {
+            background: #0c4770;
+            border: 1px solid #0c4770;
+            color: #ffffff;
+        }
+
+        .btn-confirmar-finalizacao:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+
+        .toast-edoc {
+            background: #ffffff;
+            border: 1px solid #b8ddc9;
+            border-left: 5px solid #1d8a68;
+            border-radius: 9px;
+            box-shadow: 0 10px 30px rgba(7, 52, 80, 0.18);
+            color: #25493b;
+            display: none;
+            font-size: 13px;
+            font-weight: 600;
+            max-width: 410px;
+            padding: 14px 17px;
+            position: fixed;
+            right: 22px;
+            top: 150px;
+            z-index: 21000;
+        }
+
+        .toast-edoc.mostrar {
+            display: block;
+        }
+
+        .toast-edoc.erro {
+            border-color: #efc3c3;
+            border-left-color: #bc4545;
+            color: #7e2c2c;
         }
 
         .botao-edoc:hover,
@@ -753,18 +894,36 @@
         }
 
         /* ================================================= */
+        /* PROTEÇÃO DE LAYOUT - NÃO DEIXAR O CABEÇALHO      */
+        /* HERDAR ESPAÇAMENTOS DA FOLHA A4                  */
+        /* ================================================= */
+
+        #edoc-cabecalho-profissional {
+            width: 100% !important;
+            max-width: none !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        #formFicha19 {
+            width: 100%;
+            margin: 0;
+            padding: 0 15px 40px;
+        }
+
+        /* ================================================= */
         /* RESPONSIVIDADE                                   */
         /* ================================================= */
 
         @media screen and (max-width: 900px) {
-            body {
-                padding-left: 5px;
-                padding-right: 5px;
-            }
-
             .barra-edoc {
                 align-items: flex-start;
                 flex-direction: column;
+            }
+
+            #formFicha19 {
+                padding-left: 5px;
+                padding-right: 5px;
             }
 
             .acoes-edoc {
@@ -776,6 +935,12 @@
                 overflow-x: auto;
                 padding: 14px;
                 width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 560px) {
+            .barra-edoc {
+                top: 120px;
             }
         }
 
@@ -791,10 +956,20 @@
         @media print {
             body {
                 background: #ffffff;
+                margin: 0;
+                padding: 0;
+                overflow: visible;
+            }
+
+            #formFicha19 {
+                margin: 0;
                 padding: 0;
             }
 
-            .barra-edoc {
+            .cabecalho-fixo,
+            .barra-edoc,
+            .modal-finalizacao,
+            .toast-edoc {
                 display: none !important;
             }
 
@@ -838,26 +1013,36 @@
     </style>
 </head>
 
-<body>
+<body class="pagina-ficha19-edoc">
 
     <!-- ================================================= -->
-    <!-- BARRA DO SISTEMA EDOC                            -->
+    <!-- CABEÇALHO PADRÃO DO PROFISSIONAL                 -->
+    <!-- ================================================= -->
+
+    {% include 'cabecalho_profissional.html' %}
+
+    {% set aluno_da_ficha = dados_ficha.get('aluno', {}) if dados_ficha else {} %}
+    {% set ficha_ja_finalizada = aluno_da_ficha.get('status_ficha19') == 'Pronta para emissão' %}
+
+    <!-- ================================================= -->
+    <!-- BARRA DE AÇÕES DA FICHA 19                       -->
     <!-- ================================================= -->
 
     <header class="barra-edoc">
 
         <div class="identidade-edoc">
 
-            <div class="icone-edoc">
-    <img
-        src="{{ url_for('static', filename='img/logo.png') }}"
-        alt="Logo do eDOC"
-    >
-</div>
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="botao-voltar"
+                title="Voltar"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
 
             <div>
-                <h1>eDOC</h1>
-                <p>Importação e leitura da Ficha 19</p>
+                <h1>Ficha 19</h1>
+                <p>Importação, conferência e impressão do documento</p>
             </div>
 
         </div>
@@ -868,14 +1053,6 @@
             method="POST"
             enctype="multipart/form-data"
         >
-
-            <a
-    href="{{ url_for('inicialp') }}"
-    class="botao-voltar"
-    title="Voltar"
->
-    <i class="fa-solid fa-arrow-left"></i>
-</a>
 
             <label
                 for="arquivoSiepe"
@@ -918,6 +1095,24 @@
                 Imprimir ficha
             </button>
 
+            {% if aluno_id and dados_ficha %}
+                <button
+                    type="button"
+                    class="botao-edoc botao-finalizar {% if ficha_ja_finalizada %}finalizado{% endif %}"
+                    id="botaoFinalizar"
+                    data-url="{{ url_for('finalizar_ficha19', id_aluno=aluno_id) }}"
+                    {% if ficha_ja_finalizada %}disabled{% endif %}
+                >
+                    {% if ficha_ja_finalizada %}
+                        <i class="fa-solid fa-circle-check"></i>
+                        Ficha finalizada
+                    {% else %}
+                        <i class="fa-solid fa-circle-check"></i>
+                        Finalizar Ficha 19
+                    {% endif %}
+                </button>
+            {% endif %}
+
         </form>
 
     </header>
@@ -933,6 +1128,62 @@
             </div>
         {% endif %}
     {% endwith %}
+
+    <!-- ================================================= -->
+    <!-- CONFIRMAÇÃO DE FINALIZAÇÃO                         -->
+    <!-- ================================================= -->
+
+    <div
+        class="modal-finalizacao"
+        id="modalFinalizacao"
+        aria-hidden="true"
+    >
+        <div
+            class="modal-finalizacao-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloModalFinalizacao"
+        >
+            <div class="modal-finalizacao-icone">
+                <i class="fa-solid fa-question"></i>
+            </div>
+
+            <h2 id="tituloModalFinalizacao">
+                Tem certeza que deseja finalizar a Ficha 19?
+            </h2>
+
+            <p>
+                Após finalizar, o aluno será informado automaticamente
+                de que o documento está pronto para emissão.
+            </p>
+
+            <div class="modal-finalizacao-acoes">
+                <button
+                    type="button"
+                    class="btn-cancelar-finalizacao"
+                    id="cancelarFinalizacao"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-confirmar-finalizacao"
+                    id="confirmarFinalizacao"
+                >
+                    <i class="fa-solid fa-check"></i>
+                    Finalizar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="toast-edoc"
+        id="toastEdoc"
+        role="status"
+        aria-live="polite"
+    ></div>
 
     <form id="formFicha19">
 
@@ -2818,6 +3069,164 @@
             .addEventListener("click", function () {
                 window.print();
             });
+
+        /* =================================================
+           FINALIZAÇÃO DA FICHA 19
+        ================================================= */
+
+        const botaoFinalizar =
+            document.getElementById("botaoFinalizar");
+
+        const modalFinalizacao =
+            document.getElementById("modalFinalizacao");
+
+        const cancelarFinalizacao =
+            document.getElementById("cancelarFinalizacao");
+
+        const confirmarFinalizacao =
+            document.getElementById("confirmarFinalizacao");
+
+        const toastEdoc =
+            document.getElementById("toastEdoc");
+
+        function abrirModalFinalizacao() {
+            if (!modalFinalizacao) {
+                return;
+            }
+
+            modalFinalizacao.classList.add("aberto");
+            modalFinalizacao.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+        }
+
+        function fecharModalFinalizacao() {
+            if (!modalFinalizacao) {
+                return;
+            }
+
+            modalFinalizacao.classList.remove("aberto");
+            modalFinalizacao.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        }
+
+        function mostrarToast(mensagem, erro = false) {
+            if (!toastEdoc) {
+                return;
+            }
+
+            toastEdoc.textContent = mensagem;
+            toastEdoc.classList.toggle("erro", erro);
+            toastEdoc.classList.add("mostrar");
+
+            window.setTimeout(function () {
+                toastEdoc.classList.remove("mostrar");
+            }, 4500);
+        }
+
+        if (botaoFinalizar) {
+            botaoFinalizar.addEventListener(
+                "click",
+                abrirModalFinalizacao
+            );
+        }
+
+        if (cancelarFinalizacao) {
+            cancelarFinalizacao.addEventListener(
+                "click",
+                fecharModalFinalizacao
+            );
+        }
+
+        if (modalFinalizacao) {
+            modalFinalizacao.addEventListener(
+                "click",
+                function (event) {
+                    if (event.target === modalFinalizacao) {
+                        fecharModalFinalizacao();
+                    }
+                }
+            );
+        }
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+                if (event.key === "Escape") {
+                    fecharModalFinalizacao();
+                }
+            }
+        );
+
+        if (confirmarFinalizacao && botaoFinalizar) {
+            confirmarFinalizacao.addEventListener(
+                "click",
+                async function () {
+
+                    const url =
+                        botaoFinalizar.dataset.url;
+
+                    if (!url) {
+                        mostrarToast(
+                            "Não foi possível identificar o aluno desta Ficha 19.",
+                            true
+                        );
+                        return;
+                    }
+
+                    confirmarFinalizacao.disabled = true;
+                    confirmarFinalizacao.innerHTML =
+                        '<i class="fa-solid fa-spinner fa-spin"></i> Finalizando...';
+
+                    try {
+                        const resposta = await fetch(
+                            url,
+                            {
+                                method: "POST",
+                                headers: {
+                                    "X-Requested-With": "XMLHttpRequest"
+                                }
+                            }
+                        );
+
+                        const dados = await resposta.json();
+
+                        if (!resposta.ok || !dados.sucesso) {
+                            throw new Error(
+                                dados.mensagem
+                                || "Não foi possível finalizar a Ficha 19."
+                            );
+                        }
+
+                        fecharModalFinalizacao();
+
+                        botaoFinalizar.disabled = true;
+                        botaoFinalizar.classList.add("finalizado");
+                        botaoFinalizar.innerHTML =
+                            '<i class="fa-solid fa-circle-check"></i> Ficha finalizada';
+
+                        mostrarToast(
+                            "Ficha 19 finalizada. O aluno já pode visualizar que o documento está pronto para emissão."
+                        );
+
+                    } catch (erro) {
+                        mostrarToast(
+                            erro.message
+                            || "Erro ao finalizar a Ficha 19.",
+                            true
+                        );
+
+                    } finally {
+                        confirmarFinalizacao.disabled = false;
+                        confirmarFinalizacao.innerHTML =
+                            '<i class="fa-solid fa-check"></i> Finalizar';
+                    }
+                }
+            );
+        }
 
         /*
             Sincroniza campos repetidos em todas as páginas.

@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,92 +12,325 @@
 
     <title>eDOC - Cadastro de Aluno</title>
 
+
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style5.css') }}"
+        href="{{ url_for('static', filename='style5.css') }}?v=31"
     >
+
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
+
+    <style>
+
+        /* =====================================================
+           TOPO DO CARD
+        ===================================================== */
+
+        .topo-cadastro-edoc {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 18px;
+
+            width: 100%;
+
+            padding-bottom: 20px;
+
+            margin-bottom: 24px;
+
+            border-bottom:
+                1px solid
+                #d8e0e6;
+
+        }
+
+
+
+        .titulo-cadastro-edoc {
+
+            flex: 1;
+
+        }
+
+
+
+        .titulo-cadastro-edoc h1 {
+
+            margin:
+                0
+                0
+                5px;
+
+            color:
+                #172b3a;
+
+            font-size:
+                26px;
+
+            font-weight:
+                700;
+
+        }
+
+
+
+        .titulo-cadastro-edoc p {
+
+            margin: 0;
+
+            color:
+                #667580;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.5;
+
+        }
+
+
+
+        /* =====================================================
+           BOTÃO VOLTAR PADRÃO eDOC
+        ===================================================== */
+
+        .edoc-voltar-pagina {
+
+            width:
+                46px !important;
+
+            height:
+                46px !important;
+
+            min-width:
+                46px !important;
+
+            padding:
+                0 !important;
+
+            display:
+                inline-flex !important;
+
+            align-items:
+                center !important;
+
+            justify-content:
+                center !important;
+
+            background:
+                #e9f3fa !important;
+
+            color:
+                #0c4770 !important;
+
+            border:
+                1px solid
+                #c9ddea !important;
+
+            border-radius:
+                10px !important;
+
+            text-decoration:
+                none !important;
+
+            font-size:
+                19px !important;
+
+            cursor:
+                pointer;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+
+        }
+
+
+
+        .edoc-voltar-pagina i {
+
+            color:
+                inherit !important;
+
+            font-size:
+                19px !important;
+
+        }
+
+
+
+        .edoc-voltar-pagina:hover {
+
+            background:
+                #0c4770 !important;
+
+            color:
+                #ffffff !important;
+
+            transform:
+                translateX(-3px);
+
+        }
+
+
+
+        .edoc-voltar-pagina:visited {
+
+            color:
+                #0c4770 !important;
+
+        }
+
+
+
+        .edoc-voltar-pagina:hover:visited {
+
+            color:
+                #ffffff !important;
+
+        }
+
+
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            .topo-cadastro-edoc {
+
+                gap:
+                    12px;
+
+            }
+
+
+            .titulo-cadastro-edoc h1 {
+
+                font-size:
+                    21px;
+
+            }
+
+
+            .titulo-cadastro-edoc p {
+
+                font-size:
+                    13px;
+
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <header class="cabecalho">
 
-        <div class="topo">
+    <!-- =====================================================
+         CABEÇALHO PADRÃO PROFISSIONAL
+    ===================================================== -->
 
-            <a
-                href="{{ url_for('inicialp') }}"
-                class="marca"
-            >
-<div class="logo-circle">
-    <img
-        src="{{ url_for('static', filename='img/logo.png') }}"
-        alt="Logo do eDOC"
-    >
-</div>
+    {% include 'cabecalho_profissional.html' %}
 
-                <div class="nome-sistema">
-                    <strong>eDOC</strong>
 
-                    <span>
-                        Gestão de Documentos Escolares
-                    </span>
-                </div>
 
-            </a>
-
-            <a
-    href="{{ url_for('inicialp') }}"
-    class="voltar"
->
-    <i class="fa-solid fa-arrow-left"></i>
-</a>
-
-        </div>
-
-    </header>
+    <!-- =====================================================
+         CONTEÚDO
+    ===================================================== -->
 
     <main class="pagina-cadastro">
 
+
         <section class="card-cadastro">
 
-            <div class="cabecalho-card">
 
-                <div class="icone-cadastro">
-                    <i class="fa-solid fa-user-plus"></i>
-                </div>
 
-                <div>
-                    <h1>Cadastrar Novo Aluno</h1>
+            <!-- =================================================
+                 TOPO
+            ================================================= -->
+
+            <div class="topo-cadastro-edoc">
+
+
+                <a
+                    href="{{ url_for('inicialp') }}"
+                    class="edoc-voltar-pagina"
+                    title="Voltar"
+                    aria-label="Voltar"
+                >
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                </a>
+
+
+
+                <div class="titulo-cadastro-edoc">
+
+
+                    <h1>
+
+                        Cadastrar Novo Aluno
+
+                    </h1>
+
 
                     <p>
+
                         Preencha os dados abaixo para cadastrar
                         um novo estudante no sistema.
+
                     </p>
+
+
                 </div>
+
 
             </div>
 
+
+
+            <!-- =================================================
+                 MENSAGENS
+            ================================================= -->
+
             {% with messages = get_flashed_messages(with_categories=true) %}
+
 
                 {% if messages %}
 
+
                     <div class="mensagens">
+
 
                         {% for category, message in messages %}
 
+
                             <div
                                 class="mensagem
+
                                 {% if category == 'error' %}
                                     mensagem-erro
                                 {% else %}
                                     mensagem-sucesso
                                 {% endif %}"
                             >
+
+
                                 <i
                                     class="
                                     {% if category == 'error' %}
@@ -107,16 +341,29 @@
                                     "
                                 ></i>
 
+
                                 {{ message }}
+
+
                             </div>
+
 
                         {% endfor %}
 
+
                     </div>
+
 
                 {% endif %}
 
+
             {% endwith %}
+
+
+
+            <!-- =================================================
+                 FORMULÁRIO
+            ================================================= -->
 
             <form
                 id="formAluno"
@@ -124,61 +371,110 @@
                 action="{{ url_for('preenchimento') }}"
             >
 
+
                 <div class="grade-formulario">
+
+
+
+                    <!-- =================================================
+                         NOME
+                    ================================================= -->
 
                     <div class="grupo grupo-grande">
 
+
                         <label for="nome">
+
                             Nome completo
+
                         </label>
+
 
                         <div class="campo">
 
+
                             <i class="fa-regular fa-user"></i>
+
 
                             <input
                                 type="text"
                                 id="nome"
                                 name="nome"
                                 placeholder="Digite o nome completo"
+                                autocomplete="name"
                                 required
                             >
 
+
                         </div>
+
 
                     </div>
 
+
+
+                    <!-- =================================================
+                         MATRÍCULA
+                         EXATAMENTE 7 NÚMEROS
+                    ================================================= -->
+
                     <div class="grupo">
 
+
                         <label for="matricula">
+
                             Matrícula
+
                         </label>
+
 
                         <div class="campo">
 
+
                             <i class="fa-solid fa-id-card"></i>
+
 
                             <input
                                 type="text"
                                 id="matricula"
                                 name="matricula"
-                                placeholder="Digite a matrícula"
+                                placeholder="Digite os 7 dígitos"
+                                maxlength="7"
+                                minlength="7"
+                                inputmode="numeric"
+                                pattern="[0-9]{7}"
+                                title="A matrícula deve possuir exatamente 7 números."
+                                autocomplete="off"
                                 required
                             >
 
+
                         </div>
+
 
                     </div>
 
+
+
+                    <!-- =================================================
+                         CPF
+                    ================================================= -->
+
                     <div class="grupo">
 
+
                         <label for="cpf">
+
                             CPF
+
                         </label>
+
 
                         <div class="campo">
 
+
                             <i class="fa-regular fa-address-card"></i>
+
 
                             <input
                                 type="text"
@@ -186,126 +482,534 @@
                                 name="cpf"
                                 maxlength="14"
                                 placeholder="000.000.000-00"
+                                inputmode="numeric"
+                                autocomplete="off"
                                 required
                             >
 
+
                         </div>
+
 
                     </div>
 
+
+
+                    <!-- =================================================
+                         E-MAIL
+                    ================================================= -->
+
                     <div class="grupo grupo-grande">
 
+
                         <label for="email">
+
                             E-mail
+
                         </label>
+
 
                         <div class="campo">
 
+
                             <i class="fa-regular fa-envelope"></i>
+
 
                             <input
                                 type="email"
                                 id="email"
                                 name="email"
                                 placeholder="Digite o e-mail"
+                                autocomplete="email"
                                 required
                             >
 
+
                         </div>
+
 
                     </div>
 
+
+
+                    <!-- =================================================
+                         DATA DE NASCIMENTO
+                         NÃO ACEITA DATA FUTURA
+                    ================================================= -->
+
                     <div class="grupo">
 
+
                         <label for="dataNascimento">
+
                             Data de nascimento
+
                         </label>
+
 
                         <div class="campo">
 
+
                             <i class="fa-regular fa-calendar"></i>
+
 
                             <input
                                 type="date"
                                 id="dataNascimento"
                                 name="data_nascimento"
+                                autocomplete="bday"
                                 required
                             >
 
+
                         </div>
+
 
                     </div>
 
+
+
+                    <!-- =================================================
+                         TURMA
+                    ================================================= -->
+
                     <div class="grupo">
 
+
                         <label for="turma">
+
                             Turma
+
                         </label>
+
 
                         <div class="campo">
 
+
                             <i class="fa-solid fa-users"></i>
+
 
                             <select
                                 id="turma"
                                 name="id_turma"
                                 required
                             >
+
+
                                 <option value="">
+
                                     Selecione a turma
+
                                 </option>
+
 
                                 <option value="3º TDS A">
+
                                     3º TDS A
+
                                 </option>
+
 
                                 <option value="3º TDS B">
+
                                     3º TDS B
+
                                 </option>
+
 
                                 <option value="3º MKT A">
+
                                     3º MKT A
+
                                 </option>
 
+
                                 <option value="3º MKT B">
+
                                     3º MKT B
+
                                 </option>
+
+
                             </select>
+
 
                         </div>
 
+
                     </div>
+
 
                 </div>
 
+
+
+                <!-- =================================================
+                     BOTÕES
+                ================================================= -->
+
                 <div class="acoes-formulario">
+
 
                     <a
                         href="{{ url_for('inicialp') }}"
                         class="botao-cancelar"
                     >
+
                         Cancelar
+
                     </a>
+
+
 
                     <button
                         type="submit"
                         class="botao-salvar"
                     >
+
+
                         <i class="fa-solid fa-floppy-disk"></i>
+
+
                         Salvar aluno
+
+
                     </button>
+
 
                 </div>
 
+
             </form>
+
 
         </section>
 
+
     </main>
+
+
+
+    <!-- =====================================================
+         SCRIPT ORIGINAL
+    ===================================================== -->
 
     <script
         src="{{ url_for('static', filename='script5.js') }}"
     ></script>
+
+
+
+    <!-- =====================================================
+         VALIDAÇÕES DO CADASTRO
+    ===================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+
+                /* ==========================================
+                   MATRÍCULA
+                   SOMENTE NÚMEROS
+                   MÁXIMO DE 7 DÍGITOS
+                ========================================== */
+
+                const campoMatricula =
+                    document.getElementById(
+                        "matricula"
+                    );
+
+
+                if (campoMatricula) {
+
+
+                    campoMatricula.addEventListener(
+                        "input",
+                        function () {
+
+
+                            // Remove letras,
+                            // símbolos e espaços.
+                            this.value =
+                                this.value.replace(
+                                    /\D/g,
+                                    ""
+                                );
+
+
+                            // Garante no máximo
+                            // 7 números.
+                            this.value =
+                                this.value.slice(
+                                    0,
+                                    7
+                                );
+
+
+                            // Limpa mensagem antiga.
+                            this.setCustomValidity("");
+
+
+                        }
+                    );
+
+
+
+                    campoMatricula.addEventListener(
+                        "invalid",
+                        function () {
+
+
+                            if (
+                                this.value.length !== 7
+                            ) {
+
+
+                                this.setCustomValidity(
+                                    "A matrícula deve possuir exatamente 7 números."
+                                );
+
+
+                            }
+
+                            else {
+
+
+                                this.setCustomValidity("");
+
+
+                            }
+
+
+                        }
+                    );
+
+
+                }
+
+
+
+                /* ==========================================
+                   DATA DE NASCIMENTO
+                   DEFINE HOJE COMO DATA MÁXIMA
+                ========================================== */
+
+                const campoNascimento =
+                    document.getElementById(
+                        "dataNascimento"
+                    );
+
+
+                if (campoNascimento) {
+
+
+                    const hoje =
+                        new Date();
+
+
+                    const ano =
+                        hoje.getFullYear();
+
+
+                    const mes =
+                        String(
+                            hoje.getMonth() + 1
+                        ).padStart(
+                            2,
+                            "0"
+                        );
+
+
+                    const dia =
+                        String(
+                            hoje.getDate()
+                        ).padStart(
+                            2,
+                            "0"
+                        );
+
+
+                    const dataHoje =
+                        `${ano}-${mes}-${dia}`;
+
+
+                    // O calendário não permite
+                    // selecionar uma data futura.
+                    campoNascimento.setAttribute(
+                        "max",
+                        dataHoje
+                    );
+
+
+
+                    campoNascimento.addEventListener(
+                        "input",
+                        function () {
+
+
+                            if (
+                                this.value
+                                &&
+                                this.value > dataHoje
+                            ) {
+
+
+                                this.setCustomValidity(
+                                    "A data de nascimento não pode estar no futuro."
+                                );
+
+
+                            }
+
+                            else {
+
+
+                                this.setCustomValidity("");
+
+
+                            }
+
+
+                        }
+                    );
+
+
+
+                    campoNascimento.addEventListener(
+                        "change",
+                        function () {
+
+
+                            if (
+                                this.value
+                                &&
+                                this.value > dataHoje
+                            ) {
+
+
+                                this.setCustomValidity(
+                                    "A data de nascimento não pode estar no futuro."
+                                );
+
+
+                                this.reportValidity();
+
+
+                            }
+
+                            else {
+
+
+                                this.setCustomValidity("");
+
+
+                            }
+
+
+                        }
+                    );
+
+
+                }
+
+
+
+                /* ==========================================
+                   VALIDAÇÃO FINAL ANTES DE ENVIAR
+                ========================================== */
+
+                const formulario =
+                    document.getElementById(
+                        "formAluno"
+                    );
+
+
+                if (formulario) {
+
+
+                    formulario.addEventListener(
+                        "submit",
+                        function (event) {
+
+
+                            /* MATRÍCULA */
+
+                            if (
+                                campoMatricula
+                                &&
+                                !/^\d{7}$/.test(
+                                    campoMatricula.value
+                                )
+                            ) {
+
+
+                                event.preventDefault();
+
+
+                                campoMatricula.setCustomValidity(
+                                    "A matrícula deve possuir exatamente 7 números."
+                                );
+
+
+                                campoMatricula.reportValidity();
+
+
+                                campoMatricula.focus();
+
+
+                                return;
+
+
+                            }
+
+
+
+                            /* DATA */
+
+                            if (
+                                campoNascimento
+                                &&
+                                campoNascimento.value
+                                &&
+                                campoNascimento.value > dataHoje
+                            ) {
+
+
+                                event.preventDefault();
+
+
+                                campoNascimento.setCustomValidity(
+                                    "A data de nascimento não pode estar no futuro."
+                                );
+
+
+                                campoNascimento.reportValidity();
+
+
+                                campoNascimento.focus();
+
+
+                                return;
+
+
+                            }
+
+
+                        }
+                    );
+
+
+                }
+
+
+            }
+        );
+
+    </script>
+
 
 </body>
 

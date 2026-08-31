@@ -1,4 +1,15 @@
 import os
+import smtplib
+
+from email.message import EmailMessage
+
+from dotenv import load_dotenv
+
+from itsdangerous import (
+    URLSafeTimedSerializer,
+    BadSignature,
+    SignatureExpired,
+)
 
 from flask import (
     Flask,
@@ -15,13 +26,87 @@ from functools import wraps
 from werkzeug.utils import secure_filename
 
 import models
+from models.conexaoBD import conectar_mysql
 from leitor_pdf import extrair_conteudo_pdf
 from parcer_siepe import extrair_dados_siepe
+
+
+# ==========================================================
+# VARIÁVEIS DE AMBIENTE
+# ==========================================================
+
+load_dotenv(
+    os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        ".env",
+    )
+)
 
 
 app = Flask(__name__)
 app.secret_key = "12345678"
 app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
+
+
+# ==========================================================
+# STATUS DA FICHA 19
+# ==========================================================
+
+def definir_status_ficha19(aluno_id, novo_status):
+    """
+    Atualiza somente o status da Ficha 19 do aluno.
+
+    Valores utilizados pelo eDOC:
+    - Em fabricação
+    - Pronta para emissão
+    """
+
+    status_permitidos = (
+        "Em fabricação",
+        "Pronta para emissão",
+    )
+
+    if novo_status not in status_permitidos:
+        raise ValueError("Status da Ficha 19 inválido.")
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        raise RuntimeError(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            UPDATE alunos
+            SET status_ficha19 = %s
+            WHERE id = %s
+            """,
+            (novo_status, aluno_id),
+        )
+
+        if cursor.rowcount == 0:
+            cursor.execute(
+                "SELECT id FROM alunos WHERE id = %s LIMIT 1",
+                (aluno_id,),
+            )
+
+            if cursor.fetchone() is None:
+                raise ValueError("Aluno não encontrado.")
+
+        conexao.commit()
+        return True
+
+    except Exception:
+        conexao.rollback()
+        raise
+
+    finally:
+        cursor.close()
+        conexao.close()
 
 
 # ==========================================================
@@ -140,19 +225,33 @@ def login_required_aluno(f):
 )
 def login():
 
-    # ==========================================
-    # SE JÁ ESTIVER LOGADO
-    # ==========================================
+    # ======================================================
+    # GET - ABRE A TELA DE LOGIN
+    # ======================================================
 
     if request.method == "GET":
 
+        # Se o aluno estiver no processo de primeiro acesso,
+        # mantém ele na tela de redefinição.
+        if (
+            session.get("nivel") == "Aluno"
+            and session.get("usuario_id")
+        ):
+
+            return redirect(
+                url_for("redefinir")
+            )
+
+
         nivel = session.get("nivel")
+
 
         if nivel == "Aluno":
 
             return redirect(
                 url_for("iniciala")
             )
+
 
         if nivel == "Profissional":
 
@@ -161,142 +260,35 @@ def login():
             )
 
 
-    # ==========================================
-    # LOGIN
-    # ==========================================
-
-    if request.method == "POST":
-
-        identificacao = request.form.get(
-            "identificacao",
-            ""
-        ).strip()
-
-        senha = request.form.get(
-            "senha",
-            ""
+        return render_template(
+            "login.html"
         )
 
 
-        if not identificacao or not senha:
+    # ======================================================
+    # POST - RECEBE LOGIN
+    # ======================================================
 
-            flash(
-                "Preencha a identificação e a senha."
-            )
-
-            return redirect(
-                url_for("login")
-            )
-
-
-        usuario = models.verificarLogin(
-            identificacao,
-            senha
-        )
-        print(usuario)
-
-        if usuario is None:
-
-            flash(
-                "Matrícula/e-mail ou senha inválidos."
-            )
-
-            return redirect(
-                url_for("login")
-            )
+    identificacao = request.form.get(
+        "identificacao",
+        ""
+    ).strip()
 
 
-        # Remove qualquer sessão antiga antes
-        # de criar a sessão correta.
-        session.clear()
+    senha = request.form.get(
+        "senha",
+        ""
+    )
 
 
-        origem = usuario.get(
-            "origem"
-        )
+    # ======================================================
+    # VALIDAÇÃO
+    # ======================================================
 
-        cargo = usuario.get(
-            "cargo_nivel"
-        )
-
-
-        # ==================================================
-        # ALUNO
-        #
-        # IMPORTANTE:
-        # verificamos a origem ANTES do profissional.
-        # ==================================================
-
-        if (
-            origem == "aluno"
-            or cargo == "Aluno"
-        ):
-
-            session["aluno_id"] = (
-                usuario["id"]
-            )
-
-            session["nome"] = (
-                usuario["nome"]
-            )
-
-            session["email"] = (
-                usuario.get("email")
-            )
-
-            # Força explicitamente ALUNO
-            session["nivel"] = "Aluno"
-
-            session["origem"] = "aluno"
-
-
-            return redirect(
-                url_for("iniciala")
-            )
-
-
-        # ==================================================
-        # PROFISSIONAL
-        # ==================================================
-
-        if cargo == "Profissional":
-
-            session["id"] = (
-                usuario["id"]
-            )
-
-            session["nome"] = (
-                usuario["nome"]
-            )
-
-            session["email"] = (
-                usuario.get("email")
-            )
-
-            # Força explicitamente PROFISSIONAL
-            session["nivel"] = (
-                "Profissional"
-            )
-
-            session["origem"] = (
-                origem or "usuario"
-            )
-
-
-            return redirect(
-                url_for("inicialp")
-            )
-
-
-        # ==================================================
-        # TIPO DE USUÁRIO DESCONHECIDO
-        # ==================================================
-
-        session.clear()
+    if not identificacao or not senha:
 
         flash(
-            "O usuário não possui um nível "
-            "de acesso válido."
+            "Preencha a identificação e a senha."
         )
 
         return redirect(
@@ -304,14 +296,149 @@ def login():
         )
 
 
-    return render_template(
-        "login.html"
+    # ======================================================
+    # VERIFICA USUÁRIO NO BANCO
+    # ======================================================
+
+    usuario = models.verificarLogin(
+        identificacao,
+        senha
     )
 
-# ==========================================================
-# ÁREA DO ALUNO
-# ==========================================================
 
+    print(
+        "USUÁRIO ENCONTRADO:",
+        usuario
+    )
+
+
+    if usuario is None:
+
+        flash(
+            "Matrícula/e-mail ou senha inválidos."
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    # ======================================================
+    # LIMPA SESSÃO ANTIGA
+    # ======================================================
+
+    session.clear()
+
+
+    origem = usuario.get(
+        "origem"
+    )
+
+
+    cargo = usuario.get(
+        "cargo_nivel"
+    )
+
+
+    # ======================================================
+    # ALUNO
+    # ======================================================
+
+    if (
+        origem == "aluno"
+        or cargo == "Aluno"
+    ):
+
+        session["aluno_id"] = (
+            usuario["id"]
+        )
+
+        session["nome"] = (
+            usuario["nome"]
+        )
+
+        session["email"] = (
+            usuario.get("email")
+        )
+
+        session["nivel"] = "Aluno"
+
+        session["origem"] = "aluno"
+
+
+        # ==================================================
+        # PRIMEIRO ACESSO
+        #
+        # primeiro_login = NULL
+        # significa que o aluno ainda não redefiniu
+        # a senha provisória.
+        # ==================================================
+
+        if usuario.get("primeiro_login") is None:
+
+            session["usuario_id"] = (
+                usuario["id"]
+            )
+
+            return redirect(
+                url_for("redefinir")
+            )
+
+
+        # ==================================================
+        # ALUNO JÁ REDEFINIU A SENHA
+        # ==================================================
+
+        return redirect(
+            url_for("iniciala")
+        )
+
+
+    # ======================================================
+    # PROFISSIONAL
+    # ======================================================
+
+    if cargo == "Profissional":
+
+        session["id"] = (
+            usuario["id"]
+        )
+
+        session["nome"] = (
+            usuario["nome"]
+        )
+
+        session["email"] = (
+            usuario.get("email")
+        )
+
+        session["nivel"] = (
+            "Profissional"
+        )
+
+        session["origem"] = (
+            origem or "usuario"
+        )
+
+
+        return redirect(
+            url_for("inicialp")
+        )
+
+
+    # ======================================================
+    # TIPO DE USUÁRIO DESCONHECIDO
+    # ======================================================
+
+    session.clear()
+
+    flash(
+        "O usuário não possui um nível de acesso válido."
+    )
+
+    return redirect(
+        url_for("login")
+    )
 # ==========================================================
 # ÁREA DO ALUNO
 # ==========================================================
@@ -428,17 +555,886 @@ def iniciala():
         aluno=aluno
     )
 # ==========================================================
+# REDEFINIR SENHA - PRIMEIRO ACESSO DO ALUNO
+# ==========================================================
+
+@app.route(
+    "/redefinir",
+    methods=["GET", "POST"]
+)
+def redefinir():
+
+    # ======================================================
+    # SEGURANÇA
+    # Só entra aqui quem veio do primeiro acesso
+    # ======================================================
+
+    usuario_id = session.get(
+        "usuario_id"
+    )
+
+
+    if not usuario_id:
+
+        flash(
+            "Faça login para continuar.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    # ======================================================
+    # GET
+    # ======================================================
+
+    if request.method == "GET":
+
+        return render_template(
+            "redefinir.html"
+        )
+
+
+    # ======================================================
+    # RECEBE AS SENHAS
+    # ======================================================
+
+    senha = request.form.get(
+        "senha",
+        ""
+    ).strip()
+
+
+    confirmar_senha = request.form.get(
+        "confirmar_senha",
+        ""
+    ).strip()
+
+
+    # ======================================================
+    # CAMPOS VAZIOS
+    # ======================================================
+
+    if not senha or not confirmar_senha:
+
+        flash(
+            "Preencha todos os campos.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # SENHA MÍNIMA
+    # ======================================================
+
+    if len(senha) < 6:
+
+        flash(
+            "A senha deve possuir pelo menos 6 caracteres.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # CONFIRMAÇÃO
+    # ======================================================
+
+    if senha != confirmar_senha:
+
+        flash(
+            "As senhas não coincidem.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # CONEXÃO
+    # ======================================================
+
+    conexao = conectar_mysql()
+
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    cursor = conexao.cursor()
+
+
+    try:
+
+        # ==================================================
+        # ATUALIZA A SENHA DO ALUNO
+        #
+        # primeiro_login é DATE.
+        # NULL = nunca redefiniu
+        # CURRENT_DATE = data da primeira redefinição
+        # ==================================================
+
+        cursor.execute(
+            """
+            UPDATE alunos
+
+            SET
+                senha = %s,
+                primeiro_login = CURRENT_DATE()
+
+            WHERE id = %s
+            """,
+            (
+                senha,
+                usuario_id
+            )
+        )
+
+
+        if cursor.rowcount == 0:
+
+            conexao.rollback()
+
+            flash(
+                "Aluno não encontrado.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("redefinir")
+            )
+
+
+        conexao.commit()
+
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        print(
+            "ERRO AO REDEFINIR SENHA DO ALUNO:",
+            erro
+        )
+
+        flash(
+            "Não foi possível redefinir a senha.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+
+    # ======================================================
+    # FINALIZA A SESSÃO DE PRIMEIRO ACESSO
+    # ======================================================
+
+    session.clear()
+
+
+    flash(
+        "Senha redefinida com sucesso! "
+        "Entre novamente com sua nova senha.",
+        "sucesso"
+    )
+
+
+    return redirect(
+        url_for("login")
+    )
+
+# ==========================================================
+# MEUS DOCUMENTOS - ALUNO
+# ==========================================================
+
+@app.route("/meus-documentos")
+@login_required_aluno
+def meus_documentos_aluno():
+
+    aluno_id = session.get("aluno_id")
+
+    if not aluno_id:
+        session.clear()
+        flash("Sessão do aluno não encontrada.")
+        return redirect(url_for("login"))
+
+    aluno = models.buscar_aluno_por_id(aluno_id)
+
+    if aluno is None:
+        session.clear()
+        flash("Aluno não encontrado.")
+        return redirect(url_for("login"))
+
+    dados_ficha = None
+
+    try:
+        dados_ficha = models.buscar_dados_ficha_por_aluno(
+            aluno_id
+        )
+    except Exception:
+        dados_ficha = None
+
+    historico = {}
+
+    if dados_ficha:
+        historico = dados_ficha.get("historico") or {}
+
+    possui_ficha = bool(historico)
+
+    if possui_ficha:
+        aluno_ficha = dados_ficha.get("aluno") or aluno
+
+        status = (
+            aluno_ficha.get("status_ficha19")
+            or aluno.get("status_ficha19")
+            or "Em fabricação"
+        )
+
+        if status not in (
+            "Em fabricação",
+            "Pronta para emissão",
+        ):
+            status = "Em fabricação"
+
+    else:
+        status = "Não informado"
+
+    # ======================================================
+    # ÚLTIMA SOLICITAÇÃO DE 2ª VIA DO ALUNO
+    # ======================================================
+
+    solicitacao_segunda_via = None
+
+    conexao = conectar_mysql()
+
+    if conexao is not None:
+
+        cursor = conexao.cursor(
+            dictionary=True
+        )
+
+        try:
+
+            cursor.execute(
+                """
+                SELECT
+                    id,
+                    aluno_id,
+                    motivo,
+                    observacao,
+                    status,
+                    data_solicitacao,
+                    data_atualizacao
+                FROM solicitacoes_segunda_via
+                WHERE aluno_id = %s
+                ORDER BY id DESC
+                LIMIT 1
+                """,
+                (aluno_id,)
+            )
+
+            solicitacao_segunda_via = (
+                cursor.fetchone()
+            )
+
+        except Exception as erro:
+
+            app.logger.exception(
+                "Erro ao buscar solicitação de 2ª via do aluno: %s",
+                erro
+            )
+
+        finally:
+
+            cursor.close()
+            conexao.close()
+
+    tem_solicitacao_aberta = bool(
+        solicitacao_segunda_via
+        and solicitacao_segunda_via.get("status")
+        in ("Pendente", "Em análise")
+    )
+
+    return render_template(
+        "meus_documentos_aluno.html",
+        aluno=aluno,
+        status=status,
+        possui_ficha=possui_ficha,
+        solicitacao_segunda_via=solicitacao_segunda_via,
+        tem_solicitacao_aberta=tem_solicitacao_aberta,
+    )
+
+
+
+# ==========================================================
+# SOLICITAR 2ª VIA - ALUNO
+# ==========================================================
+
+@app.route("/solicitar-segunda-via", methods=["POST"])
+@login_required_aluno
+def solicitar_segunda_via():
+
+    aluno_id = session.get("aluno_id")
+
+    if not aluno_id:
+
+        session.clear()
+
+        flash(
+            "Sessão do aluno não encontrada."
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
+    motivo = request.form.get(
+        "motivo",
+        ""
+    ).strip()
+
+    observacao = request.form.get(
+        "observacao",
+        ""
+    ).strip()
+
+    if not motivo:
+
+        flash(
+            "Selecione o motivo da solicitação."
+        )
+
+        return redirect(
+            url_for("meus_documentos_aluno")
+        )
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+        return redirect(
+            url_for("meus_documentos_aluno")
+        )
+
+    cursor = conexao.cursor(
+        dictionary=True
+    )
+
+    try:
+
+        # Impede nova solicitação enquanto houver
+        # uma solicitação em aberto.
+        cursor.execute(
+            """
+            SELECT id
+            FROM solicitacoes_segunda_via
+            WHERE aluno_id = %s
+              AND status IN ('Pendente', 'Em análise')
+            LIMIT 1
+            """,
+            (aluno_id,)
+        )
+
+        existente = cursor.fetchone()
+
+        if existente:
+
+            flash(
+                "Você já possui uma solicitação "
+                "de 2ª via em andamento."
+            )
+
+            return redirect(
+                url_for("meus_documentos_aluno")
+            )
+
+        cursor.execute(
+            """
+            INSERT INTO solicitacoes_segunda_via
+            (
+                aluno_id,
+                motivo,
+                observacao,
+                status
+            )
+            VALUES (%s, %s, %s, %s)
+            """,
+            (
+                aluno_id,
+                motivo,
+                observacao,
+                "Pendente"
+            )
+        )
+
+        conexao.commit()
+
+        flash(
+            "Solicitação de 2ª via enviada com sucesso."
+        )
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao solicitar 2ª via: %s",
+            erro
+        )
+
+        flash(
+            "Não foi possível enviar a solicitação de 2ª via."
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    return redirect(
+        url_for("meus_documentos_aluno")
+    )
+
+
+# ==========================================================
 # ÁREA DO PROFISSIONAL
 # ==========================================================
 
 @app.route("/inicialp")
-# @login_required_profissional
+@login_required_profissional
 def inicialp():
 
+    alunos = models.buscar_todos_alunos()
+
+    # ============================================
+    # TOTAL DE ALUNOS
+    # ============================================
+
+    total_alunos = len(alunos)
+
+    # ============================================
+    # TOTAL DE TURMAS
+    # Conta somente as 4 turmas oficiais do eDOC
+    # ============================================
+
+    turmas_oficiais = {
+        "3º TDS A",
+        "3º TDS B",
+        "3º MKT A",
+        "3º MKT B"
+    }
+
+    turmas_encontradas = set()
+
+    for aluno in alunos:
+
+        turma = str(
+            aluno.get("id_turma")
+            or ""
+        ).strip()
+
+        if turma in turmas_oficiais:
+
+            turmas_encontradas.add(turma)
+
+    total_turmas = len(turmas_encontradas)
+
+    # ============================================
+    # FICHAS concluído
+    #
+    # Conta somente alunos que realmente possuem
+    # histórico da Ficha 19 salvo no sistema.
+    # ============================================
+
+    total_em_andamento = 0
+
+    for aluno in alunos:
+
+        aluno_id = aluno.get("id")
+
+        if not aluno_id:
+            continue
+
+        try:
+
+            dados_ficha = models.buscar_dados_ficha_por_aluno(
+                aluno_id
+            )
+
+            if (
+                dados_ficha
+                and dados_ficha.get("historico")
+            ):
+
+                total_em_andamento += 1
+
+        except Exception:
+
+            continue
+
+    # ============================================
+    # SOLICITAÇÕES DE 2ª VIA
+    # ============================================
+
+    total_segunda_via = 0
+
+    conexao = conectar_mysql()
+
+    if conexao is not None:
+
+        cursor = conexao.cursor(dictionary=True)
+
+        try:
+
+            cursor.execute(
+                """
+                SELECT COUNT(*) AS total
+                FROM solicitacoes_segunda_via
+                WHERE status IN ('Pendente', 'Em análise')
+                """
+            )
+
+            resultado = cursor.fetchone()
+
+            if resultado:
+                total_segunda_via = resultado.get("total") or 0
+
+        except Exception as erro:
+
+            app.logger.exception(
+                "Erro ao contar solicitações de 2ª via: %s",
+                erro
+            )
+
+        finally:
+
+            cursor.close()
+            conexao.close()
+
+    # ============================================
+    # ABRE A TELA
+    # ============================================
+
     return render_template(
-        "inicialp.html"
+        "inicialp.html",
+        total_alunos=total_alunos,
+        total_turmas=total_turmas,
+        total_em_andamento=total_em_andamento,
+        total_segunda_via=total_segunda_via
     )
 
+
+# ==========================================================
+# SOLICITAÇÕES DE 2ª VIA - PROFISSIONAL
+# ==========================================================
+
+@app.route("/solicitacoes-segunda-via")
+@login_required_profissional
+def solicitacoes_segunda_via():
+
+    solicitacoes = []
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        flash("Não foi possível conectar ao banco de dados.")
+        return render_template(
+            "solicitacoes_segunda_via.html",
+            solicitacoes=solicitacoes
+        )
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                s.id,
+                s.aluno_id,
+                a.nome,
+                a.matricula,
+                a.id_turma AS turma,
+                s.motivo,
+                s.observacao,
+                s.status,
+                s.data_solicitacao,
+                s.data_atualizacao
+            FROM solicitacoes_segunda_via AS s
+            INNER JOIN alunos AS a
+                ON a.id = s.aluno_id
+            ORDER BY s.data_solicitacao DESC
+            """
+        )
+
+        solicitacoes = cursor.fetchall() or []
+
+    except Exception as erro:
+        app.logger.exception(
+            "Erro ao buscar solicitações de 2ª via: %s",
+            erro
+        )
+
+        flash(
+            "Não foi possível carregar as solicitações de 2ª via."
+        )
+
+    finally:
+        cursor.close()
+        conexao.close()
+
+    return render_template(
+        "solicitacoes_segunda_via.html",
+        solicitacoes=solicitacoes
+    )
+
+
+# ==========================================================
+# INICIAR ANÁLISE DA SOLICITAÇÃO DE 2ª VIA
+# ==========================================================
+
+@app.route(
+    "/solicitacoes-segunda-via/<int:id_solicitacao>/iniciar-analise",
+    methods=["POST"]
+)
+@login_required_profissional
+def iniciar_analise_segunda_via(id_solicitacao):
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+        return redirect(
+            url_for("solicitacoes_segunda_via")
+        )
+
+    cursor = conexao.cursor(
+        dictionary=True
+    )
+
+    try:
+
+        cursor.execute(
+            """
+            UPDATE solicitacoes_segunda_via
+            SET status = 'Em análise'
+            WHERE id = %s
+              AND status = 'Pendente'
+            """,
+            (id_solicitacao,)
+        )
+
+        conexao.commit()
+
+        if cursor.rowcount > 0:
+
+            flash(
+                "Solicitação colocada em análise."
+            )
+
+        else:
+
+            flash(
+                "A solicitação não estava pendente "
+                "ou não foi encontrada."
+            )
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao iniciar análise da 2ª via: %s",
+            erro
+        )
+
+        flash(
+            "Não foi possível iniciar a análise."
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    return redirect(
+        url_for("solicitacoes_segunda_via")
+    )
+
+
+# ==========================================================
+# CONCLUIR SOLICITAÇÃO DE 2ª VIA
+# ==========================================================
+
+@app.route(
+    "/solicitacoes-segunda-via/<int:id_solicitacao>/concluir",
+    methods=["POST"]
+)
+@login_required_profissional
+def concluir_segunda_via(id_solicitacao):
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+        return redirect(
+            url_for("solicitacoes_segunda_via")
+        )
+
+    cursor = conexao.cursor(
+        dictionary=True
+    )
+
+    try:
+
+        cursor.execute(
+            """
+            UPDATE solicitacoes_segunda_via
+            SET status = 'Concluída'
+            WHERE id = %s
+              AND status = 'Em análise'
+            """,
+            (id_solicitacao,)
+        )
+
+        conexao.commit()
+
+        if cursor.rowcount > 0:
+
+            flash(
+                "Solicitação concluída com sucesso."
+            )
+
+        else:
+
+            flash(
+                "A solicitação precisa estar em análise "
+                "antes de ser concluída."
+            )
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao concluir solicitação de 2ª via: %s",
+            erro
+        )
+
+        flash(
+            "Não foi possível concluir a solicitação."
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    return redirect(
+        url_for("solicitacoes_segunda_via")
+    )
+
+
+# ==========================================================
+# FICHAS 19 concluído
+# ==========================================================
+
+@app.route("/fichas-em-andamento")
+@login_required_profissional
+def fichas_em_andamento():
+
+    alunos = models.buscar_todos_alunos()
+
+    fichas = []
+
+    for aluno in alunos:
+
+        aluno_id = aluno.get("id")
+
+        if not aluno_id:
+            continue
+
+        try:
+
+            dados_ficha = models.buscar_dados_ficha_por_aluno(
+                aluno_id
+            )
+
+        except Exception:
+            continue
+
+        # Só entra na lista quem realmente
+        # possui uma Ficha 19 importada.
+        if (
+            dados_ficha
+            and dados_ficha.get("historico")
+        ):
+
+            dados_aluno = (
+                dados_ficha.get("aluno")
+                or aluno
+            )
+
+            fichas.append(
+                {
+                    "id": dados_aluno.get("id")
+                    or aluno_id,
+
+                    "nome": dados_aluno.get("nome")
+                    or "Aluno",
+
+                    "matricula": dados_aluno.get("matricula")
+                    or "-",
+
+                    "turma": dados_aluno.get("id_turma")
+                    or "-",
+
+                    "status": "concluído"
+                }
+            )
+
+    return render_template(
+        "fichas_em_andamento.html",
+        fichas=fichas
+    )
 
 # ==========================================================
 # GERAR FICHAS
@@ -784,6 +1780,13 @@ def importar_pdf_siepe():
                 "o ID do aluno salvo."
             )
 
+        # Ao importar/gerar a Ficha 19, o documento entra
+        # automaticamente em processamento.
+        definir_status_ficha19(
+            aluno_id,
+            "Em fabricação"
+        )
+
         # ==========================================
         # 4 - CONFERE O BANCO
         # ==========================================
@@ -838,8 +1841,8 @@ def importar_pdf_siepe():
 
         flash(
             "PDF importado com sucesso. "
-            "Os dados foram gravados no banco "
-            "e carregados na Ficha 19."
+            "A Ficha 19 está em fabricação e o aluno "
+            "já pode acompanhar o andamento."
         )
 
         return redirect(
@@ -871,6 +1874,66 @@ def importar_pdf_siepe():
             f"Erro ao processar o PDF: {erro}",
             500
         )
+
+
+# ==========================================================
+# FINALIZAR FICHA 19
+# ==========================================================
+
+@app.route(
+    "/ficha19/finalizar/<int:id_aluno>",
+    methods=["POST"]
+)
+@login_required_profissional
+def finalizar_ficha19(id_aluno):
+
+    aluno = models.buscar_aluno_por_id(id_aluno)
+
+    if aluno is None:
+        return jsonify({
+            "sucesso": False,
+            "mensagem": "Aluno não encontrado."
+        }), 404
+
+    try:
+        dados_ficha = models.buscar_dados_ficha_por_aluno(
+            id_aluno
+        )
+
+        if not dados_ficha or not dados_ficha.get("historico"):
+            return jsonify({
+                "sucesso": False,
+                "mensagem": (
+                    "Este aluno ainda não possui uma "
+                    "Ficha 19 importada para finalizar."
+                )
+            }), 400
+
+        definir_status_ficha19(
+            id_aluno,
+            "Pronta para emissão"
+        )
+
+        return jsonify({
+            "sucesso": True,
+            "status": "Pronta para emissão",
+            "mensagem": (
+                "Ficha 19 finalizada com sucesso. "
+                "O aluno já pode visualizar que o "
+                "documento está pronto para emissão."
+            )
+        })
+
+    except Exception as erro:
+        app.logger.exception(
+            "Erro ao finalizar a Ficha 19 do aluno %s",
+            id_aluno
+        )
+
+        return jsonify({
+            "sucesso": False,
+            "mensagem": f"Não foi possível finalizar: {erro}"
+        }), 500
 
 
 # ==========================================================
@@ -1190,7 +2253,178 @@ def preenchimento():
 
 
 # ==========================================================
-# ESQUECI SENHA
+# RECUPERAÇÃO DE SENHA POR E-MAIL
+# ==========================================================
+
+TOKEN_RECUPERACAO_SALT = "recuperacao-senha-edoc"
+TOKEN_RECUPERACAO_TEMPO = 15 * 60
+
+
+def gerar_token_recuperacao(aluno_id, email):
+
+    serializer = URLSafeTimedSerializer(
+        app.secret_key
+    )
+
+    return serializer.dumps(
+        {
+            "aluno_id": aluno_id,
+            "email": email,
+            "finalidade": "recuperar_senha",
+        },
+        salt=TOKEN_RECUPERACAO_SALT,
+    )
+
+
+def ler_token_recuperacao(token):
+
+    serializer = URLSafeTimedSerializer(
+        app.secret_key
+    )
+
+    dados = serializer.loads(
+        token,
+        salt=TOKEN_RECUPERACAO_SALT,
+        max_age=TOKEN_RECUPERACAO_TEMPO,
+    )
+
+    if dados.get("finalidade") != "recuperar_senha":
+        raise BadSignature(
+            "Token com finalidade inválida."
+        )
+
+    return dados
+
+
+def enviar_email_recuperacao(
+    email_destino,
+    nome_aluno,
+    link_recuperacao,
+):
+
+    email_edoc = os.getenv(
+        "EMAIL_EDOC",
+        ""
+    ).strip()
+
+    senha_email_edoc = os.getenv(
+        "SENHA_EMAIL_EDOC",
+        ""
+    ).replace(" ", "").strip()
+
+    if not email_edoc:
+        raise RuntimeError(
+            "EMAIL_EDOC não foi encontrado no arquivo .env."
+        )
+
+    if not senha_email_edoc:
+        raise RuntimeError(
+            "SENHA_EMAIL_EDOC não foi encontrada no arquivo .env."
+        )
+
+    mensagem = EmailMessage()
+
+    mensagem["Subject"] = (
+        "eDOC - Recuperação de senha"
+    )
+
+    mensagem["From"] = (
+        f"eDOC <{email_edoc}>"
+    )
+
+    mensagem["To"] = email_destino
+
+    mensagem.set_content(
+        f"""
+Olá, {nome_aluno}!
+
+Recebemos uma solicitação para redefinir a senha da sua conta no eDOC.
+
+Para criar uma nova senha, acesse o link abaixo:
+
+{link_recuperacao}
+
+Este link é válido por 15 minutos.
+
+Se você não solicitou esta alteração, ignore este e-mail.
+
+eDOC
+Sistema de Gestão de Documentos Escolares
+"""
+    )
+
+    mensagem.add_alternative(
+        f"""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<body style="margin:0;padding:30px;background:#f1f4f7;font-family:Arial,Helvetica,sans-serif;">
+
+    <div style="max-width:560px;margin:0 auto;background:#ffffff;border:1px solid #d8e0e6;border-radius:12px;overflow:hidden;">
+
+        <div style="background:#0c4770;padding:24px;text-align:center;color:#ffffff;">
+            <div style="font-size:27px;font-weight:700;">eDOC</div>
+            <div style="margin-top:4px;font-size:12px;">Sistema de Gestão de Documentos Escolares</div>
+        </div>
+
+        <div style="padding:30px;color:#26333d;">
+
+            <h2 style="margin-top:0;color:#073450;">
+                Recuperação de senha
+            </h2>
+
+            <p>
+                Olá, <strong>{nome_aluno}</strong>!
+            </p>
+
+            <p style="line-height:1.6;">
+                Recebemos uma solicitação para redefinir a senha da sua conta no eDOC.
+            </p>
+
+            <div style="text-align:center;margin:30px 0;">
+                <a
+                    href="{link_recuperacao}"
+                    style="display:inline-block;background:#0c4770;color:#ffffff;padding:13px 24px;border-radius:7px;font-size:14px;font-weight:bold;text-decoration:none;"
+                >
+                    Redefinir minha senha
+                </a>
+            </div>
+
+            <p style="font-size:13px;color:#667580;line-height:1.6;">
+                Este link é válido por <strong>15 minutos</strong>.
+            </p>
+
+            <p style="font-size:13px;color:#667580;line-height:1.6;">
+                Se você não solicitou esta alteração, pode ignorar este e-mail.
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+""",
+        subtype="html",
+    )
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465,
+        timeout=20,
+    ) as servidor:
+
+        servidor.login(
+            email_edoc,
+            senha_email_edoc,
+        )
+
+        servidor.send_message(
+            mensagem
+        )
+
+
+# ==========================================================
+# ESQUECI MINHA SENHA
 # ==========================================================
 
 @app.route(
@@ -1199,20 +2433,345 @@ def preenchimento():
 )
 def esqueci():
 
-    if request.method == "POST":
+    if request.method == "GET":
+
+        return render_template(
+            "esqueci.html"
+        )
+
+    email = request.form.get(
+        "email",
+        ""
+    ).strip()
+
+    if not email:
 
         flash(
-            "A recuperação automática "
-            "por e-mail ainda não foi "
-            "configurada no protótipo."
+            "Digite o seu e-mail.",
+            "erro"
         )
 
         return redirect(
             url_for("esqueci")
         )
 
-    return render_template(
-        "esqueci.html"
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível acessar o sistema agora.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    cursor = conexao.cursor(
+        dictionary=True
+    )
+
+    aluno = None
+
+    try:
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                nome,
+                email
+            FROM alunos
+            WHERE LOWER(email) = LOWER(%s)
+            LIMIT 1
+            """,
+            (email,)
+        )
+
+        aluno = cursor.fetchone()
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro ao procurar e-mail para recuperação: %s",
+            erro,
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    # Não informa se o e-mail existe ou não.
+    # Isso evita que alguém use esta página para descobrir
+    # quais endereços estão cadastrados no sistema.
+    if aluno is None:
+
+        flash(
+            "Se o e-mail estiver cadastrado, você receberá "
+            "as instruções para redefinir sua senha.",
+            "sucesso"
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    token = gerar_token_recuperacao(
+        aluno["id"],
+        aluno["email"],
+    )
+
+    link_recuperacao = url_for(
+        "nova_senha",
+        token=token,
+        _external=True,
+    )
+
+    try:
+
+        enviar_email_recuperacao(
+            aluno["email"],
+            aluno["nome"],
+            link_recuperacao,
+        )
+
+        app.logger.info(
+            "E-mail de recuperação enviado para aluno_id=%s",
+            aluno["id"],
+        )
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro ao enviar e-mail de recuperação: %s",
+            erro,
+        )
+
+        flash(
+            "Não foi possível enviar o e-mail agora. "
+            "Tente novamente em alguns minutos.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    flash(
+        "Pronto! Verifique seu e-mail para continuar "
+        "a recuperação da senha.",
+        "sucesso"
+    )
+
+    return redirect(
+        url_for("esqueci")
+    )
+
+
+# ==========================================================
+# NOVA SENHA - LINK RECEBIDO POR E-MAIL
+# ==========================================================
+
+@app.route(
+    "/nova-senha/<token>",
+    methods=["GET", "POST"]
+)
+def nova_senha(token):
+
+    try:
+
+        dados = ler_token_recuperacao(
+            token
+        )
+
+    except SignatureExpired:
+
+        flash(
+            "Esse link expirou. Solicite uma nova recuperação de senha.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    except BadSignature:
+
+        flash(
+            "Esse link de recuperação é inválido.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    aluno_id = dados.get(
+        "aluno_id"
+    )
+
+    email = dados.get(
+        "email"
+    )
+
+    if not aluno_id or not email:
+
+        flash(
+            "Link de recuperação inválido.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("esqueci")
+        )
+
+    if request.method == "GET":
+
+        return render_template(
+            "nova_senha.html",
+            token=token,
+        )
+
+    senha = request.form.get(
+        "senha",
+        ""
+    ).strip()
+
+    confirmar_senha = request.form.get(
+        "confirmar_senha",
+        ""
+    ).strip()
+
+    if not senha or not confirmar_senha:
+
+        flash(
+            "Preencha os dois campos.",
+            "erro"
+        )
+
+        return redirect(
+            url_for(
+                "nova_senha",
+                token=token,
+            )
+        )
+
+    if len(senha) < 6:
+
+        flash(
+            "A senha deve possuir pelo menos 6 caracteres.",
+            "erro"
+        )
+
+        return redirect(
+            url_for(
+                "nova_senha",
+                token=token,
+            )
+        )
+
+    if senha != confirmar_senha:
+
+        flash(
+            "As senhas não coincidem.",
+            "erro"
+        )
+
+        return redirect(
+            url_for(
+                "nova_senha",
+                token=token,
+            )
+        )
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível acessar o banco de dados.",
+            "erro"
+        )
+
+        return redirect(
+            url_for(
+                "nova_senha",
+                token=token,
+            )
+        )
+
+    cursor = conexao.cursor()
+
+    try:
+
+        cursor.execute(
+            """
+            UPDATE alunos
+            SET senha = %s
+            WHERE id = %s
+              AND LOWER(email) = LOWER(%s)
+            """,
+            (
+                senha,
+                aluno_id,
+                email,
+            )
+        )
+
+        if cursor.rowcount == 0:
+
+            conexao.rollback()
+
+            flash(
+                "Não foi possível localizar sua conta.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("esqueci")
+            )
+
+        conexao.commit()
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao alterar senha pela recuperação: %s",
+            erro,
+        )
+
+        flash(
+            "Não foi possível alterar a senha.",
+            "erro"
+        )
+
+        return redirect(
+            url_for(
+                "nova_senha",
+                token=token,
+            )
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    # Evita manter qualquer sessão antiga aberta após a troca.
+    session.clear()
+
+    flash(
+        "Senha alterada com sucesso! "
+        "Você já pode entrar com sua nova senha.",
+        "sucesso"
+    )
+
+    return redirect(
+        url_for("login")
     )
 
 

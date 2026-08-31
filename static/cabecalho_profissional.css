@@ -1,0 +1,521 @@
+/* =========================================================
+   EDOC - CABEÇALHO PADRÃO DO PROFISSIONAL
+   ========================================================= */
+
+
+/* =========================================================
+   PROTEÇÃO DO COMPONENTE
+   ========================================================= */
+
+.cabecalho-fixo,
+.cabecalho-fixo * {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   CABEÇALHO PRINCIPAL
+   ========================================================= */
+
+.cabecalho-fixo {
+    width: 100%;
+
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #d8e0e6;
+
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================================
+   PARTE SUPERIOR
+   ========================================================= */
+
+.cabecalho-fixo .topo {
+    width: min(1180px, 94%);
+
+    min-height: 84px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* =========================================================
+   MARCA / LOGO
+   ========================================================= */
+
+.cabecalho-fixo .marca {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    color: inherit;
+
+    text-decoration: none;
+}
+
+
+.cabecalho-fixo .marca:hover {
+    text-decoration: none;
+}
+
+
+.cabecalho-fixo .espaco-logo {
+    width: 52px;
+    height: 52px;
+
+    min-width: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    background: #f7f9fa;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 11px;
+}
+
+
+.cabecalho-fixo .espaco-logo img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    padding: 5px;
+}
+
+
+/* =========================================================
+   NOME DO SISTEMA
+   ========================================================= */
+
+.cabecalho-fixo .nome-sistema {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.cabecalho-fixo .nome-sistema strong {
+    color: #0c4770;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+.cabecalho-fixo .nome-sistema span {
+    margin-top: 5px;
+
+    color: #667580;
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   ÁREA DO USUÁRIO
+   ========================================================= */
+
+.cabecalho-fixo .area-usuario {
+    position: relative;
+}
+
+
+.cabecalho-fixo .usuario {
+    min-height: 56px;
+
+    padding: 6px 7px 6px 13px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    background: transparent;
+
+    color: #26333d;
+
+    border: none;
+    border-radius: 9px;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.cabecalho-fixo .usuario:hover,
+.cabecalho-fixo .usuario.ativo {
+    background: #f5f9fc;
+}
+
+
+.cabecalho-fixo .usuario:focus {
+    outline: none;
+}
+
+
+/* =========================================================
+   DADOS DO USUÁRIO
+   ========================================================= */
+
+.cabecalho-fixo .dados-usuario {
+    display: flex;
+    flex-direction: column;
+
+    text-align: right;
+}
+
+
+.cabecalho-fixo .dados-usuario strong {
+    color: #26333d;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+.cabecalho-fixo .dados-usuario span {
+    margin-top: 3px;
+
+    color: #667580;
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================================================
+   ÍCONE DO USUÁRIO
+   ========================================================= */
+
+.cabecalho-fixo .icone-usuario {
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e9f3fa;
+
+    color: #0c4770;
+
+    border: 1px solid #c9ddea;
+    border-radius: 50%;
+
+    font-size: 18px;
+}
+
+
+.cabecalho-fixo .seta-usuario {
+    color: #8796a1;
+
+    font-size: 9px;
+
+    transition: 0.2s ease;
+}
+
+
+.cabecalho-fixo .usuario.ativo .seta-usuario {
+    transform: rotate(180deg);
+}
+
+
+/* =========================================================
+   MENU DO USUÁRIO
+   ========================================================= */
+
+.cabecalho-fixo .menu-usuario {
+    width: 160px;
+
+    position: absolute;
+
+    top: calc(100% + 4px);
+    right: 0;
+
+    display: none;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    border: 1px solid #d8e0e6;
+    border-radius: 8px;
+
+    box-shadow: 0 8px 22px rgba(16, 51, 75, 0.14);
+
+    z-index: 10000;
+}
+
+
+.cabecalho-fixo .menu-usuario.aberto {
+    display: block;
+}
+
+
+.cabecalho-fixo .opcao-sair {
+    min-height: 46px;
+
+    padding: 0 15px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #c0392b;
+
+    background: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.cabecalho-fixo .opcao-sair:hover {
+    background: #fff3f2;
+
+    color: #c0392b;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   MENU PRINCIPAL AZUL
+   ========================================================= */
+
+.cabecalho-fixo .menu-principal {
+    width: 100%;
+
+    min-height: 48px;
+
+    background: #0c4770;
+}
+
+
+.cabecalho-fixo .menu-conteudo {
+    width: min(1180px, 94%);
+
+    min-height: 48px;
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   ITENS DO MENU
+   ========================================================= */
+
+.cabecalho-fixo .menu-item {
+    min-height: 48px;
+
+    padding: 0 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    color: #ffffff;
+
+    background: transparent;
+
+    text-decoration: none;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    border-left: 1px solid rgba(255, 255, 255, 0.10);
+
+    transition: 0.2s ease;
+}
+
+
+.cabecalho-fixo .menu-item:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+
+.cabecalho-fixo .menu-item i {
+    color: #ffffff;
+
+    font-size: 12px;
+}
+
+
+.cabecalho-fixo .menu-item span {
+    color: #ffffff;
+}
+
+
+.cabecalho-fixo .menu-item:hover {
+    background: #126596;
+
+    color: #ffffff;
+
+    text-decoration: none;
+}
+
+
+.cabecalho-fixo .menu-item.ativo {
+    background: #176f9e;
+
+    color: #ffffff;
+
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   NOTEBOOK
+   ========================================================= */
+
+@media screen and (max-width: 1050px) {
+
+    .cabecalho-fixo .menu-conteudo {
+        width: 100%;
+    }
+
+
+    .cabecalho-fixo .menu-item {
+        padding: 0 8px;
+
+        font-size: 10px;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 800px) {
+
+    .cabecalho-fixo .topo {
+        width: 92%;
+    }
+
+
+    .cabecalho-fixo .menu-principal {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+
+    .cabecalho-fixo .menu-conteudo {
+        width: max-content;
+
+        min-width: 100%;
+
+        display: flex;
+    }
+
+
+    .cabecalho-fixo .menu-item {
+        min-width: max-content;
+
+        padding: 0 16px;
+    }
+
+}
+
+
+/* =========================================================
+   CELULAR
+   ========================================================= */
+
+@media screen and (max-width: 560px) {
+
+    .cabecalho-fixo .topo {
+        width: 92%;
+
+        min-height: 72px;
+    }
+
+
+    .cabecalho-fixo .espaco-logo {
+        width: 44px;
+        height: 44px;
+
+        min-width: 44px;
+    }
+
+
+    .cabecalho-fixo .nome-sistema strong {
+        font-size: 21px;
+    }
+
+
+    .cabecalho-fixo .nome-sistema span {
+        display: none;
+    }
+
+
+    .cabecalho-fixo .dados-usuario {
+        display: none;
+    }
+
+
+    .cabecalho-fixo .usuario {
+        min-height: 48px;
+
+        padding: 4px;
+    }
+
+
+    .cabecalho-fixo .icone-usuario {
+        width: 38px;
+        height: 38px;
+
+        min-width: 38px;
+    }
+
+
+    .cabecalho-fixo .seta-usuario {
+        display: none;
+    }
+
+
+    .cabecalho-fixo .menu-usuario {
+        min-width: 145px;
+    }
+
+}

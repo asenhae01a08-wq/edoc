@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,41 +12,78 @@
 
     <title>Gerar Ficha 19 - eDOC</title>
 
+
+    <!-- CSS DA TELA -->
+
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='gerarficha.css') }}"
     >
+
+
+    <!-- FONT AWESOME -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
 </head>
+
 
 <body>
 
-    <header class="barra-superior">
 
-        <div class="conteudo-topo">
+    <!-- ==========================================
+         CABEÇALHO PADRÃO DO PROFISSIONAL
+    ========================================== -->
 
-            <a
-                href="{{ url_for('inicialp') }}"
-                class="botao-voltar"
-            >
-                ← Voltar
-            </a>
+    {% include 'cabecalho_profissional.html' %}
 
-            <div>
-                <h1>Gerar Ficha 19</h1>
 
-                <p>
-                    Área de leitura e geração da Ficha 19
-                </p>
-            </div>
 
-        </div>
-
-    </header>
-
+    <!-- ==========================================
+         CONTEÚDO PRINCIPAL
+    ========================================== -->
 
     <main class="conteudo-principal">
 
+
         <section class="area-vazia">
+
+
+            <!-- CABEÇALHO DA PÁGINA -->
+
+            <div class="cabecalho-gerar">
+
+
+                <a
+                    href="{{ url_for('inicialp') }}"
+                    class="botao-voltar"
+                    title="Voltar"
+                >
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                </a>
+
+
+                <div>
+
+                    <h1>
+                        Gerar Ficha 19
+                    </h1>
+
+                    <p>
+                        Área de leitura e geração da Ficha 19
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
 
             <!--
                 AQUI SERÁ COLOCADO DEPOIS:
@@ -58,9 +96,12 @@
                 - etc.
             -->
 
+
         </section>
 
+
     </main>
+
 
 </body>
 

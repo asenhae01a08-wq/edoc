@@ -10,40 +10,245 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>
-        eDOC - Área do Aluno
-    </title>
+    <title>eDOC - Área do Aluno</title>
+
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style3.css') }}?v=20"
+        href="{{ url_for('static', filename='style3.css') }}?v=31"
     >
+
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
+
+    <style>
+
+        /* =====================================================
+           AJUSTE DA NOVA HOME DO ALUNO
+        ===================================================== */
+
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        body {
+            min-height: 100vh;
+        }
+
+
+
+        /* =====================================================
+           MENU SUPERIOR
+        ===================================================== */
+
+        .menu-principal {
+            display: flex !important;
+            align-items: stretch !important;
+        }
+
+
+        .menu-principal .menu-item {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+        }
+
+
+
+        /* =====================================================
+           CONTEÚDO SEM BARRA LATERAL
+        ===================================================== */
+
+        .estrutura-home-aluno {
+            width: min(1180px, 94%);
+
+            margin: 28px auto 45px;
+        }
+
+
+        .conteudo-home-aluno {
+            width: 100%;
+        }
+
+
+
+        /* =====================================================
+           CARDS DE DADOS
+        ===================================================== */
+
+        .grade-dados {
+            margin-bottom: 10px;
+        }
+
+
+
+        /* =====================================================
+           AVISO INFERIOR
+        ===================================================== */
+
+        .atalho-documentos {
+            margin-top: 25px;
+
+            padding: 20px 22px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 10px;
+
+            box-shadow:
+                0 2px 9px
+                rgba(20, 55, 80, 0.06);
+        }
+
+
+        .atalho-documentos-info {
+            display: flex;
+            align-items: center;
+
+            gap: 15px;
+        }
+
+
+        .atalho-documentos-icone {
+            width: 48px;
+            height: 48px;
+
+            min-width: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 10px;
+
+            font-size: 19px;
+        }
+
+
+        .atalho-documentos h3 {
+            margin: 0 0 5px;
+
+            color: #26333d;
+
+            font-size: 15px;
+        }
+
+
+        .atalho-documentos p {
+            margin: 0;
+
+            color: #667580;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        .botao-documentos {
+            min-width: 160px;
+            height: 42px;
+
+            padding: 0 18px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            background: #0c4770;
+
+            color: #ffffff;
+
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .botao-documentos:hover {
+            background: #073450;
+
+            transform: translateY(-1px);
+        }
+
+
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .atalho-documentos {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+
+            .botao-documentos {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          CABEÇALHO
-    ========================================== -->
+    ===================================================== -->
 
     <header class="cabecalho">
+
 
         <div class="topo">
 
 
-            <!-- LOGO / MARCA -->
+
+            <!-- LOGO -->
 
             <a
                 href="{{ url_for('iniciala') }}"
                 class="marca"
             >
+
 
                 <div class="espaco-logo">
 
@@ -53,6 +258,7 @@
                     >
 
                 </div>
+
 
 
                 <div class="nome-sistema">
@@ -67,13 +273,15 @@
 
                 </div>
 
+
             </a>
 
 
 
-            <!-- PERFIL DO ALUNO -->
+            <!-- PERFIL -->
 
             <div class="area-usuario">
+
 
                 <button
                     type="button"
@@ -81,6 +289,7 @@
                     id="botaoUsuario"
                     onclick="abrirMenuUsuario(event)"
                 >
+
 
                     <div class="dados-usuario">
 
@@ -95,6 +304,7 @@
                     </div>
 
 
+
                     <div class="icone-usuario">
 
                         <i class="fa-regular fa-user"></i>
@@ -102,17 +312,21 @@
                     </div>
 
 
+
                     <i
                         class="fa-solid fa-chevron-down seta-usuario"
                     ></i>
 
+
                 </button>
+
 
 
                 <div
                     class="menu-usuario"
                     id="menuUsuario"
                 >
+
 
                     <a
                         href="{{ url_for('logout') }}"
@@ -125,157 +339,96 @@
 
                     </a>
 
+
                 </div>
 
+
             </div>
+
 
         </div>
 
 
 
-        <!-- MENU SUPERIOR -->
+        <!-- =================================================
+             MENU SUPERIOR
+        ================================================= -->
 
-        <nav class="menu-principal">
-
-            <a
-                href="{{ url_for('iniciala') }}"
-                class="menu-item ativo"
-            >
-
-                <i class="fa-solid fa-house"></i>
-
-                Início
-
-            </a>
+      <nav class="menu-principal">
 
 
-            <a
-                href="{{ url_for('suporte') }}"
-                class="menu-item"
-            >
+    <a
+        href="{{ url_for('iniciala') }}"
+        class="menu-item ativo"
+    >
 
-                <i class="fa-solid fa-headset"></i>
+        <i class="fa-solid fa-house"></i>
 
-                Suporte
+        Início
 
-            </a>
+    </a>
 
-        </nav>
+
+    <a
+        href="{{ url_for('meus_documentos_aluno') }}"
+        class="menu-item"
+    >
+
+        <i class="fa-regular fa-file-lines"></i>
+
+        Meus documentos
+
+
+        {% if aluno.get("status_ficha19") == 'Pronta para emissão' %}
+
+            <span class="contador-documentos">
+                1
+            </span>
+
+        {% endif %}
+
+    </a>
+
+
+    <a
+        href="{{ url_for('suporte') }}"
+        class="menu-item"
+    >
+
+        <i class="fa-regular fa-circle-question"></i>
+
+        Suporte
+
+    </a>
+
+
+</nav>>
+
 
     </header>
 
 
 
-    <!-- ==========================================
-         ESTRUTURA PRINCIPAL
-    ========================================== -->
+    <!-- =====================================================
+         CONTEÚDO
+    ===================================================== -->
 
-    <div class="estrutura-aluno">
-
-
-        <!-- ==========================================
-             BARRA LATERAL
-        ========================================== -->
-
-        <aside class="barra-lateral">
+    <div class="estrutura-home-aluno">
 
 
-            <div class="titulo-lateral">
-
-                ÁREA DO ALUNO
-
-            </div>
-
-
-            <a
-                href="{{ url_for('iniciala') }}"
-                class="opcao-lateral"
-            >
-
-                <i class="fa-solid fa-house"></i>
-
-                <span>
-                    Visão geral
-                </span>
-
-                <i class="fa-solid fa-chevron-right seta"></i>
-
-            </a>
-
-
-            <a
-                href="#documentos"
-                class="opcao-lateral"
-            >
-
-                <i class="fa-regular fa-folder-open"></i>
-
-                <span>
-                    Meus documentos
-                </span>
-
-                <i class="fa-solid fa-chevron-right seta"></i>
-
-            </a>
-
-
-            <a
-                href="{{ url_for('suporte') }}"
-                class="opcao-lateral"
-            >
-
-                <i class="fa-regular fa-circle-question"></i>
-
-                <span>
-                    Ajuda e suporte
-                </span>
-
-                <i class="fa-solid fa-chevron-right seta"></i>
-
-            </a>
+        <main class="conteudo-home-aluno">
 
 
 
-            <!-- AVISO -->
-
-            <div class="aviso-lateral">
-
-                <i class="fa-solid fa-shield-halved"></i>
-
-                <div>
-
-                    <strong>
-                        Seus dados estão protegidos
-                    </strong>
-
-                    <p>
-                        As informações são acessíveis apenas
-                        ao aluno e aos profissionais autorizados.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-        </aside>
-
-
-
-        <!-- ==========================================
-             CONTEÚDO
-        ========================================== -->
-
-        <main class="conteudo">
-
-
-            <!-- ==========================================
-                 BOAS-VINDAS
-            ========================================== -->
+            <!-- =================================================
+                 BLOCO AZUL ORIGINAL
+            ================================================= -->
 
             <section class="boas-vindas">
 
+
                 <div>
+
 
                     <span class="saudacao">
                         Área do aluno
@@ -283,16 +436,22 @@
 
 
                     <h1>
+
                         Olá, {{ aluno["nome"].split()[0] }}!
+
                     </h1>
 
 
                     <p>
+
                         Acompanhe o andamento dos seus documentos
                         escolares e consulte suas informações.
+
                     </p>
 
+
                 </div>
+
 
 
                 <div class="icone-boas-vindas">
@@ -301,13 +460,14 @@
 
                 </div>
 
+
             </section>
 
 
 
-            <!-- ==========================================
-                 DADOS DO ALUNO
-            ========================================== -->
+            <!-- =================================================
+                 DADOS
+            ================================================= -->
 
             <h2 class="titulo-secao">
 
@@ -316,12 +476,15 @@
             </h2>
 
 
+
             <section class="grade-dados">
+
 
 
                 <!-- MATRÍCULA -->
 
                 <div class="card-dado">
+
 
                     <div class="card-icon">
 
@@ -342,6 +505,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -350,20 +514,24 @@
 
                 <div class="card-dado">
 
+
                     <div class="card-icon">
 
-                        <i class="fa-solid fa-book-open"></i>
+                        <i class="fa-solid fa-graduation-cap"></i>
 
                     </div>
 
 
                     <div>
 
+
                         <span>
                             Curso
                         </span>
 
+
                         <strong>
+
 
                             {% if aluno.get("curso_nome") %}
 
@@ -379,9 +547,12 @@
 
                             {% endif %}
 
+
                         </strong>
 
+
                     </div>
+
 
                 </div>
 
@@ -390,6 +561,7 @@
                 <!-- TURMA -->
 
                 <div class="card-dado">
+
 
                     <div class="card-icon">
 
@@ -410,6 +582,7 @@
 
                     </div>
 
+
                 </div>
 
 
@@ -417,177 +590,56 @@
 
 
 
-            <!-- ==========================================
-                 DOCUMENTOS
-            ========================================== -->
+            <!-- =================================================
+                 ATALHO PARA DOCUMENTOS
+            ================================================= -->
 
-            <section
-                class="painel-documentos"
-                id="documentos"
-            >
+            <section class="atalho-documentos">
 
 
-                <div class="cabecalho-painel">
+                <div class="atalho-documentos-info">
 
 
-                    <div>
+                    <div class="atalho-documentos-icone">
 
-                        <h2>
-                            Meus documentos
-                        </h2>
-
-                        <p>
-                            Acompanhe o andamento dos seus documentos escolares.
-                        </p>
+                        <i class="fa-regular fa-file-lines"></i>
 
                     </div>
 
 
-                    <i class="fa-regular fa-folder-open"></i>
+                    <div>
+
+
+                        <h3>
+                            Documentos escolares
+                        </h3>
+
+
+                        <p>
+
+                            Consulte o andamento da sua Ficha 19
+                            na área Meus documentos.
+
+                        </p>
+
+
+                    </div>
 
 
                 </div>
 
 
 
-                <div class="lista-documentos">
+                <a
+                    href="{{ url_for('meus_documentos_aluno') }}"
+                    class="botao-documentos"
+                >
 
+                    Ver documentos
 
-                    <article class="documento">
+                    <i class="fa-solid fa-arrow-right"></i>
 
-
-                        <div class="documento-icon">
-
-                            <i class="fa-regular fa-file-lines"></i>
-
-                        </div>
-
-
-                        <div class="documento-conteudo">
-
-
-                            <div class="documento-titulo">
-
-
-                                <div>
-
-                                    <h3>
-                                        Ficha 19
-                                    </h3>
-
-                                    <p>
-                                        Histórico escolar e registros
-                                        acadêmicos do estudante.
-                                    </p>
-
-                                </div>
-
-
-
-                                <!-- STATUS -->
-
-                                {% if aluno.get("possui_ficha") %}
-
-                                    {% set status = aluno["status_ficha19"] or "Em fabricação" %}
-
-                                {% else %}
-
-                                    {% set status = "Não informado" %}
-
-                                {% endif %}
-
-
-
-                                <span
-                                    class="status-documento
-                                    {% if status == 'Pronta para emissão' %}
-                                        status-pronto
-                                    {% elif status == 'Em fabricação' %}
-                                        status-andamento
-                                    {% else %}
-                                        status-pendente
-                                    {% endif %}"
-                                >
-
-
-                                    {% if status == 'Pronta para emissão' %}
-
-                                        <i class="fa-solid fa-circle-check"></i>
-
-
-                                    {% elif status == 'Em fabricação' %}
-
-                                        <i class="fa-solid fa-clock"></i>
-
-
-                                    {% else %}
-
-                                        <i class="fa-solid fa-circle-exclamation"></i>
-
-                                    {% endif %}
-
-
-                                    {{ status }}
-
-                                </span>
-
-
-                            </div>
-
-
-
-                            <!-- BARRA DE STATUS -->
-
-                            <div class="barra-status">
-
-                                <div
-                                    class="progresso
-                                    {% if status == 'Pronta para emissão' %}
-                                        progresso-completo
-                                    {% elif status == 'Em fabricação' %}
-                                        progresso-andamento
-                                    {% endif %}"
-                                ></div>
-
-                            </div>
-
-
-
-                            <!-- ORIENTAÇÃO -->
-
-                            <p class="orientacao">
-
-
-                                {% if status == 'Pronta para emissão' %}
-
-                                    Seu documento está pronto para emissão.
-                                    Procure a secretaria da escola.
-
-
-                                {% elif status == 'Em fabricação' %}
-
-                                    Seu documento está sendo preparado
-                                    pela secretaria.
-
-
-                                {% else %}
-
-                                    Ainda não há informações sobre
-                                    a emissão deste documento.
-
-                                {% endif %}
-
-
-                            </p>
-
-
-                        </div>
-
-
-                    </article>
-
-
-                </div>
+                </a>
 
 
             </section>
@@ -600,9 +652,9 @@
 
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          RODAPÉ
-    ========================================== -->
+    ===================================================== -->
 
     <footer>
 
@@ -614,18 +666,21 @@
 
 
 
-    <!-- ==========================================
+    <!-- =====================================================
          MENU DO PERFIL
-    ========================================== -->
+    ===================================================== -->
 
     <script>
+
 
         function abrirMenuUsuario(event) {
 
             event.stopPropagation();
 
+
             const menu =
                 document.getElementById("menuUsuario");
+
 
             const botao =
                 document.getElementById("botaoUsuario");
@@ -648,25 +703,24 @@
             "click",
             function () {
 
+
                 const menu =
                     document.getElementById("menuUsuario");
+
 
                 const botao =
                     document.getElementById("botaoUsuario");
 
 
                 if (menu) {
-
                     menu.classList.remove("aberto");
-
                 }
 
 
                 if (botao) {
-
                     botao.classList.remove("ativo");
-
                 }
+
 
             }
         );
@@ -689,6 +743,7 @@
             );
 
         }
+
 
     </script>
 

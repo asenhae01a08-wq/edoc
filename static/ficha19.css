@@ -8,12 +8,19 @@ html {
     scroll-behavior: smooth;
 }
 
+html,
 body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body.pagina-ficha19-edoc {
     background-color: #d9dde2;
     color: #000000;
     font-family: Arial, Helvetica, sans-serif;
     min-height: 100vh;
-    padding: 100px 15px 40px;
+    overflow-x: hidden;
 }
 
 button,
@@ -35,13 +42,13 @@ textarea {
     display: flex;
     gap: 15px;
     justify-content: space-between;
-    left: 0;
-    min-height: 75px;
-    padding: 14px 24px;
-    position: fixed;
-    right: 0;
-    top: 0;
-    z-index: 1000;
+    min-height: 60px;
+    margin: 0 0 18px;
+    padding: 10px 24px;
+    position: sticky;
+    top: 132px;
+    width: 100%;
+    z-index: 9000;
 }
 
 .identidade-edoc {
@@ -131,6 +138,24 @@ textarea {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* =========================================================
+   PROTEÇÃO DE LAYOUT DA TELA
+   Cabeçalho/barra usam 100%; somente as folhas recebem margem.
+   ========================================================= */
+
+#edoc-cabecalho-profissional {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#formFicha19 {
+    width: 100%;
+    margin: 0;
+    padding: 0 15px 40px;
 }
 
 /* =========================================================
@@ -900,10 +925,6 @@ input.componente {
    ========================================================= */
 
 @media screen and (max-width: 1100px) {
-    body {
-        padding-top: 145px;
-    }
-
     .barra-edoc {
         align-items: flex-start;
         flex-direction: column;
@@ -916,7 +937,7 @@ input.componente {
 }
 
 @media screen and (max-width: 900px) {
-    body {
+    #formFicha19 {
         padding-left: 5px;
         padding-right: 5px;
     }
@@ -930,10 +951,6 @@ input.componente {
 }
 
 @media screen and (max-width: 600px) {
-    body {
-        padding-top: 190px;
-    }
-
     .botao-edoc,
     .rotulo-upload {
         flex: 1;
@@ -962,6 +979,11 @@ input.componente {
         margin: 0;
         padding: 0;
         width: 100%;
+    }
+
+    #formFicha19 {
+        margin: 0;
+        padding: 0;
     }
 
     .barra-edoc {

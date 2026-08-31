@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -18,72 +19,88 @@
 
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
 </head>
+
 
 <body>
 
-    <main class="pagina">
 
-        <section class="painel">
+{% include 'cabecalho_profissional.html' %}
 
-            <!-- VOLTAR -->
-            <button
-                type="button"
-                class="botao-voltar"
-                onclick="history.back()"
+
+<main class="pagina">
+
+
+    <section class="painel">
+
+
+        <!-- VOLTAR -->
+
+        <button
+            type="button"
+            class="botao-voltar"
+            onclick="history.back()"
+            title="Voltar"
+        >
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+        </button>
+
+
+
+        <!-- TÍTULO -->
+
+        <div class="cabecalho">
+
+            <h1>
+                Turma 3º MKT B
+            </h1>
+
+            <p>
+
+                <span id="quantidadeAlunos">
+                    {{ alunos|length }}
+                </span>
+
+                alunos · Consulta de Documentos
+
+            </p>
+
+        </div>
+
+
+
+        <!-- PESQUISA -->
+
+        <div class="pesquisa">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="pesquisaAluno"
+                placeholder="Buscar por nome ou matrícula..."
+                autocomplete="off"
             >
-                <i class="fa-solid fa-arrow-left"></i>
-            </button>
+
+        </div>
 
 
-            <!-- IDENTIDADE -->
-            <div class="identidade">
 
-                <div class="icone-logo">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
+        <!-- LISTA -->
 
-                <h2>eDOC</h2>
-
-            </div>
+        <div
+            class="lista-alunos"
+            id="listaAlunos"
+        >
 
 
-            <!-- TÍTULO -->
-            <div class="cabecalho">
+            {% for aluno in alunos %}
 
-                <h1>Turma 3º MKT B</h1>
-
-                <p>
-                    <span id="quantidadeAlunos">
-                        {{ alunos|length }}
-                    </span>
-                    alunos · Consulta de Documentos
-                </p>
-
-            </div>
-
-
-            <!-- PESQUISA -->
-            <div class="pesquisa">
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <input
-                    type="text"
-                    id="pesquisaAluno"
-                    placeholder="Buscar por nome ou matrícula..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-
-            <!-- LISTA -->
-            <div class="lista-alunos" id="listaAlunos">
-
-                {% for aluno in alunos %}
 
                 <div
                     class="aluno-card"
@@ -91,11 +108,16 @@
                     data-matricula="{{ aluno['matricula'] }}"
                 >
 
+
                     <div class="informacoes-aluno">
 
+
                         <div class="avatar">
+
                             {{ aluno["nome"][0].upper() }}
+
                         </div>
+
 
                         <div class="dados">
 
@@ -109,7 +131,9 @@
 
                         </div>
 
+
                     </div>
+
 
 
                     <a
@@ -123,53 +147,69 @@
 
                     </a>
 
+
                 </div>
 
-                {% else %}
+
+            {% else %}
+
 
                 <div class="sem-alunos">
+
                     <i class="fa-regular fa-folder-open"></i>
 
                     <p>
                         Nenhum aluno encontrado nesta turma.
                     </p>
+
                 </div>
 
-                {% endfor %}
 
-            </div>
-
-
-            <!-- RESULTADO DA BUSCA -->
-            <div
-                class="nenhum-resultado"
-                id="nenhumResultado"
-            >
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <p>
-                    Nenhum aluno encontrado.
-                </p>
-            </div>
-
-        </section>
-
-    </main>
+            {% endfor %}
 
 
-    <script>
-
-        const pesquisa =
-            document.getElementById("pesquisaAluno");
-
-        const alunos =
-            document.querySelectorAll(".aluno-card");
-
-        const nenhumResultado =
-            document.getElementById("nenhumResultado");
+        </div>
 
 
-        pesquisa.addEventListener("input", function () {
+
+        <!-- NENHUM RESULTADO -->
+
+        <div
+            class="nenhum-resultado"
+            id="nenhumResultado"
+        >
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <p>
+                Nenhum aluno encontrado.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+    const pesquisa =
+        document.getElementById("pesquisaAluno");
+
+    const alunos =
+        document.querySelectorAll(".aluno-card");
+
+    const nenhumResultado =
+        document.getElementById("nenhumResultado");
+
+
+    pesquisa.addEventListener(
+        "input",
+        function () {
 
             const valor =
                 this.value
@@ -179,31 +219,34 @@
             let encontrados = 0;
 
 
-            alunos.forEach(function (aluno) {
+            alunos.forEach(
+                function (aluno) {
 
-                const nome =
-                    aluno.dataset.nome;
+                    const nome =
+                        aluno.dataset.nome;
 
-                const matricula =
-                    aluno.dataset.matricula;
+                    const matricula =
+                        aluno.dataset.matricula;
 
-                const corresponde =
-                    nome.includes(valor) ||
-                    matricula.includes(valor);
+                    const corresponde =
+                        nome.includes(valor) ||
+                        matricula.includes(valor);
 
 
-                if (corresponde) {
+                    if (corresponde) {
 
-                    aluno.style.display = "flex";
-                    encontrados++;
+                        aluno.style.display = "flex";
 
-                } else {
+                        encontrados++;
 
-                    aluno.style.display = "none";
+                    } else {
+
+                        aluno.style.display = "none";
+
+                    }
 
                 }
-
-            });
+            );
 
 
             if (
@@ -211,17 +254,21 @@
                 alunos.length > 0
             ) {
 
-                nenhumResultado.style.display = "flex";
+                nenhumResultado.style.display =
+                    "flex";
 
             } else {
 
-                nenhumResultado.style.display = "none";
+                nenhumResultado.style.display =
+                    "none";
 
             }
 
-        });
+        }
+    );
 
-    </script>
+</script>
+
 
 </body>
 

@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,123 +12,322 @@
 
     <title>eDOC - Turmas e Alunos</title>
 
-   <link
-    rel="stylesheet"
-    href="{{ url_for('static', filename='style14.css') }}?v=2"
->
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style14.css') }}?v=3"
+    >
+
 
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
+
+    <style>
+
+        /* ==========================================
+           AJUSTES DESTA TELA
+        ========================================== */
+
+        .container {
+            position: relative;
+        }
+
+
+        /* ==========================================
+           TOPO DA PÁGINA
+        ========================================== */
+
+        .topo-turmas-edoc {
+            display: grid;
+            grid-template-columns: 46px 1fr 46px;
+            align-items: start;
+
+            width: 100%;
+
+            margin-bottom: 26px;
+        }
+
+
+        .titulo-turmas-edoc {
+            text-align: center;
+        }
+
+
+        .titulo-turmas-edoc h1 {
+            margin: 0 0 8px;
+        }
+
+
+        .titulo-turmas-edoc p {
+            margin: 0;
+        }
+
+
+
+        /* ==========================================
+           BOTÃO VOLTAR PADRÃO eDOC
+        ========================================== */
+
+        .edoc-voltar-pagina {
+            width: 46px !important;
+            height: 46px !important;
+            min-width: 46px !important;
+
+            padding: 0 !important;
+
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            background: #e9f3fa !important;
+            color: #0c4770 !important;
+
+            border: 1px solid #c9ddea !important;
+            border-radius: 10px !important;
+
+            text-decoration: none !important;
+
+            font-size: 19px !important;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+
+        .edoc-voltar-pagina i {
+            color: inherit !important;
+            font-size: 19px !important;
+        }
+
+
+        .edoc-voltar-pagina:hover {
+            background: #0c4770 !important;
+            color: #ffffff !important;
+
+            transform: translateX(-3px);
+        }
+
+
+        .edoc-voltar-pagina:visited {
+            color: #0c4770 !important;
+        }
+
+
+        .edoc-voltar-pagina:hover:visited {
+            color: #ffffff !important;
+        }
+
+
+
+        /* ==========================================
+           RESPONSIVO
+        ========================================== */
+
+        @media (max-width: 600px) {
+
+            .topo-turmas-edoc {
+                grid-template-columns: 46px 1fr;
+                gap: 14px;
+            }
+
+
+            .titulo-turmas-edoc {
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
+
+    <!-- ==========================================
+         CABEÇALHO PADRÃO
+    ========================================== -->
+
+    {% include 'cabecalho_profissional.html' %}
+
+
+
+    <!-- ==========================================
+         CONTEÚDO
+    ========================================== -->
+
     <main class="container">
 
-        <!-- VOLTAR -->
-        <a
-            href="{{ url_for('inicialp') }}"
-            class="voltar"
-            aria-label="Voltar"
-        >
-            <i class="fa-solid fa-arrow-left"></i>
-        </a>
+
+        <!-- ======================================
+             TOPO DA PÁGINA
+        ====================================== -->
+
+        <div class="topo-turmas-edoc">
 
 
-        <!-- LOGO -->
-        <div class="logo">
+            <!-- VOLTAR -->
 
-            <div class="espaco-logo">
-                <img
-                    src="{{ url_for('static', filename='img/logo.png') }}"
-                    alt="Logo do eDOC"
-                >
+            <a
+                href="{{ url_for('inicialp') }}"
+                class="edoc-voltar-pagina"
+                title="Voltar"
+                aria-label="Voltar"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </a>
+
+
+
+            <!-- TÍTULO -->
+
+            <div class="titulo-turmas-edoc">
+
+                <h1>
+                    Turmas e alunos
+                </h1>
+
+                <p class="subtitulo">
+                    Selecione uma turma para visualizar os alunos cadastrados.
+                </p>
+
             </div>
 
-            <h2>eDOC</h2>
+
+            <div></div>
+
 
         </div>
 
 
-        <!-- TÍTULO -->
-        <h1>Turmas e alunos</h1>
 
-        <p class="subtitulo">
-            Selecione uma turma para visualizar os alunos cadastrados.
-        </p>
+        <!-- ======================================
+             TURMAS
+        ====================================== -->
 
-
-        <!-- TURMAS -->
         <section class="turmas">
+
+
+            <!-- 3º TDS A -->
 
             <a
                 href="{{ url_for('turma_3tdsa') }}"
                 class="card"
             >
+
                 <div class="icone-card">
+
                     <i class="fa-solid fa-users"></i>
+
                 </div>
 
-                <h3>3º TDS A</h3>
+
+                <h3>
+                    3º TDS A
+                </h3>
+
 
                 <span>
                     Técnico em Desenvolvimento de Sistemas
                 </span>
+
             </a>
 
+
+
+            <!-- 3º TDS B -->
 
             <a
                 href="{{ url_for('turma_3tdsb') }}"
                 class="card"
             >
+
                 <div class="icone-card">
+
                     <i class="fa-solid fa-users"></i>
+
                 </div>
 
-                <h3>3º TDS B</h3>
+
+                <h3>
+                    3º TDS B
+                </h3>
+
 
                 <span>
                     Técnico em Desenvolvimento de Sistemas
                 </span>
+
             </a>
 
+
+
+            <!-- 3º MKT A -->
 
             <a
                 href="{{ url_for('turma_3mkta') }}"
                 class="card"
             >
+
                 <div class="icone-card">
+
                     <i class="fa-solid fa-users"></i>
+
                 </div>
 
-                <h3>3º MKT A</h3>
+
+                <h3>
+                    3º MKT A
+                </h3>
+
 
                 <span>
                     Técnico em Marketing
                 </span>
+
             </a>
 
+
+
+            <!-- 3º MKT B -->
 
             <a
                 href="{{ url_for('turma_3mktb') }}"
                 class="card"
             >
+
                 <div class="icone-card">
+
                     <i class="fa-solid fa-users"></i>
+
                 </div>
 
-                <h3>3º MKT B</h3>
+
+                <h3>
+                    3º MKT B
+                </h3>
+
 
                 <span>
                     Técnico em Marketing
                 </span>
+
             </a>
+
 
         </section>
 
+
     </main>
 
+
 </body>
+
 </html>
