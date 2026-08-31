@@ -22,6 +22,88 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
+
+    <style>
+
+        /* ==========================================
+           AJUSTE DO BOTÃO VOLTAR
+        ========================================== */
+
+        .card {
+            position: relative;
+        }
+
+        .voltar-topo {
+            position: absolute;
+
+            top: 18px;
+            left: 18px;
+
+            width: 46px;
+            height: 46px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            transition: 0.2s ease;
+
+            z-index: 10;
+        }
+
+        .voltar-topo:hover {
+            background: #0c4770;
+            color: #ffffff;
+
+            transform: translateX(-3px);
+        }
+
+        .voltar-topo i {
+            font-size: 16px;
+        }
+
+
+        /* Dá um pouco mais de espaço
+           para o conteúdo não bater no botão */
+
+        .logo {
+            margin-top: 10px;
+        }
+
+
+        /* MENSAGENS */
+
+        .mensagem-edoc {
+            padding: 12px 14px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .mensagem-sucesso {
+            background: #edf8f4;
+            border: 1px solid #bfe1d5;
+            color: #1d7259;
+        }
+
+        .mensagem-erro {
+            background: #fff0f0;
+            border: 1px solid #f1caca;
+            color: #a83838;
+        }
+
+    </style>
+
 </head>
 
 
@@ -34,11 +116,33 @@
         <section class="card">
 
 
+            <!-- ==========================================
+                 VOLTAR
+            ========================================== -->
+
+            <a
+                href="{{ url_for('login') }}"
+                class="voltar-topo"
+                title="Voltar para o login"
+                aria-label="Voltar para o login"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </a>
+
+
+
+            <!-- ==========================================
+                 ÍCONE
+            ========================================== -->
+
             <div class="logo">
 
                 <i class="fa-solid fa-key"></i>
 
             </div>
+
 
 
             <h1>
@@ -55,6 +159,10 @@
 
 
 
+            <!-- ==========================================
+                 MENSAGENS
+            ========================================== -->
+
             {% with mensagens = get_flashed_messages(with_categories=true) %}
 
                 {% if mensagens %}
@@ -62,23 +170,14 @@
                     {% for categoria, mensagem in mensagens %}
 
                         <div
-                            class="mensagem"
-                            style="
-                                {% if categoria == 'sucesso' %}
-                                    background:#edf8f4;
-                                    border:1px solid #bfe1d5;
-                                    color:#1d7259;
-                                {% else %}
-                                    background:#fff0f0;
-                                    border:1px solid #f1caca;
-                                    color:#a83838;
-                                {% endif %}
+                            class="
+                                mensagem-edoc
 
-                                padding:12px 14px;
-                                border-radius:8px;
-                                margin-bottom:18px;
-                                font-size:13px;
-                                line-height:1.5;
+                                {% if categoria == 'sucesso' %}
+                                    mensagem-sucesso
+                                {% else %}
+                                    mensagem-erro
+                                {% endif %}
                             "
                         >
 
@@ -93,6 +192,10 @@
             {% endwith %}
 
 
+
+            <!-- ==========================================
+                 FORMULÁRIO
+            ========================================== -->
 
             <form
                 method="POST"
@@ -146,24 +249,6 @@
 
 
             </form>
-
-
-
-            <div class="voltar">
-
-
-                <a href="{{ url_for('login') }}">
-
-
-                    <i class="fa-solid fa-arrow-left"></i>
-
-                    Voltar para o login
-
-
-                </a>
-
-
-            </div>
 
 
         </section>
