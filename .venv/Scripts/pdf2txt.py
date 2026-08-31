@@ -1,4 +1,4 @@
-#!C:\Users\PEDRO\Documents\rodrigok\edoc\.venv\Scripts\python.exe
+#!C:\Users\deyvi\OneDrive\Imagens\Documentos\GitHub\edoc\.venv\Scripts\python.exe
 """A command line tool for extracting text and images from PDF and
 output it to plain text, html, xml or tags.
 """
