@@ -14,11 +14,6 @@
         eDOC - Fichas 19 concluído
     </title>
 
-
-    <!-- ==========================================
-         CSS DA TELA
-    ========================================== -->
-
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style8.css') }}"
@@ -29,15 +24,310 @@
         href="{{ url_for('static', filename='style15.css') }}"
     >
 
-
-    <!-- ==========================================
-         FONT AWESOME
-    ========================================== -->
-
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
+
+
+    <style>
+
+        /* ==========================================
+           AÇÕES
+        ========================================== */
+
+        .acoes-ficha {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 9px;
+        }
+
+
+        /* ==========================================
+           BOTÃO LIXEIRA
+        ========================================== */
+
+        .botao-excluir-ficha {
+            width: 42px;
+            height: 42px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid #efc5c5;
+            border-radius: 9px;
+
+            background: #fff7f7;
+            color: #c63d3d;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .botao-excluir-ficha:hover {
+            background: #c63d3d;
+            color: #ffffff;
+            border-color: #c63d3d;
+
+            transform: translateY(-1px);
+        }
+
+
+        /* ==========================================
+           FUNDO DO MODAL
+        ========================================== */
+
+        .modal-excluir {
+            position: fixed;
+            inset: 0;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(15, 32, 48, 0.48);
+
+            backdrop-filter: blur(2px);
+
+            z-index: 999999;
+        }
+
+        .modal-excluir.ativo {
+            display: flex;
+        }
+
+
+        /* ==========================================
+           CARD DO MODAL
+        ========================================== */
+
+        .modal-excluir-conteudo {
+            width: 100%;
+            max-width: 440px;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 16px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 22px 55px rgba(7, 52, 80, 0.20);
+
+            animation: abrirModal 0.18s ease;
+        }
+
+        @keyframes abrirModal {
+
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+
+        /* ==========================================
+           ÍCONE DO MODAL
+        ========================================== */
+
+        .modal-excluir-icone {
+            width: 56px;
+            height: 56px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 18px;
+
+            border-radius: 14px;
+
+            background: #fff0f0;
+            color: #c63d3d;
+
+            font-size: 21px;
+        }
+
+
+        /* ==========================================
+           TEXTO DO MODAL
+        ========================================== */
+
+        .modal-excluir-conteudo h2 {
+            margin: 0 0 9px;
+
+            color: #17334d;
+
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-excluir-conteudo p {
+            margin: 0;
+
+            color: #667580;
+
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .nome-aluno-exclusao {
+            color: #26333d;
+            font-weight: 700;
+        }
+
+
+        /* ==========================================
+           AVISO
+        ========================================== */
+
+        .aviso-exclusao {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+
+            margin-top: 18px;
+
+            padding: 12px 13px;
+
+            border-radius: 9px;
+
+            background: #fff9ec;
+            border: 1px solid #f0dfb2;
+
+            color: #735d20;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .aviso-exclusao i {
+            margin-top: 2px;
+        }
+
+
+        /* ==========================================
+           BOTÕES DO MODAL
+        ========================================== */
+
+        .modal-excluir-acoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+
+            margin-top: 24px;
+        }
+
+        .botao-cancelar-exclusao,
+        .botao-confirmar-exclusao {
+            min-height: 42px;
+
+            padding: 0 17px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+        .botao-cancelar-exclusao {
+            border: 1px solid #d8e0e6;
+
+            background: #ffffff;
+            color: #26333d;
+        }
+
+        .botao-cancelar-exclusao:hover {
+            background: #f1f4f7;
+        }
+
+        .botao-confirmar-exclusao {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            border: 1px solid #c63d3d;
+
+            background: #c63d3d;
+            color: #ffffff;
+        }
+
+        .botao-confirmar-exclusao:hover {
+            background: #a92f2f;
+            border-color: #a92f2f;
+        }
+
+
+        /* ==========================================
+           MENSAGENS
+        ========================================== */
+
+        .mensagens-fichas {
+            width: 100%;
+            max-width: 1180px;
+
+            margin: 0 auto 18px;
+        }
+
+        .mensagem-ficha {
+            padding: 12px 15px;
+
+            border-radius: 9px;
+
+            background: #edf8f4;
+            border: 1px solid #c7e4d9;
+
+            color: #246b56;
+
+            font-size: 13px;
+        }
+
+
+        /* ==========================================
+           RESPONSIVO
+        ========================================== */
+
+        @media (max-width: 750px) {
+
+            .acoes-ficha {
+                justify-content: flex-start;
+            }
+
+            .modal-excluir-acoes {
+                flex-direction: column;
+            }
+
+            .botao-cancelar-exclusao,
+            .botao-confirmar-exclusao {
+                width: 100%;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -46,28 +336,57 @@
 
 
     <!-- ==========================================
-         CABEÇALHO PADRÃO DO PROFISSIONAL
+         CABEÇALHO
     ========================================== -->
+
+   <body>
 
     {% include 'cabecalho_profissional.html' %}
 
+    <main class="pagina-fichas">
 
 
     <!-- ==========================================
-         CONTEÚDO PRINCIPAL
+         CONTEÚDO
     ========================================== -->
 
     <main class="pagina-fichas">
 
 
-        <!-- ======================================
+        <!-- ==========================================
+             MENSAGENS
+        ========================================== -->
+
+        {% with mensagens = get_flashed_messages() %}
+
+            {% if mensagens %}
+
+                <div class="mensagens-fichas">
+
+                    {% for mensagem in mensagens %}
+
+                        <div class="mensagem-ficha">
+
+                            {{ mensagem }}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+        {% endwith %}
+
+
+
+        <!-- ==========================================
              CABEÇALHO DA PÁGINA
-        ====================================== -->
+        ========================================== -->
 
         <section class="cabecalho-pagina">
 
-
-            <!-- VOLTAR -->
 
             <a
                 href="{{ url_for('inicialp') }}"
@@ -80,8 +399,6 @@
             </a>
 
 
-
-            <!-- TÍTULO -->
 
             <div class="titulo-pagina">
 
@@ -110,11 +427,11 @@
 
 
 
-            <!-- PESQUISA -->
-
             <div class="campo-pesquisa">
 
+
                 <i class="fa-solid fa-magnifying-glass"></i>
+
 
                 <input
                     type="text"
@@ -123,6 +440,7 @@
                     autocomplete="off"
                 >
 
+
             </div>
 
 
@@ -130,9 +448,9 @@
 
 
 
-        <!-- ======================================
-             PAINEL DAS FICHAS
-        ====================================== -->
+        <!-- ==========================================
+             LISTAGEM
+        ========================================== -->
 
         <section class="painel-fichas">
 
@@ -146,9 +464,8 @@
                     <table class="tabela-fichas">
 
 
-                        <!-- CABEÇALHO DA TABELA -->
-
                         <thead>
+
 
                             <tr>
 
@@ -174,11 +491,10 @@
 
                             </tr>
 
+
                         </thead>
 
 
-
-                        <!-- CORPO DA TABELA -->
 
                         <tbody id="corpoTabela">
 
@@ -192,6 +508,7 @@
                                     <!-- ALUNO -->
 
                                     <td>
+
 
                                         <div class="aluno-info">
 
@@ -217,6 +534,7 @@
 
 
                                         </div>
+
 
                                     </td>
 
@@ -246,11 +564,13 @@
 
                                     <td>
 
+
                                         <span class="status-andamento-ficha">
 
                                             concluído
 
                                         </span>
+
 
                                     </td>
 
@@ -261,16 +581,42 @@
                                     <td class="coluna-acoes">
 
 
-                                        <a
-                                            href="{{ url_for('ficha19', aluno_id=ficha.id) }}"
-                                            class="botao-consultar-ficha"
-                                        >
+                                        <div class="acoes-ficha">
 
-                                            <i class="fa-regular fa-file-lines"></i>
 
-                                            Consultar documento
+                                            <!-- CONSULTAR -->
 
-                                        </a>
+                                            <a
+                                                href="{{ url_for('ficha19', aluno_id=ficha.id) }}"
+                                                class="botao-consultar-ficha"
+                                            >
+
+                                                <i class="fa-regular fa-file-lines"></i>
+
+                                                Consultar documento
+
+                                            </a>
+
+
+
+                                            <!-- EXCLUIR -->
+
+                                            <button
+                                                type="button"
+                                                class="botao-excluir-ficha"
+                                                title="Excluir Ficha 19"
+                                                aria-label="Excluir Ficha 19"
+                                                data-id="{{ ficha.id }}"
+                                                data-nome="{{ ficha.nome|e }}"
+                                                onclick="abrirModalExcluir(this)"
+                                            >
+
+                                                <i class="fa-solid fa-trash"></i>
+
+                                            </button>
+
+
+                                        </div>
 
 
                                     </td>
@@ -291,13 +637,12 @@
                 </div>
 
 
-
             {% else %}
 
 
-                <!-- ==================================
-                     NENHUMA FICHA
-                ================================== -->
+                <!-- ==========================================
+                     VAZIO
+                ========================================== -->
 
                 <div class="estado-vazio">
 
@@ -310,7 +655,7 @@
 
 
                     <h2>
-                        Nenhuma Ficha 19 concluído
+                        Nenhuma Ficha 19 concluída
                     </h2>
 
 
@@ -336,6 +681,107 @@
 
 
     <!-- ==========================================
+         MODAL DE EXCLUSÃO
+    ========================================== -->
+
+    <div
+        class="modal-excluir"
+        id="modalExcluir"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tituloModalExcluir"
+    >
+
+
+        <div class="modal-excluir-conteudo">
+
+
+            <div class="modal-excluir-icone">
+
+                <i class="fa-solid fa-trash"></i>
+
+            </div>
+
+
+            <h2 id="tituloModalExcluir">
+                Excluir Ficha 19?
+            </h2>
+
+
+            <p>
+
+                Tem certeza que deseja excluir a Ficha 19 de
+
+                <span
+                    class="nome-aluno-exclusao"
+                    id="nomeAlunoExcluir"
+                ></span>?
+
+            </p>
+
+
+
+            <div class="aviso-exclusao">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <span>
+
+                    O cadastro do estudante não será excluído.
+                    Apenas os dados da Ficha 19 importada serão removidos.
+
+                </span>
+
+            </div>
+
+
+
+            <form
+                id="formExcluirFicha"
+                method="POST"
+            >
+
+
+                <div class="modal-excluir-acoes">
+
+
+                    <button
+                        type="button"
+                        class="botao-cancelar-exclusao"
+                        onclick="fecharModalExcluir()"
+                    >
+
+                        Cancelar
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="botao-confirmar-exclusao"
+                    >
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Excluir ficha
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ==========================================
          RODAPÉ
     ========================================== -->
 
@@ -350,14 +796,72 @@
 
 
     <!-- ==========================================
-         PESQUISA NA TABELA
+         JAVASCRIPT
     ========================================== -->
 
     <script>
 
 
+        /* ==========================================
+           MENU DO USUÁRIO
+        ========================================== */
+
+        const botaoUsuario =
+            document.getElementById(
+                "botaoUsuario"
+            );
+
+
+        const menuUsuario =
+            document.getElementById(
+                "menuUsuario"
+            );
+
+
+        if (
+            botaoUsuario
+            && menuUsuario
+        ) {
+
+
+            botaoUsuario.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    menuUsuario.classList.toggle(
+                        "aberto"
+                    );
+
+                }
+            );
+
+
+            document.addEventListener(
+                "click",
+                function() {
+
+                    menuUsuario.classList.remove(
+                        "aberto"
+                    );
+
+                }
+            );
+
+
+        }
+
+
+
+        /* ==========================================
+           PESQUISA
+        ========================================== */
+
         const campoPesquisa =
-            document.getElementById("pesquisaFicha");
+            document.getElementById(
+                "pesquisaFicha"
+            );
 
 
         if (campoPesquisa) {
@@ -404,6 +908,117 @@
 
 
         }
+
+
+
+        /* ==========================================
+           EXCLUIR FICHA
+        ========================================== */
+
+        const modalExcluir =
+            document.getElementById(
+                "modalExcluir"
+            );
+
+
+        const nomeAlunoExcluir =
+            document.getElementById(
+                "nomeAlunoExcluir"
+            );
+
+
+        const formExcluirFicha =
+            document.getElementById(
+                "formExcluirFicha"
+            );
+
+
+        function abrirModalExcluir(botao) {
+
+
+            const alunoId =
+                botao.dataset.id;
+
+
+            const nomeAluno =
+                botao.dataset.nome;
+
+
+            nomeAlunoExcluir.textContent =
+                nomeAluno;
+
+
+            formExcluirFicha.action =
+                "/excluir-ficha19/" + alunoId;
+
+
+            modalExcluir.classList.add(
+                "ativo"
+            );
+
+
+        }
+
+
+
+        function fecharModalExcluir() {
+
+
+            modalExcluir.classList.remove(
+                "ativo"
+            );
+
+
+            formExcluirFicha.action = "";
+
+
+        }
+
+
+
+        /* ==========================================
+           CLICAR FORA FECHA O MODAL
+        ========================================== */
+
+        modalExcluir.addEventListener(
+            "click",
+            function(event) {
+
+
+                if (
+                    event.target === modalExcluir
+                ) {
+
+                    fecharModalExcluir();
+
+                }
+
+
+            }
+        );
+
+
+
+        /* ==========================================
+           ESC FECHA O MODAL
+        ========================================== */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    fecharModalExcluir();
+
+                }
+
+
+            }
+        );
 
 
     </script>

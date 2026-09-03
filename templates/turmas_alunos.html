@@ -12,12 +12,10 @@
 
     <title>eDOC - Turmas e Alunos</title>
 
-
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style14.css') }}?v=3"
+        href="{{ url_for('static', filename='style14.css') }}?v=10"
     >
-
 
     <link
         rel="stylesheet"
@@ -28,69 +26,308 @@
     <style>
 
         /* ==========================================
-           AJUSTES DESTA TELA
+           AJUSTES DA TELA
         ========================================== */
 
         .container {
-            position: relative;
+            width: min(1100px, 96%);
+        }
+
+
+        .subtitulo {
+            margin-bottom: 24px;
         }
 
 
         /* ==========================================
-           TOPO DA PÁGINA
+           CONSULTAR DOCUMENTOS
         ========================================== */
 
-        .topo-turmas-edoc {
-            display: grid;
-            grid-template-columns: 46px 1fr 46px;
-            align-items: start;
+        .area-consulta {
+            width: 100%;
+            max-width: 760px;
 
+            margin: 0 auto 28px;
+            padding: 18px;
+
+            background: #f8fbfd;
+
+            border: 1px solid #d8e5ed;
+            border-radius: 11px;
+        }
+
+
+        .titulo-consulta {
+            margin-bottom: 13px;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            color: #0c4770;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+
+        .titulo-consulta i {
+            width: 30px;
+            height: 30px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+
+            border-radius: 8px;
+        }
+
+
+        .form-consulta {
+            display: flex;
+            gap: 9px;
+        }
+
+
+        .campo-consulta {
+            flex: 1;
+            height: 46px;
+
+            padding: 0 14px;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            background: #ffffff;
+
+            border: 1px solid #cddde7;
+            border-radius: 8px;
+        }
+
+
+        .campo-consulta i {
+            color: #0c4770;
+        }
+
+
+        .campo-consulta input {
             width: 100%;
 
-            margin-bottom: 26px;
+            border: none;
+            outline: none;
+
+            background: transparent;
+
+            color: #26333d;
+
+            font-size: 13px;
         }
 
 
-        .titulo-turmas-edoc {
-            text-align: center;
+        .campo-consulta input::placeholder {
+            color: #91a1ad;
         }
 
 
-        .titulo-turmas-edoc h1 {
-            margin: 0 0 8px;
+        .botao-consultar {
+            min-width: 108px;
+            height: 46px;
+
+            padding: 0 16px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            background: #0c4770;
+            color: #ffffff;
+
+            border: 1px solid #0c4770;
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            transition: 0.2s ease;
         }
 
 
-        .titulo-turmas-edoc p {
-            margin: 0;
+        .botao-consultar:hover {
+            background: #073450;
         }
-
 
 
         /* ==========================================
-           BOTÃO VOLTAR PADRÃO eDOC
+           RESULTADO DA CONSULTA
         ========================================== */
 
-        .edoc-voltar-pagina {
-            width: 46px !important;
-            height: 46px !important;
-            min-width: 46px !important;
+        .resultado-consulta {
+            width: 100%;
+            max-width: 760px;
 
-            padding: 0 !important;
+            margin: -8px auto 28px;
+        }
 
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
 
-            background: #e9f3fa !important;
-            color: #0c4770 !important;
+        .cabecalho-resultado {
+            margin-bottom: 10px;
 
-            border: 1px solid #c9ddea !important;
-            border-radius: 10px !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
 
-            text-decoration: none !important;
 
-            font-size: 19px !important;
+        .cabecalho-resultado h2 {
+            margin: 0;
+
+            color: #17334d;
+
+            font-size: 14px;
+        }
+
+
+        .cabecalho-resultado span {
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+        .lista-resultados {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+
+        .resultado-aluno {
+            width: 100%;
+
+            padding: 13px 14px;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 9px;
+
+            box-shadow:
+                0 2px 8px
+                rgba(20, 55, 80, 0.05);
+        }
+
+
+        .avatar-resultado {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+            color: #0c4770;
+
+            border-radius: 50%;
+
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+
+        .dados-resultado {
+            flex: 1;
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+
+        .dados-resultado strong {
+            color: #17334d;
+
+            font-size: 13px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+        .dados-resultado span {
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+        .acoes-resultado {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+
+        .acao-ficha {
+            min-height: 38px;
+
+            padding: 0 12px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+
+            background: #ffffff;
+            color: #0c4770;
+
+            border: 1px solid #0c4770;
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            transition: 0.2s ease;
+        }
+
+
+        .acao-ficha:hover {
+            background: #0c4770;
+            color: #ffffff;
+        }
+
+
+        .acao-icone {
+            width: 38px;
+            height: 38px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #ffffff;
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 8px;
 
             cursor: pointer;
 
@@ -98,47 +335,922 @@
         }
 
 
-        .edoc-voltar-pagina i {
-            color: inherit !important;
-            font-size: 19px !important;
+        .acao-icone:hover {
+            background: #e9f3fa;
+            border-color: #91bdd7;
         }
 
 
-        .edoc-voltar-pagina:hover {
-            background: #0c4770 !important;
-            color: #ffffff !important;
+        .sem-resultado {
+            padding: 22px;
 
-            transform: translateX(-3px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+
+            background: #f8fafb;
+
+            border: 1px dashed #cbd8e0;
+            border-radius: 9px;
+
+            text-align: center;
         }
 
 
-        .edoc-voltar-pagina:visited {
-            color: #0c4770 !important;
+        .sem-resultado i {
+            color: #7c95a5;
+
+            font-size: 22px;
         }
 
 
-        .edoc-voltar-pagina:hover:visited {
-            color: #ffffff !important;
+        .sem-resultado strong {
+            color: #304755;
+
+            font-size: 13px;
         }
 
+
+        .sem-resultado span {
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+        /* ==========================================
+           DIVISOR
+        ========================================== */
+
+        .divisor-turmas {
+            width: 100%;
+            max-width: 760px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            color: #667580;
+
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+
+        .divisor-turmas::before,
+        .divisor-turmas::after {
+            content: "";
+
+            flex: 1;
+            height: 1px;
+
+            background: #dfe7ec;
+        }
+
+
+        /* ==========================================
+           FLASH TEMPORÁRIO
+        ========================================== */
+
+        .mensagem-flash {
+            width: 100%;
+            max-width: 760px;
+
+            margin: 0 auto 16px;
+            padding: 11px 14px;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            border-radius: 8px;
+
+            font-size: 11px;
+
+            opacity: 1;
+            transform: translateY(0);
+
+            transition:
+                opacity 0.4s ease,
+                transform 0.4s ease;
+        }
+
+
+        .mensagem-flash.sucesso,
+        .mensagem-flash.success {
+            background: #edf8f4;
+            color: #1d7259;
+
+            border: 1px solid #bee2d5;
+        }
+
+
+        .mensagem-flash.erro,
+        .mensagem-flash.error {
+            background: #fff0f0;
+            color: #a83838;
+
+            border: 1px solid #efc7c7;
+        }
+
+
+        .mensagem-flash.sumindo {
+            opacity: 0;
+            transform: translateY(-7px);
+        }
+
+
+        /* ==========================================
+           MODAIS
+        ========================================== */
+
+        .modal-fundo {
+            position: fixed;
+            inset: 0;
+
+            z-index: 999999;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(7, 32, 49, 0.48);
+
+            backdrop-filter: blur(2px);
+        }
+
+
+        .modal-fundo.ativo {
+            display: flex;
+        }
+
+
+        .modal-card {
+            width: min(580px, 96%);
+            max-height: 90vh;
+
+            padding: 24px;
+
+            overflow-y: auto;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 14px;
+
+            box-shadow:
+                0 25px 60px
+                rgba(7, 52, 80, 0.22);
+        }
+
+
+        .modal-card.edicao {
+            width: min(680px, 96%);
+        }
+
+
+        .modal-topo {
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+
+            border-bottom: 1px solid #e4eaee;
+        }
+
+
+        .modal-titulo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+
+        .modal-icone {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+            color: #0c4770;
+
+            border-radius: 10px;
+        }
+
+
+        .modal-titulo h2 {
+            margin: 0 0 4px;
+
+            color: #17334d;
+
+            font-size: 18px;
+        }
+
+
+        .modal-titulo p {
+            margin: 0;
+
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+        .fechar-modal {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+            border-radius: 8px;
+
+            background: transparent;
+            color: #5d7180;
+
+            cursor: pointer;
+        }
+
+
+        .fechar-modal:hover {
+            background: #f1f4f7;
+        }
+
+
+        .grade-dados {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 11px;
+        }
+
+
+        .dado-aluno {
+            min-height: 68px;
+
+            padding: 12px 13px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+
+            background: #f8fafb;
+
+            border: 1px solid #e3e9ed;
+            border-radius: 8px;
+        }
+
+
+        .dado-aluno.largo {
+            grid-column: 1 / -1;
+        }
+
+
+        .dado-aluno span {
+            color: #667580;
+
+            font-size: 10px;
+        }
+
+
+        .dado-aluno strong {
+            color: #26333d;
+
+            font-size: 12px;
+
+            word-break: break-word;
+        }
+
+
+        .form-editar {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 14px;
+        }
+
+
+        .grupo-editar {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+
+        .grupo-editar.largo {
+            grid-column: 1 / -1;
+        }
+
+
+        .grupo-editar label {
+            color: #304755;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .grupo-editar input,
+        .grupo-editar select {
+            width: 100%;
+            height: 42px;
+
+            padding: 0 11px;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: #26333d;
+
+            outline: none;
+
+            font-size: 12px;
+        }
+
+
+        .grupo-editar input:disabled {
+            background: #f1f4f7;
+            color: #7b8992;
+        }
+
+
+        .erro-cpf {
+            display: none;
+
+            color: #b43b3b;
+
+            font-size: 10px;
+        }
+
+
+        .erro-cpf.ativo {
+            display: block;
+        }
+
+
+        .aviso-edicao {
+            margin-top: 16px;
+            padding: 10px 12px;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            background: #eef7fd;
+            color: #25638b;
+
+            border: 1px solid #d7eaf6;
+            border-radius: 8px;
+
+            font-size: 10px;
+        }
+
+
+        .modal-acoes {
+            margin-top: 18px;
+            padding-top: 15px;
+
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+
+            border-top: 1px solid #e8edf0;
+        }
+
+
+        .botao-modal {
+            min-height: 40px;
+
+            padding: 0 15px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+
+        .botao-modal.cancelar {
+            background: #ffffff;
+            color: #26333d;
+
+            border: 1px solid #d8e0e6;
+        }
+
+
+        .botao-modal.salvar {
+            background: #0c4770;
+            color: #ffffff;
+
+            border: 1px solid #0c4770;
+        }
 
 
         /* ==========================================
            RESPONSIVO
         ========================================== */
 
-        @media (max-width: 600px) {
+        @media (max-width: 760px) {
 
-            .topo-turmas-edoc {
-                grid-template-columns: 46px 1fr;
-                gap: 14px;
+            .form-consulta {
+                flex-direction: column;
             }
 
 
-            .titulo-turmas-edoc {
-                text-align: left;
+            .botao-consultar {
+                width: 100%;
             }
 
+
+            .resultado-aluno {
+                align-items: flex-start;
+                flex-wrap: wrap;
+            }
+
+
+            .dados-resultado {
+                min-width: calc(100% - 60px);
+            }
+
+
+            .acoes-resultado {
+                width: 100%;
+
+                justify-content: flex-start;
+
+                padding-left: 56px;
+            }
+
+
+            .grade-dados,
+            .form-editar {
+                grid-template-columns: 1fr;
+            }
+
+
+            .dado-aluno.largo,
+            .grupo-editar.largo {
+                grid-column: auto;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .area-consulta {
+                padding: 14px;
+            }
+
+
+            .acoes-resultado {
+                padding-left: 0;
+            }
+
+
+            .acao-ficha {
+                flex: 1;
+            }
+
+        }
+
+        /* ==========================================
+           AJUSTE COMPACTO DA PÁGINA
+        ========================================== */
+
+        .container {
+            width: min(1100px, 96%) !important;
+            min-height: auto !important;
+
+            margin: 24px auto 40px !important;
+
+            padding:
+                28px
+                36px
+                34px !important;
+        }
+
+
+        .container > h1 {
+            margin:
+                0
+                0
+                5px !important;
+
+            font-size: 30px !important;
+            line-height: 1.15;
+        }
+
+
+        .subtitulo {
+            margin-bottom: 18px !important;
+
+            font-size: 14px !important;
+        }
+
+
+        .voltar {
+            top: 22px !important;
+            left: 24px !important;
+
+            width: 44px !important;
+            height: 44px !important;
+        }
+
+
+        .area-consulta {
+            margin-bottom: 18px !important;
+            padding: 14px 16px !important;
+        }
+
+
+        .titulo-consulta {
+            margin-bottom: 10px !important;
+
+            font-size: 13px !important;
+        }
+
+
+        .titulo-consulta i {
+            width: 28px !important;
+            height: 28px !important;
+        }
+
+
+        .campo-consulta,
+        .botao-consultar {
+            height: 42px !important;
+        }
+
+
+        .divisor-turmas {
+            margin-bottom: 14px !important;
+        }
+
+
+        .turmas {
+            gap: 14px !important;
+        }
+
+
+        .card {
+            min-height: 145px !important;
+
+            padding: 18px !important;
+        }
+
+
+        .icone-card {
+            width: 50px !important;
+            height: 50px !important;
+
+            margin-bottom: 10px !important;
+
+            font-size: 20px !important;
+        }
+
+
+        .card h3 {
+            margin-bottom: 5px !important;
+
+            font-size: 20px !important;
+        }
+
+
+        .card span {
+            font-size: 12px !important;
+        }
+
+
+        @media (max-width: 750px) {
+
+            .container {
+                margin-top: 16px !important;
+
+                padding:
+                    24px
+                    20px
+                    30px !important;
+            }
+
+
+            .container > h1 {
+                font-size: 25px !important;
+            }
+
+
+            .voltar {
+                top: 18px !important;
+                left: 18px !important;
+            }
+
+
+            .card {
+                min-height: 130px !important;
+            }
+
+        }
+
+        /* ==========================================
+           COMPACTAÇÃO FINAL
+        ========================================== */
+
+        .container {
+            width: min(1040px, 95%) !important;
+            min-height: auto !important;
+
+            margin:
+                14px
+                auto
+                28px !important;
+
+            padding:
+                22px
+                28px
+                28px !important;
+        }
+
+
+        .voltar {
+            top: 18px !important;
+            left: 20px !important;
+
+            width: 42px !important;
+            height: 42px !important;
+
+            font-size: 16px !important;
+        }
+
+
+        .container > h1 {
+            margin:
+                2px
+                0
+                4px !important;
+
+            font-size: 27px !important;
+            line-height: 1.1 !important;
+        }
+
+
+        .subtitulo {
+            margin-bottom: 14px !important;
+
+            font-size: 13px !important;
+        }
+
+
+        .area-consulta {
+            max-width: 700px !important;
+
+            margin:
+                0
+                auto
+                12px !important;
+
+            padding:
+                11px
+                13px !important;
+
+            border-radius: 9px !important;
+        }
+
+
+        .titulo-consulta {
+            margin-bottom: 8px !important;
+
+            gap: 7px !important;
+
+            font-size: 12px !important;
+        }
+
+
+        .titulo-consulta i {
+            width: 26px !important;
+            height: 26px !important;
+
+            font-size: 11px !important;
+        }
+
+
+        .form-consulta {
+            gap: 7px !important;
+        }
+
+
+        .campo-consulta {
+            height: 39px !important;
+
+            padding:
+                0
+                11px !important;
+
+            gap: 8px !important;
+        }
+
+
+        .campo-consulta input {
+            font-size: 12px !important;
+        }
+
+
+        .botao-consultar {
+            min-width: 92px !important;
+            height: 39px !important;
+
+            padding:
+                0
+                13px !important;
+
+            font-size: 11px !important;
+        }
+
+
+        .resultado-consulta {
+            max-width: 700px !important;
+
+            margin:
+                0
+                auto
+                12px !important;
+        }
+
+
+        .divisor-turmas {
+            max-width: 700px !important;
+
+            margin:
+                0
+                auto
+                10px !important;
+
+            font-size: 10px !important;
+        }
+
+
+        .turmas {
+            max-width: 700px !important;
+
+            gap: 12px !important;
+        }
+
+
+        .card {
+            min-height: 112px !important;
+
+            padding:
+                13px
+                16px !important;
+
+            border-radius: 9px !important;
+        }
+
+
+        .icone-card {
+            width: 42px !important;
+            height: 42px !important;
+
+            margin-bottom: 7px !important;
+
+            font-size: 17px !important;
+        }
+
+
+        .card h3 {
+            margin-bottom: 3px !important;
+
+            font-size: 18px !important;
+        }
+
+
+        .card span {
+            font-size: 10.5px !important;
+
+            line-height: 1.25 !important;
+        }
+
+
+        @media (max-width: 750px) {
+
+            .container {
+                width: 95% !important;
+
+                margin-top: 10px !important;
+
+                padding:
+                    20px
+                    16px
+                    24px !important;
+            }
+
+
+            .container > h1 {
+                margin-top: 8px !important;
+
+                font-size: 23px !important;
+            }
+
+
+            .subtitulo {
+                font-size: 12px !important;
+            }
+
+
+            .turmas {
+                max-width: 500px !important;
+
+                grid-template-columns: 1fr !important;
+            }
+
+
+            .card {
+                min-height: 105px !important;
+            }
+
+        }
+
+        /* ==========================================
+           PESQUISA AO VIVO
+        ========================================== */
+
+        .form-consulta {
+            display: block !important;
+        }
+
+
+        .campo-consulta {
+            width: 100% !important;
+        }
+
+
+        .carregando-pesquisa {
+            display: none;
+
+            margin-left: auto;
+
+            color: #0c4770;
+
+            font-size: 12px;
+        }
+
+
+        .carregando-pesquisa.ativo {
+            display: inline-block;
+        }
+
+
+        .estado-pesquisa {
+            padding: 18px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+
+            background: #f8fafb;
+
+            border: 1px dashed #cbd8e0;
+            border-radius: 9px;
+
+            color: #667580;
+
+            text-align: center;
+
+            font-size: 11px;
+        }
+
+
+        .estado-pesquisa i {
+            color: #7c95a5;
+
+            font-size: 20px;
+        }
+
+
+        .resultado-consulta {
+            margin-top: 0 !important;
         }
 
     </style>
@@ -148,74 +1260,186 @@
 
 <body>
 
-
-    <!-- ==========================================
-         CABEÇALHO PADRÃO
-    ========================================== -->
+    <!-- ======================================================
+         CABEÇALHO PADRÃO DO PROFISSIONAL
+    ====================================================== -->
 
     {% include 'cabecalho_profissional.html' %}
 
 
-
-    <!-- ==========================================
-         CONTEÚDO
-    ========================================== -->
-
     <main class="container">
 
 
-        <!-- ======================================
-             TOPO DA PÁGINA
-        ====================================== -->
+        <!-- ==============================================
+             VOLTAR
+        =============================================== -->
 
-        <div class="topo-turmas-edoc">
+        <a
+            href="{{ url_for('inicialp') }}"
+            class="voltar"
+            aria-label="Voltar"
+        >
 
+            <i class="fa-solid fa-arrow-left"></i>
 
-            <!-- VOLTAR -->
-
-            <a
-                href="{{ url_for('inicialp') }}"
-                class="edoc-voltar-pagina"
-                title="Voltar"
-                aria-label="Voltar"
-            >
-
-                <i class="fa-solid fa-arrow-left"></i>
-
-            </a>
+        </a>
 
 
 
-            <!-- TÍTULO -->
+        <!-- ==============================================
+             TÍTULO
+        =============================================== -->
 
-            <div class="titulo-turmas-edoc">
+        <h1>
+            Turmas e alunos
+        </h1>
 
-                <h1>
-                    Turmas e alunos
-                </h1>
 
-                <p class="subtitulo">
-                    Selecione uma turma para visualizar os alunos cadastrados.
-                </p>
+        <p class="subtitulo">
+            Consulte um estudante diretamente ou selecione uma turma.
+        </p>
+
+
+
+        <!-- ==============================================
+             MENSAGENS
+        =============================================== -->
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+
+            {% if mensagens %}
+
+                {% for categoria, mensagem in mensagens %}
+
+                    <div class="mensagem-flash {{ categoria }}">
+
+                        {% if categoria in ['sucesso', 'success'] %}
+
+                            <i class="fa-solid fa-circle-check"></i>
+
+                        {% else %}
+
+                            <i class="fa-solid fa-circle-exclamation"></i>
+
+                        {% endif %}
+
+                        <span>
+                            {{ mensagem }}
+                        </span>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+
+        <!-- ==============================================
+             CONSULTAR DOCUMENTOS
+        =============================================== -->
+
+        <section class="area-consulta">
+
+
+            <div class="titulo-consulta">
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <span>
+                    Consultar documentos
+                </span>
 
             </div>
 
 
-            <div></div>
+            <div class="form-consulta">
 
+
+                <div class="campo-consulta">
+
+                    <i class="fa-solid fa-user-graduate"></i>
+
+                    <input
+                        type="text"
+                        id="pesquisaAoVivo"
+                        value="{{ termo|default('') }}"
+                        placeholder="Buscar estudante por nome ou matrícula..."
+                        autocomplete="off"
+                    >
+
+                    <i
+                        class="fa-solid fa-spinner fa-spin carregando-pesquisa"
+                        id="carregandoPesquisa"
+                        aria-hidden="true"
+                    ></i>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ==============================================
+             RESULTADOS AO VIVO
+        =============================================== -->
+
+        <section
+            class="resultado-consulta"
+            id="resultadoConsulta"
+            style="display: none;"
+        >
+
+
+            <div class="cabecalho-resultado">
+
+                <h2>
+                    Resultado da consulta
+                </h2>
+
+                <span id="quantidadeResultados">
+                    0 estudantes encontrados
+                </span>
+
+            </div>
+
+
+            <div
+                class="lista-resultados"
+                id="listaResultados"
+            ></div>
+
+
+        </section>
+
+
+
+        <!-- ==============================================
+             DIVISOR
+        =============================================== -->
+
+        <div class="divisor-turmas">
+
+            <span>
+                ou selecione uma turma
+            </span>
 
         </div>
 
 
 
-        <!-- ======================================
+        <!-- ==============================================
              TURMAS
-        ====================================== -->
+        =============================================== -->
 
         <section class="turmas">
 
-
-            <!-- 3º TDS A -->
 
             <a
                 href="{{ url_for('turma_3tdsa') }}"
@@ -223,16 +1447,10 @@
             >
 
                 <div class="icone-card">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
 
-
-                <h3>
-                    3º TDS A
-                </h3>
-
+                <h3>3º TDS A</h3>
 
                 <span>
                     Técnico em Desenvolvimento de Sistemas
@@ -240,9 +1458,6 @@
 
             </a>
 
-
-
-            <!-- 3º TDS B -->
 
             <a
                 href="{{ url_for('turma_3tdsb') }}"
@@ -250,16 +1465,10 @@
             >
 
                 <div class="icone-card">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
 
-
-                <h3>
-                    3º TDS B
-                </h3>
-
+                <h3>3º TDS B</h3>
 
                 <span>
                     Técnico em Desenvolvimento de Sistemas
@@ -268,25 +1477,16 @@
             </a>
 
 
-
-            <!-- 3º MKT A -->
-
             <a
                 href="{{ url_for('turma_3mkta') }}"
                 class="card"
             >
 
                 <div class="icone-card">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
 
-
-                <h3>
-                    3º MKT A
-                </h3>
-
+                <h3>3º MKT A</h3>
 
                 <span>
                     Técnico em Marketing
@@ -295,25 +1495,16 @@
             </a>
 
 
-
-            <!-- 3º MKT B -->
-
             <a
                 href="{{ url_for('turma_3mktb') }}"
                 class="card"
             >
 
                 <div class="icone-card">
-
                     <i class="fa-solid fa-users"></i>
-
                 </div>
 
-
-                <h3>
-                    3º MKT B
-                </h3>
-
+                <h3>3º MKT B</h3>
 
                 <span>
                     Técnico em Marketing
@@ -326,6 +1517,1318 @@
 
 
     </main>
+
+
+
+    <!-- ======================================================
+         MODAL VER DADOS
+    ====================================================== -->
+
+    <div
+        class="modal-fundo"
+        id="modalDados"
+    >
+
+
+        <div class="modal-card">
+
+
+            <div class="modal-topo">
+
+
+                <div class="modal-titulo">
+
+                    <div class="modal-icone">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Dados do estudante
+                        </h2>
+
+                        <p id="nomeModalDados">
+                            Informações cadastradas
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    onclick="fecharDados()"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+
+            </div>
+
+
+            <div class="grade-dados">
+
+                <div class="dado-aluno largo">
+                    <span>Nome completo</span>
+                    <strong id="verNome">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>Matrícula</span>
+                    <strong id="verMatricula">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>Turma</span>
+                    <strong id="verTurma">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>CPF</span>
+                    <strong id="verCpf">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>Data de nascimento</span>
+                    <strong id="verNascimento">-</strong>
+                </div>
+
+                <div class="dado-aluno largo">
+                    <span>E-mail</span>
+                    <strong id="verEmail">-</strong>
+                </div>
+
+                <div class="dado-aluno largo">
+                    <span>Status da Ficha 19</span>
+                    <strong id="verStatus">-</strong>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================================
+         MODAL EDITAR
+    ====================================================== -->
+
+    <div
+        class="modal-fundo"
+        id="modalEditar"
+    >
+
+
+        <div class="modal-card edicao">
+
+
+            <div class="modal-topo">
+
+
+                <div class="modal-titulo">
+
+                    <div class="modal-icone">
+                        <i class="fa-solid fa-pen"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Editar cadastro do aluno
+                        </h2>
+
+                        <p>
+                            As alterações serão salvas no banco de dados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    onclick="fecharEditar()"
+                >
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+
+            </div>
+
+
+            <form
+                id="formEditarAluno"
+                method="POST"
+            >
+
+
+                <input
+                    type="hidden"
+                    name="retorno"
+                    value="turmas_alunos"
+                >
+
+
+                <input
+                    type="hidden"
+                    id="termoBuscaEdicao"
+                    name="termo_busca"
+                    value="{{ termo|default('') }}"
+                >
+
+
+                <input
+                    type="hidden"
+                    id="turmaOrigem"
+                    name="turma_origem"
+                    value=""
+                >
+
+
+                <div class="form-editar">
+
+
+                    <div class="grupo-editar largo">
+
+                        <label for="editarNome">
+                            Nome completo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editarNome"
+                            name="nome"
+                            maxlength="150"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarMatricula">
+                            Matrícula
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editarMatricula"
+                            disabled
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarCpf">
+                            CPF
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editarCpf"
+                            name="cpf"
+                            maxlength="14"
+                            inputmode="numeric"
+                            placeholder="000.000.000-00"
+                            required
+                        >
+
+                        <span
+                            class="erro-cpf"
+                            id="erroCpf"
+                        >
+                            Informe um CPF válido.
+                        </span>
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarEmail">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="editarEmail"
+                            name="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarNascimento">
+                            Data de nascimento
+                        </label>
+
+                        <input
+                            type="date"
+                            id="editarNascimento"
+                            name="data_nascimento"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar largo">
+
+                        <label for="editarTurma">
+                            Turma
+                        </label>
+
+                        <select
+                            id="editarTurma"
+                            name="id_turma"
+                            required
+                        >
+
+                            <option value="3º TDS A">3º TDS A</option>
+                            <option value="3º TDS B">3º TDS B</option>
+                            <option value="3º MKT A">3º MKT A</option>
+                            <option value="3º MKT B">3º MKT B</option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="aviso-edicao">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    A matrícula permanece bloqueada porque identifica
+                    o acesso do estudante ao eDOC.
+
+                </div>
+
+
+                <div class="modal-acoes">
+
+
+                    <button
+                        type="button"
+                        class="botao-modal cancelar"
+                        onclick="fecharEditar()"
+                    >
+                        Cancelar
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="botao-modal salvar"
+                    >
+
+                        <i class="fa-solid fa-check"></i>
+
+                        Salvar alterações
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+
+        /* ==========================================
+           PESQUISA AO VIVO
+        ========================================== */
+
+        const campoPesquisaAoVivo =
+            document.getElementById(
+                "pesquisaAoVivo"
+            );
+
+
+        const resultadoConsulta =
+            document.getElementById(
+                "resultadoConsulta"
+            );
+
+
+        const listaResultados =
+            document.getElementById(
+                "listaResultados"
+            );
+
+
+        const quantidadeResultados =
+            document.getElementById(
+                "quantidadeResultados"
+            );
+
+
+        const carregandoPesquisa =
+            document.getElementById(
+                "carregandoPesquisa"
+            );
+
+
+        const termoBuscaEdicao =
+            document.getElementById(
+                "termoBuscaEdicao"
+            );
+
+
+        let temporizadorPesquisa = null;
+
+        let controladorPesquisa = null;
+
+
+        function escaparHtml(valor) {
+
+            return String(
+                valor ?? ""
+            )
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+        }
+
+
+        function atualizarQuantidade(
+            quantidade
+        ) {
+
+            quantidadeResultados.textContent =
+                quantidade
+                + (
+                    quantidade === 1
+                    ? " estudante encontrado"
+                    : " estudantes encontrados"
+                );
+
+        }
+
+
+        function mostrarEstadoPesquisa(
+            icone,
+            titulo,
+            texto
+        ) {
+
+            resultadoConsulta.style.display =
+                "block";
+
+
+            atualizarQuantidade(
+                0
+            );
+
+
+            listaResultados.innerHTML =
+                `
+                <div class="estado-pesquisa">
+
+                    <i class="${icone}"></i>
+
+                    <strong>
+                        ${escaparHtml(titulo)}
+                    </strong>
+
+                    <span>
+                        ${escaparHtml(texto)}
+                    </span>
+
+                </div>
+                `;
+
+        }
+
+
+        function criarResultadoAluno(
+            aluno
+        ) {
+
+            const possuiFicha =
+                Boolean(
+                    aluno.possui_ficha
+                );
+
+
+            const textoFicha =
+                possuiFicha
+                ? "Consultar Ficha"
+                : "Gerar Ficha";
+
+
+            const nome =
+                escaparHtml(
+                    aluno.nome
+                );
+
+
+            const matricula =
+                escaparHtml(
+                    aluno.matricula
+                );
+
+
+            const turma =
+                escaparHtml(
+                    aluno.turma
+                    || "Não informada"
+                );
+
+
+            const email =
+                escaparHtml(
+                    aluno.email
+                    || ""
+                );
+
+
+            const cpf =
+                escaparHtml(
+                    aluno.cpf
+                    || ""
+                );
+
+
+            const nascimento =
+                escaparHtml(
+                    aluno.data_nascimento
+                    || ""
+                );
+
+
+            const status =
+                escaparHtml(
+                    aluno.status_ficha19
+                    || "Não informado"
+                );
+
+
+            const id =
+                Number(
+                    aluno.id
+                );
+
+
+            return `
+                <div class="resultado-aluno">
+
+
+                    <div class="avatar-resultado">
+
+                        ${nome.charAt(0).toUpperCase()}
+
+                    </div>
+
+
+                    <div class="dados-resultado">
+
+                        <strong>
+                            ${nome}
+                        </strong>
+
+                        <span>
+
+                            Matrícula:
+                            ${matricula}
+
+                            ·
+
+                            Turma:
+                            ${turma}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="acoes-resultado">
+
+
+                        <a
+                            href="/ficha19?aluno_id=${id}"
+                            class="acao-ficha"
+                        >
+
+                            <i class="fa-regular fa-file-lines"></i>
+
+                            ${textoFicha}
+
+                        </a>
+
+
+                        <button
+                            type="button"
+                            class="acao-icone"
+                            title="Editar cadastro"
+                            data-id="${id}"
+                            data-nome="${nome}"
+                            data-matricula="${matricula}"
+                            data-turma="${turma}"
+                            data-email="${email}"
+                            data-cpf="${cpf}"
+                            data-nascimento="${nascimento}"
+                            onclick="abrirEditar(this)"
+                        >
+
+                            <i class="fa-solid fa-pen"></i>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="acao-icone"
+                            title="Ver dados"
+                            data-nome="${nome}"
+                            data-matricula="${matricula}"
+                            data-turma="${turma}"
+                            data-email="${email || "Não informado"}"
+                            data-cpf="${cpf || "Não informado"}"
+                            data-nascimento="${nascimento || "Não informado"}"
+                            data-status="${status}"
+                            onclick="abrirDados(this)"
+                        >
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+            `;
+
+        }
+
+
+        async function pesquisarAlunosAoVivo(
+            termo
+        ) {
+
+            termo =
+                termo.trim();
+
+
+            if (
+                termoBuscaEdicao
+            ) {
+
+                termoBuscaEdicao.value =
+                    termo;
+
+            }
+
+
+            if (!termo) {
+
+                resultadoConsulta.style.display =
+                    "none";
+
+
+                listaResultados.innerHTML =
+                    "";
+
+
+                carregandoPesquisa.classList.remove(
+                    "ativo"
+                );
+
+
+                return;
+
+            }
+
+
+            if (
+                controladorPesquisa
+            ) {
+
+                controladorPesquisa.abort();
+
+            }
+
+
+            controladorPesquisa =
+                new AbortController();
+
+
+            carregandoPesquisa.classList.add(
+                "ativo"
+            );
+
+
+            try {
+
+                const resposta =
+                    await fetch(
+                        "/api/pesquisar-alunos?q="
+                        + encodeURIComponent(
+                            termo
+                        ),
+                        {
+                            signal:
+                                controladorPesquisa.signal
+                        }
+                    );
+
+
+                if (!resposta.ok) {
+
+                    throw new Error(
+                        "Falha na pesquisa."
+                    );
+
+                }
+
+
+                const dados =
+                    await resposta.json();
+
+
+                const alunos =
+                    dados.alunos
+                    || [];
+
+
+                resultadoConsulta.style.display =
+                    "block";
+
+
+                atualizarQuantidade(
+                    alunos.length
+                );
+
+
+                if (
+                    alunos.length === 0
+                ) {
+
+                    mostrarEstadoPesquisa(
+                        "fa-regular fa-folder-open",
+                        "Nenhum estudante encontrado.",
+                        "Continue digitando ou confira o nome/matrícula."
+                    );
+
+
+                    return;
+
+                }
+
+
+                listaResultados.innerHTML =
+                    alunos
+                        .map(
+                            criarResultadoAluno
+                        )
+                        .join(
+                            ""
+                        );
+
+
+            } catch (erro) {
+
+
+                if (
+                    erro.name
+                    === "AbortError"
+                ) {
+
+                    return;
+
+                }
+
+
+                mostrarEstadoPesquisa(
+                    "fa-solid fa-triangle-exclamation",
+                    "Não foi possível pesquisar.",
+                    "Tente novamente."
+                );
+
+
+            } finally {
+
+
+                carregandoPesquisa.classList.remove(
+                    "ativo"
+                );
+
+
+            }
+
+        }
+
+
+        campoPesquisaAoVivo.addEventListener(
+            "input",
+            function () {
+
+
+                clearTimeout(
+                    temporizadorPesquisa
+                );
+
+
+                const termo =
+                    this.value;
+
+
+                temporizadorPesquisa =
+                    setTimeout(
+                        function () {
+
+                            pesquisarAlunosAoVivo(
+                                termo
+                            );
+
+                        },
+                        160
+                    );
+
+
+            }
+        );
+
+
+        /* Se voltou de uma edição, mantém a pesquisa aberta. */
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const termoInicial =
+                    campoPesquisaAoVivo.value
+                        .trim();
+
+
+                if (
+                    termoInicial
+                ) {
+
+                    pesquisarAlunosAoVivo(
+                        termoInicial
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==========================================
+           CPF
+        ========================================== */
+
+        function somenteNumeros(valor) {
+
+            return String(valor)
+                .replace(/\D/g, "");
+
+        }
+
+
+        function formatarCpf(valor) {
+
+            let numeros =
+                somenteNumeros(valor)
+                    .slice(0, 11);
+
+
+            numeros = numeros.replace(
+                /(\d{3})(\d)/,
+                "$1.$2"
+            );
+
+
+            numeros = numeros.replace(
+                /(\d{3})(\d)/,
+                "$1.$2"
+            );
+
+
+            numeros = numeros.replace(
+                /(\d{3})(\d{1,2})$/,
+                "$1-$2"
+            );
+
+
+            return numeros;
+
+        }
+
+
+        function validarCpfJS(cpf) {
+
+            cpf =
+                somenteNumeros(cpf);
+
+
+            if (cpf.length !== 11) {
+
+                return false;
+
+            }
+
+
+            if (/^(\d)\1{10}$/.test(cpf)) {
+
+                return false;
+
+            }
+
+
+            let soma = 0;
+
+
+            for (
+                let indice = 0;
+                indice < 9;
+                indice++
+            ) {
+
+                soma +=
+                    Number(cpf[indice])
+                    *
+                    (10 - indice);
+
+            }
+
+
+            let primeiro =
+                (soma * 10) % 11;
+
+
+            if (primeiro === 10) {
+
+                primeiro = 0;
+
+            }
+
+
+            if (
+                primeiro
+                !== Number(cpf[9])
+            ) {
+
+                return false;
+
+            }
+
+
+            soma = 0;
+
+
+            for (
+                let indice = 0;
+                indice < 10;
+                indice++
+            ) {
+
+                soma +=
+                    Number(cpf[indice])
+                    *
+                    (11 - indice);
+
+            }
+
+
+            let segundo =
+                (soma * 10) % 11;
+
+
+            if (segundo === 10) {
+
+                segundo = 0;
+
+            }
+
+
+            return (
+                segundo
+                === Number(cpf[10])
+            );
+
+        }
+
+
+
+        /* ==========================================
+           VER DADOS
+        ========================================== */
+
+        function abrirDados(botao) {
+
+
+            document.getElementById(
+                "nomeModalDados"
+            ).textContent =
+                botao.dataset.nome;
+
+
+            document.getElementById(
+                "verNome"
+            ).textContent =
+                botao.dataset.nome;
+
+
+            document.getElementById(
+                "verMatricula"
+            ).textContent =
+                botao.dataset.matricula;
+
+
+            document.getElementById(
+                "verTurma"
+            ).textContent =
+                botao.dataset.turma;
+
+
+            document.getElementById(
+                "verCpf"
+            ).textContent =
+                formatarCpf(
+                    botao.dataset.cpf
+                )
+                || "Não informado";
+
+
+            document.getElementById(
+                "verNascimento"
+            ).textContent =
+                botao.dataset.nascimento;
+
+
+            document.getElementById(
+                "verEmail"
+            ).textContent =
+                botao.dataset.email;
+
+
+            document.getElementById(
+                "verStatus"
+            ).textContent =
+                botao.dataset.status;
+
+
+            document.getElementById(
+                "modalDados"
+            ).classList.add(
+                "ativo"
+            );
+
+
+        }
+
+
+        function fecharDados() {
+
+            document.getElementById(
+                "modalDados"
+            ).classList.remove(
+                "ativo"
+            );
+
+        }
+
+
+
+        /* ==========================================
+           EDITAR
+        ========================================== */
+
+        const campoCpf =
+            document.getElementById(
+                "editarCpf"
+            );
+
+
+        const erroCpf =
+            document.getElementById(
+                "erroCpf"
+            );
+
+
+        campoCpf.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    formatarCpf(
+                        this.value
+                    );
+
+
+                erroCpf.classList.remove(
+                    "ativo"
+                );
+
+            }
+        );
+
+
+        function abrirEditar(botao) {
+
+
+            const form =
+                document.getElementById(
+                    "formEditarAluno"
+                );
+
+
+            form.action =
+                "/editar-aluno/"
+                + botao.dataset.id;
+
+
+            document.getElementById(
+                "editarNome"
+            ).value =
+                botao.dataset.nome || "";
+
+
+            document.getElementById(
+                "editarMatricula"
+            ).value =
+                botao.dataset.matricula || "";
+
+
+            document.getElementById(
+                "editarCpf"
+            ).value =
+                formatarCpf(
+                    botao.dataset.cpf || ""
+                );
+
+
+            document.getElementById(
+                "editarEmail"
+            ).value =
+                botao.dataset.email || "";
+
+
+            let nascimento =
+                botao.dataset.nascimento
+                || "";
+
+
+            nascimento =
+                nascimento.split(" ")[0];
+
+
+            document.getElementById(
+                "editarNascimento"
+            ).value =
+                nascimento;
+
+
+            document.getElementById(
+                "editarTurma"
+            ).value =
+                botao.dataset.turma;
+
+
+            document.getElementById(
+                "turmaOrigem"
+            ).value =
+                botao.dataset.turma;
+
+
+            erroCpf.classList.remove(
+                "ativo"
+            );
+
+
+            document.getElementById(
+                "modalEditar"
+            ).classList.add(
+                "ativo"
+            );
+
+
+        }
+
+
+        function fecharEditar() {
+
+            document.getElementById(
+                "modalEditar"
+            ).classList.remove(
+                "ativo"
+            );
+
+        }
+
+
+        document.getElementById(
+            "formEditarAluno"
+        ).addEventListener(
+            "submit",
+            function (event) {
+
+                if (
+                    !validarCpfJS(
+                        campoCpf.value
+                    )
+                ) {
+
+                    event.preventDefault();
+
+                    erroCpf.classList.add(
+                        "ativo"
+                    );
+
+                    campoCpf.focus();
+
+                }
+
+            }
+        );
+
+
+
+        /* ==========================================
+           FECHAR MODAIS
+        ========================================== */
+
+        document
+            .querySelectorAll(
+                ".modal-fundo"
+            )
+            .forEach(
+                function (modal) {
+
+                    modal.addEventListener(
+                        "click",
+                        function (event) {
+
+                            if (
+                                event.target
+                                === modal
+                            ) {
+
+                                modal.classList.remove(
+                                    "ativo"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                }
+            );
+
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key
+                    === "Escape"
+                ) {
+
+                    fecharDados();
+                    fecharEditar();
+
+                }
+
+            }
+        );
+
+
+
+        /* ==========================================
+           FLASH TEMPORÁRIO
+        ========================================== */
+
+        document
+            .querySelectorAll(
+                ".mensagem-flash"
+            )
+            .forEach(
+                function (mensagem) {
+
+                    setTimeout(
+                        function () {
+
+                            mensagem.classList.add(
+                                "sumindo"
+                            );
+
+                            setTimeout(
+                                function () {
+
+                                    mensagem.remove();
+
+                                },
+                                450
+                            );
+
+                        },
+                        3000
+                    );
+
+                }
+            );
+
+
+    </script>
 
 
 </body>

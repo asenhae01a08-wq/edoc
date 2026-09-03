@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style11.css') }}"
+        href="{{ url_for('static', filename='style11.css') }}?v=30"
     >
 
     <link
@@ -22,112 +22,611 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     >
 
+    <style>
+
+        .painel {
+            width: min(960px, 94%) !important;
+        }
+
+        .lista-alunos {
+            width: 100%;
+        }
+
+        .aluno-card {
+            gap: 20px;
+        }
+
+        .informacoes-aluno {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .acoes-aluno {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .botao-ficha {
+            min-height: 40px;
+            padding: 0 14px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+
+            background: #ffffff;
+            color: #0c4770;
+
+            border: 1px solid #0c4770;
+            border-radius: 8px;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            white-space: nowrap;
+
+            transition: 0.2s ease;
+        }
+
+        .botao-ficha:hover {
+            background: #0c4770;
+            color: #ffffff;
+        }
+
+        .botao-icone-aluno {
+            width: 40px;
+            height: 40px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #ffffff;
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            transition: 0.2s ease;
+        }
+
+        .botao-icone-aluno:hover {
+            background: #e9f3fa;
+            border-color: #91bdd7;
+
+            transform: translateY(-1px);
+        }
+
+        .mensagem-flash {
+            margin-bottom: 18px;
+            padding: 12px 15px;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+
+            opacity: 1;
+            transform: translateY(0);
+
+            transition:
+                opacity 0.4s ease,
+                transform 0.4s ease,
+                margin 0.4s ease,
+                padding 0.4s ease;
+        }
+
+        .mensagem-flash.sucesso,
+        .mensagem-flash.success {
+            background: #edf8f4;
+            border: 1px solid #bee2d5;
+            color: #1d7259;
+        }
+
+        .mensagem-flash.erro,
+        .mensagem-flash.error {
+            background: #fff0f0;
+            border: 1px solid #efc7c7;
+            color: #a83838;
+        }
+
+        .mensagem-flash.sumindo {
+            opacity: 0;
+            transform: translateY(-8px);
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            overflow: hidden;
+        }
+
+        .modal-fundo {
+            position: fixed;
+            inset: 0;
+
+            z-index: 999999;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(7, 32, 49, 0.48);
+
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-fundo.ativo {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(580px, 96%);
+            max-height: 90vh;
+            overflow-y: auto;
+
+            padding: 25px;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 14px;
+
+            box-shadow:
+                0 25px 60px
+                rgba(7, 52, 80, 0.22);
+        }
+
+        .modal-card.edicao {
+            width: min(680px, 96%);
+        }
+
+        .modal-topo {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+
+            margin-bottom: 20px;
+            padding-bottom: 17px;
+
+            border-bottom: 1px solid #e4eaee;
+        }
+
+        .modal-titulo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modal-icone {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+            color: #0c4770;
+
+            border-radius: 11px;
+
+            font-size: 17px;
+        }
+
+        .modal-titulo h2 {
+            margin: 0 0 4px;
+            color: #17334d;
+            font-size: 19px;
+        }
+
+        .modal-titulo p {
+            margin: 0;
+            color: #667580;
+            font-size: 11px;
+        }
+
+        .fechar-modal {
+            width: 35px;
+            height: 35px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: none;
+            border-radius: 8px;
+
+            background: transparent;
+            color: #5d7180;
+
+            cursor: pointer;
+
+            font-size: 17px;
+        }
+
+        .fechar-modal:hover {
+            background: #f1f4f7;
+        }
+
+        .grade-dados {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .dado-aluno {
+            min-height: 72px;
+
+            padding: 13px 14px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+
+            background: #f8fafb;
+
+            border: 1px solid #e3e9ed;
+            border-radius: 9px;
+        }
+
+        .dado-aluno span {
+            color: #667580;
+            font-size: 10px;
+        }
+
+        .dado-aluno strong {
+            color: #26333d;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .dado-aluno.largo {
+            grid-column: 1 / -1;
+        }
+
+        .form-editar {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .grupo-editar {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .grupo-editar.largo {
+            grid-column: 1 / -1;
+        }
+
+        .grupo-editar label {
+            color: #304755;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .grupo-editar input,
+        .grupo-editar select {
+            width: 100%;
+            height: 43px;
+
+            padding: 0 12px;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: #26333d;
+
+            outline: none;
+
+            font-size: 12px;
+        }
+
+        .grupo-editar input:focus,
+        .grupo-editar select:focus {
+            border-color: #87b7d3;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(12, 71, 112, 0.08);
+        }
+
+        .grupo-editar input:disabled {
+            background: #f1f4f7;
+            color: #7b8992;
+        }
+
+        .erro-cpf {
+            display: none;
+            color: #b43b3b;
+            font-size: 10px;
+        }
+
+        .erro-cpf.ativo {
+            display: block;
+        }
+
+        .aviso-edicao {
+            margin-top: 17px;
+
+            padding: 11px 13px;
+
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            background: #eef7fd;
+            color: #25638b;
+
+            border: 1px solid #d7eaf6;
+            border-radius: 8px;
+
+            font-size: 11px;
+        }
+
+        .modal-acoes {
+            margin-top: 20px;
+            padding-top: 17px;
+
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+
+            border-top: 1px solid #e8edf0;
+        }
+
+        .botao-modal {
+            min-height: 41px;
+            padding: 0 16px;
+
+            border-radius: 8px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            cursor: pointer;
+        }
+
+        .botao-modal.cancelar {
+            background: #ffffff;
+            color: #26333d;
+            border: 1px solid #d8e0e6;
+        }
+
+        .botao-modal.salvar {
+            background: #0c4770;
+            color: #ffffff;
+            border: 1px solid #0c4770;
+        }
+
+        @media (max-width: 700px) {
+
+            .aluno-card {
+                align-items: flex-start !important;
+                flex-direction: column !important;
+            }
+
+            .acoes-aluno {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .grade-dados,
+            .form-editar {
+                grid-template-columns: 1fr;
+            }
+
+            .dado-aluno.largo,
+            .grupo-editar.largo {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
 </head>
 
 
 <body>
 
 
-{% include 'cabecalho_profissional.html' %}
+    {% include 'cabecalho_profissional.html' %}
 
 
-<main class="pagina">
+    <main class="pagina">
 
 
-    <section class="painel">
+        <section class="painel">
 
 
-        <!-- VOLTAR -->
+            {% with mensagens = get_flashed_messages(with_categories=true) %}
 
-        <button
-            type="button"
-            class="botao-voltar"
-            onclick="history.back()"
-            title="Voltar"
-        >
+                {% if mensagens %}
 
-            <i class="fa-solid fa-arrow-left"></i>
+                    {% for categoria, mensagem in mensagens %}
 
-        </button>
+                        <div class="mensagem-flash {{ categoria }}">
 
+                            {% if categoria in ['sucesso', 'success'] %}
+                                <i class="fa-solid fa-circle-check"></i>
+                            {% else %}
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                            {% endif %}
 
+                            <span>
+                                {{ mensagem }}
+                            </span>
 
-        <!-- TÍTULO -->
+                        </div>
 
-        <div class="cabecalho">
+                    {% endfor %}
 
-            <h1>
-                Turma 3º MKT A
-            </h1>
+                {% endif %}
 
-            <p>
-
-                <span id="quantidadeAlunos">
-                    {{ alunos|length }}
-                </span>
-
-                alunos · Consulta de Documentos
-
-            </p>
-
-        </div>
+            {% endwith %}
 
 
-
-        <!-- PESQUISA -->
-
-        <div class="pesquisa">
-
-            <i class="fa-solid fa-magnifying-glass"></i>
-
-            <input
-                type="text"
-                id="pesquisaAluno"
-                placeholder="Buscar por nome ou matrícula..."
-                autocomplete="off"
+            <button
+                type="button"
+                class="botao-voltar"
+                onclick="history.back()"
+                title="Voltar"
             >
 
-        </div>
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </button>
 
 
+            <div class="cabecalho">
 
-        <!-- LISTA -->
+                <h1>
+                    Turma 3º MKT A
+                </h1>
 
-        <div
-            class="lista-alunos"
-            id="listaAlunos"
-        >
+                <p>
+
+                    <span id="quantidadeAlunos">
+                        {{ alunos|length }}
+                    </span>
+
+                    alunos · Gerenciamento de estudantes
+
+                </p>
+
+            </div>
 
 
-            {% for aluno in alunos %}
+            <div class="pesquisa">
 
+                <i class="fa-solid fa-magnifying-glass"></i>
 
-                <div
-                    class="aluno-card"
-                    data-nome="{{ aluno['nome']|lower }}"
-                    data-matricula="{{ aluno['matricula'] }}"
+                <input
+                    type="text"
+                    id="pesquisaAluno"
+                    placeholder="Buscar por nome ou matrícula..."
+                    autocomplete="off"
                 >
 
+            </div>
 
-                    <div class="informacoes-aluno">
+
+            <div
+                class="lista-alunos"
+                id="listaAlunos"
+            >
 
 
-                        <div class="avatar">
+                {% for aluno in alunos %}
 
-                            {{ aluno["nome"][0].upper() }}
+
+                    <div
+                        class="aluno-card"
+                        data-nome="{{ aluno['nome']|lower }}"
+                        data-matricula="{{ aluno['matricula'] }}"
+                    >
+
+
+                        <div class="informacoes-aluno">
+
+                            <div class="avatar">
+                                {{ aluno["nome"][0].upper() }}
+                            </div>
+
+                            <div class="dados">
+
+                                <strong>
+                                    {{ aluno["nome"] }}
+                                </strong>
+
+                                <span>
+                                    Matrícula:
+                                    {{ aluno["matricula"] }}
+                                </span>
+
+                            </div>
 
                         </div>
 
 
-                        <div class="dados">
+                        <div class="acoes-aluno">
 
-                            <strong>
-                                {{ aluno["nome"] }}
-                            </strong>
 
-                            <span>
-                                Matrícula: {{ aluno["matricula"] }}
-                            </span>
+                            <a
+                                href="{{ url_for('ficha19', aluno_id=aluno['id']) }}"
+                                class="botao-ficha"
+                            >
+
+                                <i class="fa-regular fa-file-lines"></i>
+
+                                {% if aluno.get('possui_ficha') %}
+                                    Consultar Ficha
+                                {% else %}
+                                    Gerar Ficha
+                                {% endif %}
+
+                            </a>
+
+
+                            <button
+                                type="button"
+                                class="botao-icone-aluno"
+                                title="Editar cadastro"
+                                data-id="{{ aluno['id'] }}"
+                                data-nome="{{ aluno['nome']|e }}"
+                                data-matricula="{{ aluno['matricula']|e }}"
+                                data-turma="{{ aluno.get('id_turma', '3º MKT A')|e }}"
+                                data-email="{{ aluno.get('email', '')|default('', true)|e }}"
+                                data-cpf="{{ aluno.get('cpf', '')|default('', true)|e }}"
+                                data-nascimento="{{ aluno.get('data_nascimento', '')|default('', true)|string|e }}"
+                                onclick="abrirEditar(this)"
+                            >
+
+                                <i class="fa-solid fa-pen"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="botao-icone-aluno"
+                                title="Ver dados do estudante"
+                                data-nome="{{ aluno['nome']|e }}"
+                                data-matricula="{{ aluno['matricula']|e }}"
+                                data-turma="{{ aluno.get('id_turma', '3º MKT A')|e }}"
+                                data-email="{{ aluno.get('email', 'Não informado')|default('Não informado', true)|e }}"
+                                data-cpf="{{ aluno.get('cpf', 'Não informado')|default('Não informado', true)|e }}"
+                                data-nascimento="{{ aluno.get('data_nascimento', 'Não informado')|default('Não informado', true)|string|e }}"
+                                data-status="{{ aluno.get('status_ficha19', 'Não informado')|default('Não informado', true)|e }}"
+                                onclick="abrirDados(this)"
+                            >
+
+                                <i class="fa-regular fa-eye"></i>
+
+                            </button>
+
 
                         </div>
 
@@ -135,139 +634,806 @@
                     </div>
 
 
+                {% else %}
 
-                    <a
-                        href="{{ url_for('ficha19', aluno_id=aluno['id']) }}"
-                        class="botao-gerar"
+                    <div class="sem-alunos">
+
+                        <i class="fa-regular fa-folder-open"></i>
+
+                        <p>
+                            Nenhum aluno encontrado nesta turma.
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+
+            <div
+                class="nenhum-resultado"
+                id="nenhumResultado"
+            >
+
+                <i class="fa-solid fa-magnifying-glass"></i>
+
+                <p>
+                    Nenhum aluno encontrado.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ======================================================
+         MODAL VER DADOS
+    ====================================================== -->
+
+    <div
+        class="modal-fundo"
+        id="modalDados"
+    >
+
+        <div class="modal-card">
+
+            <div class="modal-topo">
+
+                <div class="modal-titulo">
+
+                    <div class="modal-icone">
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Dados do estudante
+                        </h2>
+
+                        <p id="nomeModalDados">
+                            Informações cadastradas
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    onclick="fecharDados()"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <div class="grade-dados">
+
+                <div class="dado-aluno largo">
+                    <span>Nome completo</span>
+                    <strong id="verNome">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>Matrícula</span>
+                    <strong id="verMatricula">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>Turma</span>
+                    <strong id="verTurma">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>CPF</span>
+                    <strong id="verCpf">-</strong>
+                </div>
+
+                <div class="dado-aluno">
+                    <span>Data de nascimento</span>
+                    <strong id="verNascimento">-</strong>
+                </div>
+
+                <div class="dado-aluno largo">
+                    <span>E-mail</span>
+                    <strong id="verEmail">-</strong>
+                </div>
+
+                <div class="dado-aluno largo">
+                    <span>Status da Ficha 19</span>
+                    <strong id="verStatus">-</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         MODAL EDITAR - FUNCIONAL
+    ====================================================== -->
+
+    <div
+        class="modal-fundo"
+        id="modalEditar"
+    >
+
+        <div class="modal-card edicao">
+
+            <div class="modal-topo">
+
+                <div class="modal-titulo">
+
+                    <div class="modal-icone">
+                        <i class="fa-solid fa-pen"></i>
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Editar cadastro do aluno
+                        </h2>
+
+                        <p>
+                            As alterações serão salvas no banco de dados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="fechar-modal"
+                    onclick="fecharEditar()"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+
+            </div>
+
+
+            <form
+                id="formEditarAluno"
+                method="POST"
+            >
+
+                <input
+                    type="hidden"
+                    name="turma_origem"
+                    value="3º MKT A"
+                >
+
+
+                <div class="form-editar">
+
+
+                    <div class="grupo-editar largo">
+
+                        <label for="editarNome">
+                            Nome completo
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editarNome"
+                            name="nome"
+                            maxlength="150"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarMatricula">
+                            Matrícula
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editarMatricula"
+                            disabled
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarCpf">
+                            CPF
+                        </label>
+
+                        <input
+                            type="text"
+                            id="editarCpf"
+                            name="cpf"
+                            maxlength="14"
+                            inputmode="numeric"
+                            placeholder="000.000.000-00"
+                            required
+                        >
+
+                        <span
+                            class="erro-cpf"
+                            id="erroCpf"
+                        >
+                            Informe um CPF válido.
+                        </span>
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarEmail">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="editarEmail"
+                            name="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar">
+
+                        <label for="editarNascimento">
+                            Data de nascimento
+                        </label>
+
+                        <input
+                            type="date"
+                            id="editarNascimento"
+                            name="data_nascimento"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="grupo-editar largo">
+
+                        <label for="editarTurma">
+                            Turma
+                        </label>
+
+                        <select
+                            id="editarTurma"
+                            name="id_turma"
+                            required
+                        >
+
+                            <option value="3º TDS A">3º TDS A</option>
+                            <option value="3º TDS B">3º TDS B</option>
+                            <option value="3º MKT A">3º MKT A</option>
+                            <option value="3º MKT B">3º MKT B</option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="aviso-edicao">
+
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    A matrícula não pode ser alterada por esta tela,
+                    pois ela é utilizada para identificar o estudante.
+
+                </div>
+
+
+                <div class="modal-acoes">
+
+                    <button
+                        type="button"
+                        class="botao-modal cancelar"
+                        onclick="fecharEditar()"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="botao-modal salvar"
                     >
 
-                        <i class="fa-regular fa-file-lines"></i>
+                        <i class="fa-solid fa-check"></i>
 
-                        Gerar Ficha
+                        Salvar alterações
 
-                    </a>
-
-
-                </div>
-
-
-            {% else %}
-
-
-                <div class="sem-alunos">
-
-                    <i class="fa-regular fa-folder-open"></i>
-
-                    <p>
-                        Nenhum aluno encontrado nesta turma.
-                    </p>
+                    </button>
 
                 </div>
 
 
-            {% endfor %}
-
-
-        </div>
-
-
-
-        <!-- NENHUM RESULTADO -->
-
-        <div
-            class="nenhum-resultado"
-            id="nenhumResultado"
-        >
-
-            <i class="fa-solid fa-magnifying-glass"></i>
-
-            <p>
-                Nenhum aluno encontrado.
-            </p>
+            </form>
 
         </div>
 
-
-    </section>
-
-
-</main>
+    </div>
 
 
+    <script>
 
-<script>
+        const pesquisa =
+            document.getElementById(
+                "pesquisaAluno"
+            );
 
-    const pesquisa =
-        document.getElementById("pesquisaAluno");
+        const alunos =
+            document.querySelectorAll(
+                ".aluno-card"
+            );
 
-    const alunos =
-        document.querySelectorAll(".aluno-card");
-
-    const nenhumResultado =
-        document.getElementById("nenhumResultado");
-
-
-    pesquisa.addEventListener(
-        "input",
-        function () {
-
-            const valor =
-                this.value
-                    .toLowerCase()
-                    .trim();
-
-            let encontrados = 0;
+        const nenhumResultado =
+            document.getElementById(
+                "nenhumResultado"
+            );
 
 
-            alunos.forEach(
-                function (aluno) {
+        pesquisa.addEventListener(
+            "input",
+            function () {
 
-                    const nome =
-                        aluno.dataset.nome;
+                const valor =
+                    this.value
+                        .toLowerCase()
+                        .trim();
 
-                    const matricula =
-                        aluno.dataset.matricula;
+                let encontrados = 0;
 
-                    const corresponde =
-                        nome.includes(valor) ||
-                        matricula.includes(valor);
+                alunos.forEach(
+                    function (aluno) {
 
+                        const nome =
+                            aluno.dataset.nome;
 
-                    if (corresponde) {
+                        const matricula =
+                            aluno.dataset.matricula;
 
-                        aluno.style.display = "flex";
+                        const corresponde =
+                            nome.includes(valor)
+                            ||
+                            matricula.includes(valor);
 
-                        encontrados++;
+                        if (corresponde) {
 
-                    } else {
+                            aluno.style.display =
+                                "flex";
 
-                        aluno.style.display = "none";
+                            encontrados++;
+
+                        } else {
+
+                            aluno.style.display =
+                                "none";
+
+                        }
 
                     }
+                );
+
+                nenhumResultado.style.display =
+                    (
+                        encontrados === 0
+                        &&
+                        alunos.length > 0
+                    )
+                    ? "flex"
+                    : "none";
+
+            }
+        );
+
+
+        function somenteNumeros(valor) {
+
+            return String(valor)
+                .replace(/\D/g, "");
+
+        }
+
+
+        function formatarCpf(valor) {
+
+            let numeros =
+                somenteNumeros(valor)
+                    .slice(0, 11);
+
+            numeros = numeros.replace(
+                /(\d{3})(\d)/,
+                "$1.$2"
+            );
+
+            numeros = numeros.replace(
+                /(\d{3})(\d)/,
+                "$1.$2"
+            );
+
+            numeros = numeros.replace(
+                /(\d{3})(\d{1,2})$/,
+                "$1-$2"
+            );
+
+            return numeros;
+
+        }
+
+
+        function validarCpfJS(cpf) {
+
+            cpf = somenteNumeros(cpf);
+
+            if (cpf.length !== 11) {
+                return false;
+            }
+
+            if (/^(\d)\1{10}$/.test(cpf)) {
+                return false;
+            }
+
+            let soma = 0;
+
+            for (
+                let indice = 0;
+                indice < 9;
+                indice++
+            ) {
+
+                soma +=
+                    Number(cpf[indice])
+                    *
+                    (10 - indice);
+
+            }
+
+            let primeiro =
+                (soma * 10) % 11;
+
+            if (primeiro === 10) {
+                primeiro = 0;
+            }
+
+            if (
+                primeiro
+                !== Number(cpf[9])
+            ) {
+                return false;
+            }
+
+            soma = 0;
+
+            for (
+                let indice = 0;
+                indice < 10;
+                indice++
+            ) {
+
+                soma +=
+                    Number(cpf[indice])
+                    *
+                    (11 - indice);
+
+            }
+
+            let segundo =
+                (soma * 10) % 11;
+
+            if (segundo === 10) {
+                segundo = 0;
+            }
+
+            return (
+                segundo
+                === Number(cpf[10])
+            );
+
+        }
+
+
+        const campoCpf =
+            document.getElementById(
+                "editarCpf"
+            );
+
+        const erroCpf =
+            document.getElementById(
+                "erroCpf"
+            );
+
+
+        campoCpf.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    formatarCpf(
+                        this.value
+                    );
+
+                erroCpf.classList.remove(
+                    "ativo"
+                );
+
+            }
+        );
+
+
+        function abrirDados(botao) {
+
+            document.getElementById(
+                "nomeModalDados"
+            ).textContent =
+                botao.dataset.nome;
+
+            document.getElementById(
+                "verNome"
+            ).textContent =
+                botao.dataset.nome;
+
+            document.getElementById(
+                "verMatricula"
+            ).textContent =
+                botao.dataset.matricula;
+
+            document.getElementById(
+                "verTurma"
+            ).textContent =
+                botao.dataset.turma;
+
+            document.getElementById(
+                "verCpf"
+            ).textContent =
+                botao.dataset.cpf;
+
+            document.getElementById(
+                "verNascimento"
+            ).textContent =
+                botao.dataset.nascimento;
+
+            document.getElementById(
+                "verEmail"
+            ).textContent =
+                botao.dataset.email;
+
+            document.getElementById(
+                "verStatus"
+            ).textContent =
+                botao.dataset.status;
+
+            document.getElementById(
+                "modalDados"
+            ).classList.add(
+                "ativo"
+            );
+
+        }
+
+
+        function fecharDados() {
+
+            document.getElementById(
+                "modalDados"
+            ).classList.remove(
+                "ativo"
+            );
+
+        }
+
+
+        function abrirEditar(botao) {
+
+            const form =
+                document.getElementById(
+                    "formEditarAluno"
+                );
+
+            form.action =
+                "/editar-aluno/"
+                + botao.dataset.id;
+
+
+            document.getElementById(
+                "editarNome"
+            ).value =
+                botao.dataset.nome || "";
+
+
+            document.getElementById(
+                "editarMatricula"
+            ).value =
+                botao.dataset.matricula || "";
+
+
+            document.getElementById(
+                "editarCpf"
+            ).value =
+                formatarCpf(
+                    botao.dataset.cpf || ""
+                );
+
+
+            document.getElementById(
+                "editarEmail"
+            ).value =
+                botao.dataset.email || "";
+
+
+            let nascimento =
+                botao.dataset.nascimento
+                || "";
+
+            nascimento =
+                nascimento.split(" ")[0];
+
+            document.getElementById(
+                "editarNascimento"
+            ).value =
+                nascimento;
+
+
+            document.getElementById(
+                "editarTurma"
+            ).value =
+                botao.dataset.turma
+                || "3º MKT A";
+
+
+            erroCpf.classList.remove(
+                "ativo"
+            );
+
+
+            document.getElementById(
+                "modalEditar"
+            ).classList.add(
+                "ativo"
+            );
+
+        }
+
+
+        function fecharEditar() {
+
+            document.getElementById(
+                "modalEditar"
+            ).classList.remove(
+                "ativo"
+            );
+
+        }
+
+
+        document.getElementById(
+            "formEditarAluno"
+        ).addEventListener(
+            "submit",
+            function (event) {
+
+                if (
+                    !validarCpfJS(
+                        campoCpf.value
+                    )
+                ) {
+
+                    event.preventDefault();
+
+                    erroCpf.classList.add(
+                        "ativo"
+                    );
+
+                    campoCpf.focus();
+
+                }
+
+            }
+        );
+
+
+        document
+            .querySelectorAll(
+                ".modal-fundo"
+            )
+            .forEach(
+                function (modal) {
+
+                    modal.addEventListener(
+                        "click",
+                        function (event) {
+
+                            if (
+                                event.target
+                                === modal
+                            ) {
+
+                                modal.classList.remove(
+                                    "ativo"
+                                );
+
+                            }
+
+                        }
+                    );
 
                 }
             );
 
 
-            if (
-                encontrados === 0 &&
-                alunos.length > 0
-            ) {
+        document.addEventListener(
+            "keydown",
+            function (event) {
 
-                nenhumResultado.style.display =
-                    "flex";
+                if (
+                    event.key
+                    === "Escape"
+                ) {
 
-            } else {
+                    fecharDados();
+                    fecharEditar();
 
-                nenhumResultado.style.display =
-                    "none";
+                }
 
             }
+        );
 
-        }
-    );
+        /* ==========================================
+           MENSAGENS TEMPORÁRIAS
+        ========================================== */
 
-</script>
+        document
+            .querySelectorAll(
+                ".mensagem-flash"
+            )
+            .forEach(
+                function (mensagem) {
+
+                    setTimeout(
+                        function () {
+
+                            mensagem.classList.add(
+                                "sumindo"
+                            );
+
+                            setTimeout(
+                                function () {
+
+                                    mensagem.remove();
+
+                                },
+                                450
+                            );
+
+                        },
+                        3000
+                    );
+
+                }
+            );
+
+
+    </script>
 
 
 </body>
