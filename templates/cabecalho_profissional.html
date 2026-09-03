@@ -327,7 +327,7 @@
 
     display: grid;
 
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 
@@ -715,31 +715,6 @@
 
                 <span>
                     Turmas e alunos
-                </span>
-
-            </a>
-
-
-
-            <!-- CONSULTAR -->
-
-            <a
-                href="{{ url_for('consultar') }}"
-                class="
-                    edoc-menu-item
-                    {% if request.endpoint in [
-                        'consultar',
-                        'fichas_em_andamento'
-                    ] %}
-                        edoc-menu-ativo
-                    {% endif %}
-                "
-            >
-
-                <i class="fa-solid fa-magnifying-glass"></i>
-
-                <span>
-                    Consultar documentos
                 </span>
 
             </a>

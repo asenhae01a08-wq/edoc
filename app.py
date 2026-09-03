@@ -1,7 +1,9 @@
 import os
 import smtplib
+from datetime import date
 
 from email.message import EmailMessage
+from html import escape
 
 from dotenv import load_dotenv
 
@@ -1248,6 +1250,27 @@ def iniciar_analise_segunda_via(id_solicitacao):
 
     try:
 
+        # Busca o aluno antes de alterar a solicitação.
+        cursor.execute(
+            """
+            SELECT
+                s.id,
+                s.aluno_id,
+                a.nome,
+                a.email
+            FROM solicitacoes_segunda_via AS s
+            INNER JOIN alunos AS a
+                ON a.id = s.aluno_id
+            WHERE s.id = %s
+            LIMIT 1
+            """,
+            (id_solicitacao,)
+        )
+
+        dados_solicitacao = (
+            cursor.fetchone()
+        )
+
         cursor.execute(
             """
             UPDATE solicitacoes_segunda_via
@@ -1258,9 +1281,47 @@ def iniciar_analise_segunda_via(id_solicitacao):
             (id_solicitacao,)
         )
 
+        alterou_status = (
+            cursor.rowcount > 0
+        )
+
         conexao.commit()
 
-        if cursor.rowcount > 0:
+        if alterou_status:
+
+            aluno_notificacao = {
+                "id": (
+                    dados_solicitacao.get("aluno_id")
+                    if dados_solicitacao
+                    else None
+                ),
+                "nome": (
+                    dados_solicitacao.get("nome")
+                    if dados_solicitacao
+                    else "Estudante"
+                ),
+                "email": (
+                    dados_solicitacao.get("email")
+                    if dados_solicitacao
+                    else ""
+                ),
+            }
+
+            tentar_notificar_aluno_por_email(
+                aluno=aluno_notificacao,
+                assunto="Sua solicitação de 2ª via está em análise",
+                titulo="2ª via em análise",
+                mensagem_principal=(
+                    "Sua solicitação de 2ª via está sendo analisada."
+                ),
+                descricao=(
+                    "A secretaria iniciou a análise da sua solicitação. "
+                    "Você pode acompanhar as próximas atualizações "
+                    "pela área Meus documentos do eDOC."
+                ),
+                texto_botao="Acompanhar solicitação",
+                cor_destaque="#d38b12",
+            )
 
             flash(
                 "Solicitação colocada em análise."
@@ -1325,6 +1386,27 @@ def concluir_segunda_via(id_solicitacao):
 
     try:
 
+        # Busca o aluno antes de concluir a solicitação.
+        cursor.execute(
+            """
+            SELECT
+                s.id,
+                s.aluno_id,
+                a.nome,
+                a.email
+            FROM solicitacoes_segunda_via AS s
+            INNER JOIN alunos AS a
+                ON a.id = s.aluno_id
+            WHERE s.id = %s
+            LIMIT 1
+            """,
+            (id_solicitacao,)
+        )
+
+        dados_solicitacao = (
+            cursor.fetchone()
+        )
+
         cursor.execute(
             """
             UPDATE solicitacoes_segunda_via
@@ -1335,9 +1417,46 @@ def concluir_segunda_via(id_solicitacao):
             (id_solicitacao,)
         )
 
+        alterou_status = (
+            cursor.rowcount > 0
+        )
+
         conexao.commit()
 
-        if cursor.rowcount > 0:
+        if alterou_status:
+
+            aluno_notificacao = {
+                "id": (
+                    dados_solicitacao.get("aluno_id")
+                    if dados_solicitacao
+                    else None
+                ),
+                "nome": (
+                    dados_solicitacao.get("nome")
+                    if dados_solicitacao
+                    else "Estudante"
+                ),
+                "email": (
+                    dados_solicitacao.get("email")
+                    if dados_solicitacao
+                    else ""
+                ),
+            }
+
+            tentar_notificar_aluno_por_email(
+                aluno=aluno_notificacao,
+                assunto="Sua solicitação de 2ª via foi concluída",
+                titulo="2ª via concluída",
+                mensagem_principal=(
+                    "Sua solicitação de 2ª via foi concluída."
+                ),
+                descricao=(
+                    "Acesse o eDOC para consultar o status final "
+                    "e acompanhar as informações do documento."
+                ),
+                texto_botao="Ver no eDOC",
+                cor_destaque="#1d8a68",
+            )
 
             flash(
                 "Solicitação concluída com sucesso."
@@ -1436,6 +1555,320 @@ def fichas_em_andamento():
         fichas=fichas
     )
 
+
+# ==========================================================
+# EXCLUIR FICHA 19
+# Mantém o cadastro do aluno
+# ==========================================================
+
+@app.route(
+    "/excluir-ficha19/<int:aluno_id>",
+    methods=["POST"]
+)
+@login_required_profissional
+def excluir_ficha19(aluno_id):
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("fichas_em_andamento")
+        )
+
+    cursor = conexao.cursor(
+        dictionary=True
+    )
+
+    aluno = None
+
+    try:
+
+        # ==================================================
+        # CONFERE SE O ALUNO EXISTE
+        # ==================================================
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                nome,
+                matricula
+            FROM alunos
+            WHERE id = %s
+            LIMIT 1
+            """,
+            (aluno_id,)
+        )
+
+        aluno = cursor.fetchone()
+
+        if aluno is None:
+
+            flash(
+                "Aluno não encontrado.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("fichas_em_andamento")
+            )
+
+        # ==================================================
+        # BUSCA OS HISTÓRICOS DA FICHA
+        # ==================================================
+
+        cursor.execute(
+            """
+            SELECT id
+            FROM historico_escolar_geral
+            WHERE aluno_id = %s
+            """,
+            (aluno_id,)
+        )
+
+        historicos = cursor.fetchall() or []
+
+        # ==================================================
+        # REMOVE DADOS ANUAIS LIGADOS AO HISTÓRICO
+        # ==================================================
+
+        for historico in historicos:
+
+            historico_id = historico["id"]
+
+            cursor.execute(
+                """
+                DELETE FROM historico_escolar_anual_base_comum
+                WHERE historico_geral_id = %s
+                """,
+                (historico_id,)
+            )
+
+            cursor.execute(
+                """
+                DELETE FROM historico_escolar_anual_itinerario_formativo
+                WHERE historico_geral_id = %s
+                """,
+                (historico_id,)
+            )
+
+        # ==================================================
+        # GUARDA AS DISCIPLINAS DA BASE COMUM
+        # ==================================================
+
+        cursor.execute(
+            """
+            SELECT disciplina_id
+            FROM aluno_disciplina_base_comum
+            WHERE aluno_id = %s
+            """,
+            (aluno_id,)
+        )
+
+        ids_base = [
+            linha["disciplina_id"]
+            for linha in (cursor.fetchall() or [])
+        ]
+
+        # ==================================================
+        # REMOVE OS VÍNCULOS DA BASE COMUM
+        # ==================================================
+
+        cursor.execute(
+            """
+            DELETE FROM aluno_disciplina_base_comum
+            WHERE aluno_id = %s
+            """,
+            (aluno_id,)
+        )
+
+        # ==================================================
+        # REMOVE DISCIPLINAS ÓRFÃS DA BASE COMUM
+        # ==================================================
+
+        for disciplina_id in ids_base:
+
+            cursor.execute(
+                """
+                SELECT COUNT(*) AS total
+                FROM aluno_disciplina_base_comum
+                WHERE disciplina_id = %s
+                """,
+                (disciplina_id,)
+            )
+
+            resultado = cursor.fetchone()
+
+            if (
+                resultado
+                and resultado["total"] == 0
+            ):
+
+                cursor.execute(
+                    """
+                    DELETE FROM disciplinas_anuais_base_comum
+                    WHERE id = %s
+                    """,
+                    (disciplina_id,)
+                )
+
+        # ==================================================
+        # GUARDA AS DISCIPLINAS DO ITINERÁRIO
+        # ==================================================
+
+        cursor.execute(
+            """
+            SELECT disciplina_id
+            FROM aluno_disciplina_itinerario
+            WHERE aluno_id = %s
+            """,
+            (aluno_id,)
+        )
+
+        ids_itinerario = [
+            linha["disciplina_id"]
+            for linha in (cursor.fetchall() or [])
+        ]
+
+        # ==================================================
+        # REMOVE OS VÍNCULOS DO ITINERÁRIO
+        # ==================================================
+
+        cursor.execute(
+            """
+            DELETE FROM aluno_disciplina_itinerario
+            WHERE aluno_id = %s
+            """,
+            (aluno_id,)
+        )
+
+        # ==================================================
+        # REMOVE DISCIPLINAS ÓRFÃS DO ITINERÁRIO
+        # ==================================================
+
+        for disciplina_id in ids_itinerario:
+
+            cursor.execute(
+                """
+                SELECT COUNT(*) AS total
+                FROM aluno_disciplina_itinerario
+                WHERE disciplina_id = %s
+                """,
+                (disciplina_id,)
+            )
+
+            resultado = cursor.fetchone()
+
+            if (
+                resultado
+                and resultado["total"] == 0
+            ):
+
+                cursor.execute(
+                    """
+                    DELETE FROM disciplinas_anuais_itinerario_formativo
+                    WHERE id = %s
+                    """,
+                    (disciplina_id,)
+                )
+
+        # ==================================================
+        # REMOVE O HISTÓRICO GERAL
+        # ==================================================
+
+        cursor.execute(
+            """
+            DELETE FROM historico_escolar_geral
+            WHERE aluno_id = %s
+            """,
+            (aluno_id,)
+        )
+
+        # ==================================================
+        # RESETA O STATUS DA FICHA
+        #
+        # O cadastro do estudante continua existindo.
+        # ==================================================
+
+        cursor.execute(
+            """
+            UPDATE alunos
+            SET status_ficha19 = 'Em fabricação'
+            WHERE id = %s
+            """,
+            (aluno_id,)
+        )
+
+        conexao.commit()
+
+        # ==================================================
+        # REMOVE O PDF GERADO, CASO EXISTA
+        # ==================================================
+
+        matricula = str(
+            aluno.get("matricula")
+            or aluno_id
+        ).strip()
+
+        nome_arquivo = secure_filename(
+            f"ficha19_{matricula}.pdf"
+        )
+
+        caminho_pdf = os.path.join(
+            app.config["PASTA_PDFS_GERADOS"],
+            nome_arquivo
+        )
+
+        if os.path.exists(caminho_pdf):
+
+            try:
+
+                os.remove(caminho_pdf)
+
+            except Exception as erro_pdf:
+
+                app.logger.warning(
+                    "A Ficha 19 foi removida do banco, "
+                    "mas o PDF não pôde ser excluído: %s",
+                    erro_pdf
+                )
+
+        flash(
+            f"Ficha 19 de {aluno['nome']} excluída com sucesso. "
+            f"O cadastro do estudante foi mantido.",
+            "sucesso"
+        )
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao excluir Ficha 19 do aluno %s",
+            aluno_id
+        )
+
+        flash(
+            f"Não foi possível excluir a Ficha 19: {erro}",
+            "erro"
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    return redirect(
+        url_for("fichas_em_andamento")
+    )
+
+
 # ==========================================================
 # GERAR FICHAS
 # ==========================================================
@@ -1449,69 +1882,351 @@ def gerar_fichas():
     )
 
 
+
 # ==========================================================
-# CONSULTAR DOCUMENTOS
+# CONSULTAR DOCUMENTOS - COMPATIBILIDADE TEMPORÁRIA
+# Enquanto o cabeçalho antigo ainda possuir url_for("consultar"),
+# esta rota apenas redireciona para "Turmas e alunos".
+# Depois de corrigir cabecalho_profissional.html, ela pode ser removida.
 # ==========================================================
 
-@app.route("/consultar_documentos", methods=["GET"])
+@app.route("/consultar_documentos")
 @login_required_profissional
 def consultar():
+
+    return redirect(
+        url_for("turmas_alunos")
+    )
+
+
+# ==========================================================
+# TURMAS E ALUNOS
+# ==========================================================
+
+@app.route(
+    "/turmas_alunos",
+    methods=["GET"]
+)
+@login_required_profissional
+def turmas_alunos():
+
+    # Mantém o termo na URL após uma edição feita
+    # a partir da pesquisa ao vivo.
+    termo = request.args.get(
+        "q",
+        ""
+    ).strip()
+
+    return render_template(
+        "turmas_alunos.html",
+        termo=termo
+    )
+
+
+# ==========================================================
+# PESQUISA AO VIVO DE ESTUDANTES
+# ==========================================================
+
+@app.route(
+    "/api/pesquisar-alunos",
+    methods=["GET"]
+)
+@login_required_profissional
+def pesquisar_alunos_live():
 
     termo = request.args.get(
         "q",
         ""
     ).strip()
 
-    alunos = []
+    # Campo vazio: não retorna alunos.
+    if not termo:
 
-    pesquisou = False
-
-
-    if termo:
-
-        pesquisou = True
-
-        alunos = models.buscar_alunos_por_pesquisa(
-            termo
+        return jsonify(
+            {
+                "alunos": [],
+                "quantidade": 0
+            }
         )
 
 
-    return render_template(
-        "consultar.html",
-        termo=termo,
-        alunos=alunos,
-        pesquisou=pesquisou
-    )
+    try:
 
-# ==========================================================
-# TURMAS E ALUNOS
-# ==========================================================
+        resultados = (
+            models.buscar_alunos_por_pesquisa(
+                termo
+            )
+            or []
+        )
 
-@app.route("/turmas_alunos")
-@login_required_profissional
-def turmas_alunos():
 
-    return render_template(
-        "turmas_alunos.html"
-    )
+        alunos = []
+
+
+        for resultado in resultados:
+
+            aluno_id = resultado.get(
+                "id"
+            )
+
+
+            if not aluno_id:
+
+                continue
+
+
+            # Busca o cadastro completo para que os botões
+            # Ver dados e Editar funcionem na própria pesquisa.
+            try:
+
+                aluno = (
+                    models.buscar_aluno_por_id(
+                        aluno_id
+                    )
+                    or resultado
+                )
+
+            except Exception:
+
+                aluno = resultado
+
+
+            # Verifica se já existe Ficha 19 para mudar
+            # o texto entre "Gerar Ficha" e "Consultar Ficha".
+            possui_ficha = bool(
+                aluno.get(
+                    "possui_ficha",
+                    False
+                )
+            )
+
+
+            if not possui_ficha:
+
+                try:
+
+                    dados_ficha = (
+                        models.buscar_dados_ficha_por_aluno(
+                            aluno_id
+                        )
+                    )
+
+
+                    possui_ficha = bool(
+                        dados_ficha
+                        and dados_ficha.get(
+                            "historico"
+                        )
+                    )
+
+                except Exception:
+
+                    possui_ficha = False
+
+
+            data_nascimento = aluno.get(
+                "data_nascimento"
+            )
+
+
+            if data_nascimento is None:
+
+                data_nascimento = ""
+
+            else:
+
+                data_nascimento = str(
+                    data_nascimento
+                )
+
+
+            alunos.append(
+                {
+                    "id": aluno_id,
+                    "nome": aluno.get("nome") or "",
+                    "matricula": aluno.get("matricula") or "",
+                    "turma": aluno.get("id_turma") or "",
+                    "email": aluno.get("email") or "",
+                    "cpf": aluno.get("cpf") or "",
+                    "data_nascimento": data_nascimento,
+                    "status_ficha19": (
+                        aluno.get("status_ficha19")
+                        or "Não informado"
+                    ),
+                    "possui_ficha": possui_ficha,
+                }
+            )
+
+
+        return jsonify(
+            {
+                "alunos": alunos,
+                "quantidade": len(alunos)
+            }
+        )
+
+
+    except Exception:
+
+        app.logger.exception(
+            "Erro na pesquisa ao vivo de estudantes."
+        )
+
+
+        return jsonify(
+            {
+                "alunos": [],
+                "quantidade": 0,
+                "erro": (
+                    "Não foi possível realizar "
+                    "a pesquisa."
+                )
+            }
+        ), 500
 
 # ==========================================================
 # TURMA TDS A
 # ==========================================================
 
+TURMAS_EDOC = (
+    "3º TDS A",
+    "3º TDS B",
+    "3º MKT A",
+    "3º MKT B",
+)
+
+
+def validar_cpf(cpf):
+    """
+    Valida CPF pelo cálculo oficial dos dois dígitos verificadores.
+    Também bloqueia sequências repetidas como 00000000000 e 88888888888.
+    """
+
+    cpf = "".join(
+        caractere
+        for caractere in str(cpf)
+        if caractere.isdigit()
+    )
+
+    if len(cpf) != 11:
+        return False
+
+    if len(set(cpf)) == 1:
+        return False
+
+    soma = sum(
+        int(cpf[indice]) * (10 - indice)
+        for indice in range(9)
+    )
+
+    primeiro = (soma * 10) % 11
+
+    if primeiro == 10:
+        primeiro = 0
+
+    if primeiro != int(cpf[9]):
+        return False
+
+    soma = sum(
+        int(cpf[indice]) * (11 - indice)
+        for indice in range(10)
+    )
+
+    segundo = (soma * 10) % 11
+
+    if segundo == 10:
+        segundo = 0
+
+    if segundo != int(cpf[10]):
+        return False
+
+    return True
+
+
+def rota_da_turma(turma):
+    """
+    Retorna o endpoint Flask correspondente à turma.
+    """
+
+    mapa = {
+        "3º TDS A": "turma_3tdsa",
+        "3º TDS B": "turma_3tdsb",
+        "3º MKT A": "turma_3mkta",
+        "3º MKT B": "turma_3mktb",
+    }
+
+    return mapa.get(
+        turma,
+        "turmas_alunos"
+    )
+
+
+def carregar_alunos_turma(turma):
+    """
+    Busca os alunos da turma e completa os dados necessários
+    para os botões Ver dados, Editar cadastro e Consultar Ficha.
+    """
+
+    alunos_resumidos = (
+        models.buscar_alunos_por_turma(
+            turma
+        )
+        or []
+    )
+
+    alunos = []
+
+    for aluno_resumido in alunos_resumidos:
+
+        aluno_id = aluno_resumido.get("id")
+
+        if not aluno_id:
+            continue
+
+        try:
+            aluno = (
+                models.buscar_aluno_por_id(
+                    aluno_id
+                )
+                or aluno_resumido
+            )
+
+        except Exception:
+            aluno = aluno_resumido
+
+        possui_ficha = False
+
+        try:
+            dados_ficha = (
+                models.buscar_dados_ficha_por_aluno(
+                    aluno_id
+                )
+            )
+
+            possui_ficha = bool(
+                dados_ficha
+                and dados_ficha.get("historico")
+            )
+
+        except Exception:
+            possui_ficha = False
+
+        aluno["possui_ficha"] = possui_ficha
+
+        alunos.append(aluno)
+
+    return alunos
+
+
 @app.route("/turma_TDSA")
 @login_required_profissional
 def turma_3tdsa():
 
-    alunos = (
-        models.buscar_alunos_por_turma(
-            "3º TDS A"
-        )
-    )
-
     return render_template(
         "turma_TDSA.html",
-        alunos=alunos
+        alunos=carregar_alunos_turma(
+            "3º TDS A"
+        )
     )
 
 
@@ -1523,15 +2238,11 @@ def turma_3tdsa():
 @login_required_profissional
 def turma_3tdsb():
 
-    alunos = (
-        models.buscar_alunos_por_turma(
-            "3º TDS B"
-        )
-    )
-
     return render_template(
         "turma_TDSB.html",
-        alunos=alunos
+        alunos=carregar_alunos_turma(
+            "3º TDS B"
+        )
     )
 
 
@@ -1543,15 +2254,11 @@ def turma_3tdsb():
 @login_required_profissional
 def turma_3mkta():
 
-    alunos = (
-        models.buscar_alunos_por_turma(
-            "3º MKT A"
-        )
-    )
-
     return render_template(
         "turma_MKTA.html",
-        alunos=alunos
+        alunos=carregar_alunos_turma(
+            "3º MKT A"
+        )
     )
 
 
@@ -1563,15 +2270,394 @@ def turma_3mkta():
 @login_required_profissional
 def turma_3mktb():
 
-    alunos = (
-        models.buscar_alunos_por_turma(
+    return render_template(
+        "turma_MKTB.html",
+        alunos=carregar_alunos_turma(
             "3º MKT B"
         )
     )
 
-    return render_template(
-        "turma_MKTB.html",
-        alunos=alunos
+
+# ==========================================================
+# EDITAR CADASTRO DO ALUNO
+# ==========================================================
+
+@app.route(
+    "/editar-aluno/<int:aluno_id>",
+    methods=["POST"]
+)
+@login_required_profissional
+def editar_aluno(aluno_id):
+
+    nome = request.form.get(
+        "nome",
+        ""
+    ).strip()
+
+    cpf = request.form.get(
+        "cpf",
+        ""
+    ).strip()
+
+    email = request.form.get(
+        "email",
+        ""
+    ).strip()
+
+    data_nascimento = request.form.get(
+        "data_nascimento",
+        ""
+    ).strip()
+
+    turma = request.form.get(
+        "id_turma",
+        ""
+    ).strip()
+
+    turma_origem = request.form.get(
+        "turma_origem",
+        ""
+    ).strip()
+
+    retorno = request.form.get(
+        "retorno",
+        ""
+    ).strip()
+
+    termo_busca = request.form.get(
+        "termo_busca",
+        ""
+    ).strip()
+
+    endpoint_voltar = rota_da_turma(
+        turma_origem
+    )
+
+    def voltar_para_origem():
+        """
+        Se a edição foi aberta pela busca em Turmas e alunos,
+        volta para a mesma pesquisa. Caso contrário, volta
+        para a tela da turma de origem.
+        """
+
+        if retorno == "turmas_alunos":
+
+            return redirect(
+                url_for(
+                    "turmas_alunos",
+                    q=termo_busca
+                )
+            )
+
+        return redirect(
+            url_for(
+                endpoint_voltar
+            )
+        )
+
+    # ------------------------------------------------------
+    # CAMPOS OBRIGATÓRIOS
+    # ------------------------------------------------------
+
+    if not all(
+        [
+            nome,
+            cpf,
+            email,
+            data_nascimento,
+            turma,
+        ]
+    ):
+
+        flash(
+            "Preencha todos os campos do cadastro.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    # ------------------------------------------------------
+    # NOME
+    # ------------------------------------------------------
+
+    if len(nome) < 3:
+
+        flash(
+            "Informe o nome completo do estudante.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    # ------------------------------------------------------
+    # CPF
+    # ------------------------------------------------------
+
+    if not validar_cpf(cpf):
+
+        flash(
+            "CPF inválido. Confira os números informados.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    cpf = "".join(
+        caractere
+        for caractere in cpf
+        if caractere.isdigit()
+    )
+
+    # ------------------------------------------------------
+    # E-MAIL
+    # ------------------------------------------------------
+
+    if (
+        "@" not in email
+        or "." not in email.split("@")[-1]
+    ):
+
+        flash(
+            "Informe um e-mail válido.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    # ------------------------------------------------------
+    # DATA DE NASCIMENTO
+    # ------------------------------------------------------
+
+    try:
+        nascimento = date.fromisoformat(
+            data_nascimento
+        )
+
+    except ValueError:
+
+        flash(
+            "Data de nascimento inválida.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    if nascimento > date.today():
+
+        flash(
+            "A data de nascimento não pode estar no futuro.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    # ------------------------------------------------------
+    # TURMA
+    # ------------------------------------------------------
+
+    if turma not in TURMAS_EDOC:
+
+        flash(
+            "Turma inválida.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    cursor = conexao.cursor(
+        dictionary=True
+    )
+
+    try:
+
+        # --------------------------------------------------
+        # CONFERE SE O ALUNO EXISTE
+        # --------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                nome,
+                id_turma
+
+            FROM alunos
+
+            WHERE id = %s
+
+            LIMIT 1
+            """,
+            (aluno_id,)
+        )
+
+        aluno_atual = cursor.fetchone()
+
+        if aluno_atual is None:
+
+            flash(
+                "Aluno não encontrado.",
+                "erro"
+            )
+
+            return voltar_para_origem()
+
+        # --------------------------------------------------
+        # CPF NÃO PODE PERTENCER A OUTRO ALUNO
+        # --------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT id
+
+            FROM alunos
+
+            WHERE
+                REPLACE(
+                    REPLACE(
+                        REPLACE(
+                            cpf,
+                            '.',
+                            ''
+                        ),
+                        '-',
+                        ''
+                    ),
+                    ' ',
+                    ''
+                ) = %s
+
+                AND id <> %s
+
+            LIMIT 1
+            """,
+            (
+                cpf,
+                aluno_id,
+            )
+        )
+
+        if cursor.fetchone():
+
+            flash(
+                "Este CPF já está cadastrado para outro aluno.",
+                "erro"
+            )
+
+            return voltar_para_origem()
+
+        # --------------------------------------------------
+        # E-MAIL NÃO PODE PERTENCER A OUTRO ALUNO
+        # --------------------------------------------------
+
+        cursor.execute(
+            """
+            SELECT id
+
+            FROM alunos
+
+            WHERE LOWER(email) = LOWER(%s)
+              AND id <> %s
+
+            LIMIT 1
+            """,
+            (
+                email,
+                aluno_id,
+            )
+        )
+
+        if cursor.fetchone():
+
+            flash(
+                "Este e-mail já está cadastrado para outro aluno.",
+                "erro"
+            )
+
+            return voltar_para_origem()
+
+        # --------------------------------------------------
+        # SALVA AS ALTERAÇÕES
+        # --------------------------------------------------
+
+        cursor.execute(
+            """
+            UPDATE alunos
+
+            SET
+                nome = %s,
+                cpf = %s,
+                email = %s,
+                data_nascimento = %s,
+                id_turma = %s
+
+            WHERE id = %s
+            """,
+            (
+                nome,
+                cpf,
+                email,
+                data_nascimento,
+                turma,
+                aluno_id,
+            )
+        )
+
+        conexao.commit()
+
+        flash(
+            f"Cadastro de {nome} atualizado com sucesso.",
+            "sucesso"
+        )
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao editar o aluno %s",
+            aluno_id
+        )
+
+        flash(
+            "Não foi possível salvar as alterações.",
+            "erro"
+        )
+
+        return voltar_para_origem()
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+    # Quando a edição veio da pesquisa integrada,
+    # volta para a mesma busca.
+    if retorno == "turmas_alunos":
+
+        return redirect(
+            url_for(
+                "turmas_alunos",
+                q=termo_busca
+            )
+        )
+
+    # Nas telas individuais de turma, mantém o comportamento
+    # atual: se a turma foi alterada, abre a nova turma.
+    return redirect(
+        url_for(
+            rota_da_turma(turma)
+        )
     )
 
 
@@ -1613,7 +2699,7 @@ def ficha19():
         )
 
         return redirect(
-            url_for("consultar")
+            url_for("turmas_alunos")
         )
 
     try:
@@ -1637,7 +2723,7 @@ def ficha19():
         )
 
         return redirect(
-            url_for("consultar")
+            url_for("turmas_alunos")
         )
 
     if not dados_ficha:
@@ -1810,6 +2896,28 @@ def importar_pdf_siepe():
         )
 
         # ==========================================
+        # NOTIFICA O ALUNO - EM FABRICAÇÃO
+        # ==========================================
+
+        email_status_enviado = (
+            tentar_notificar_aluno_por_email(
+                aluno=aluno_salvo,
+                assunto="Sua Ficha 19 está em processamento",
+                titulo="Ficha 19 em fabricação",
+                mensagem_principal=(
+                    "Sua Ficha 19 começou a ser processada."
+                ),
+                descricao=(
+                    "A secretaria está analisando e preparando "
+                    "o documento. Você pode acompanhar o status "
+                    "pela área Meus documentos do eDOC."
+                ),
+                texto_botao="Acompanhar no eDOC",
+                cor_destaque="#d38b12",
+            )
+        )
+
+        # ==========================================
         # 5A - RESPOSTA PARA IMPORTAÇÃO EM LOTE
         # ==========================================
 
@@ -1832,6 +2940,7 @@ def importar_pdf_siepe():
                         "ficha19",
                         aluno_id=aluno_id
                     ),
+                    "email_status_enviado": email_status_enviado,
                 }
             )
 
@@ -1914,9 +3023,28 @@ def finalizar_ficha19(id_aluno):
             "Pronta para emissão"
         )
 
+        email_status_enviado = (
+            tentar_notificar_aluno_por_email(
+                aluno=aluno,
+                assunto="Sua Ficha 19 está pronta",
+                titulo="Documento pronto",
+                mensagem_principal=(
+                    "Sua Ficha 19 está pronta para emissão."
+                ),
+                descricao=(
+                    "O processamento foi concluído. "
+                    "Acesse o eDOC para consultar o status "
+                    "e verificar as informações do seu documento."
+                ),
+                texto_botao="Ver no eDOC",
+                cor_destaque="#1d8a68",
+            )
+        )
+
         return jsonify({
             "sucesso": True,
             "status": "Pronta para emissão",
+            "email_status_enviado": email_status_enviado,
             "mensagem": (
                 "Ficha 19 finalizada com sucesso. "
                 "O aluno já pode visualizar que o "
@@ -2094,7 +3222,7 @@ def baixar_pdf_ficha19(id_aluno):
         )
 
         return redirect(
-            url_for("consultar")
+            url_for("turmas_alunos")
         )
 
     matricula = str(
@@ -2205,6 +3333,27 @@ def preenchimento():
             return redirect(
                 url_for("preenchimento")
             )
+
+        # ==================================================
+        # VALIDAÇÃO REAL DO CPF
+        # ==================================================
+
+        if not validar_cpf(cpf):
+
+            flash(
+                "CPF inválido. Informe um CPF verdadeiro.",
+                "error"
+            )
+
+            return redirect(
+                url_for("preenchimento")
+            )
+
+        cpf = "".join(
+            caractere
+            for caractere in cpf
+            if caractere.isdigit()
+        )
 
         (
             sucesso,
@@ -2421,6 +3570,390 @@ Sistema de Gestão de Documentos Escolares
         servidor.send_message(
             mensagem
         )
+
+
+# ==========================================================
+# NOTIFICAÇÕES DE STATUS POR E-MAIL
+# ==========================================================
+
+def obter_link_edoc(endpoint="meus_documentos_aluno"):
+    """
+    Monta o link que será enviado ao aluno.
+
+    Em produção, configure no .env:
+    URL_EDOC=https://seudominio.com
+
+    Durante os testes locais, se URL_EDOC não existir,
+    o Flask utiliza automaticamente o endereço da requisição.
+    """
+
+    url_base = os.getenv(
+        "URL_EDOC",
+        ""
+    ).strip().rstrip("/")
+
+    caminho = url_for(
+        endpoint
+    )
+
+    if url_base:
+        return (
+            f"{url_base}{caminho}"
+        )
+
+    return url_for(
+        endpoint,
+        _external=True
+    )
+
+
+def enviar_email_notificacao_status(
+    email_destino,
+    nome_aluno,
+    assunto,
+    titulo,
+    mensagem_principal,
+    descricao,
+    texto_botao="Acessar meus documentos",
+    cor_destaque="#0c4770",
+):
+    """
+    Envia uma notificação visual do eDOC para o Gmail do aluno.
+
+    Esta função utiliza as mesmas credenciais já configuradas
+    para a recuperação de senha:
+    EMAIL_EDOC
+    SENHA_EMAIL_EDOC
+    """
+
+    email_destino = str(
+        email_destino
+        or ""
+    ).strip()
+
+    if not email_destino:
+        raise ValueError(
+            "O aluno não possui e-mail cadastrado."
+        )
+
+    email_edoc = os.getenv(
+        "EMAIL_EDOC",
+        ""
+    ).strip()
+
+    senha_email_edoc = os.getenv(
+        "SENHA_EMAIL_EDOC",
+        ""
+    ).replace(" ", "").strip()
+
+    if not email_edoc:
+        raise RuntimeError(
+            "EMAIL_EDOC não foi encontrado no arquivo .env."
+        )
+
+    if not senha_email_edoc:
+        raise RuntimeError(
+            "SENHA_EMAIL_EDOC não foi encontrada no arquivo .env."
+        )
+
+    nome_seguro = escape(
+        str(
+            nome_aluno
+            or "Estudante"
+        )
+    )
+
+    titulo_seguro = escape(
+        str(titulo)
+    )
+
+    mensagem_segura = escape(
+        str(mensagem_principal)
+    )
+
+    descricao_segura = escape(
+        str(descricao)
+    )
+
+    texto_botao_seguro = escape(
+        str(texto_botao)
+    )
+
+    link_edoc = obter_link_edoc(
+        "meus_documentos_aluno"
+    )
+
+    mensagem = EmailMessage()
+
+    mensagem["Subject"] = (
+        f"eDOC - {assunto}"
+    )
+
+    mensagem["From"] = (
+        f"eDOC <{email_edoc}>"
+    )
+
+    mensagem["To"] = email_destino
+
+    # ------------------------------------------------------
+    # VERSÃO TEXTO
+    # ------------------------------------------------------
+
+    mensagem.set_content(
+        f"""
+Olá, {nome_aluno}!
+
+{titulo}
+
+{mensagem_principal}
+
+{descricao}
+
+Acesse o eDOC para acompanhar:
+{link_edoc}
+
+eDOC
+Sistema de Gestão de Documentos Escolares
+"""
+    )
+
+    # ------------------------------------------------------
+    # VERSÃO HTML
+    # ------------------------------------------------------
+
+    mensagem.add_alternative(
+        f"""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<body style="
+    margin:0;
+    padding:30px;
+    background:#f1f4f7;
+    font-family:Arial,Helvetica,sans-serif;
+">
+
+    <div style="
+        max-width:580px;
+        margin:0 auto;
+        background:#ffffff;
+        border:1px solid #d8e0e6;
+        border-radius:14px;
+        overflow:hidden;
+        box-shadow:0 8px 24px rgba(12,71,112,0.08);
+    ">
+
+        <div style="
+            background:#0c4770;
+            padding:24px 28px;
+            color:#ffffff;
+        ">
+
+            <div style="
+                font-size:28px;
+                font-weight:700;
+                line-height:1;
+            ">
+                eDOC
+            </div>
+
+            <div style="
+                margin-top:6px;
+                font-size:12px;
+                opacity:0.9;
+            ">
+                Gestão Documental Escolar
+            </div>
+
+        </div>
+
+
+        <div style="
+            padding:30px;
+            color:#26333d;
+        ">
+
+            <p style="
+                margin:0 0 18px;
+                font-size:14px;
+            ">
+                Olá, <strong>{nome_seguro}</strong>!
+            </p>
+
+
+            <div style="
+                margin-bottom:22px;
+                padding:16px 18px;
+                background:#f7fafc;
+                border-left:4px solid {cor_destaque};
+                border-radius:8px;
+            ">
+
+                <div style="
+                    color:{cor_destaque};
+                    font-size:12px;
+                    font-weight:700;
+                    text-transform:uppercase;
+                    letter-spacing:0.4px;
+                ">
+                    Atualização do documento
+                </div>
+
+                <h2 style="
+                    margin:7px 0 0;
+                    color:#17334d;
+                    font-size:20px;
+                ">
+                    {titulo_seguro}
+                </h2>
+
+            </div>
+
+
+            <p style="
+                margin:0 0 10px;
+                font-size:15px;
+                font-weight:700;
+                line-height:1.6;
+                color:#26333d;
+            ">
+                {mensagem_segura}
+            </p>
+
+
+            <p style="
+                margin:0;
+                font-size:13px;
+                line-height:1.7;
+                color:#667580;
+            ">
+                {descricao_segura}
+            </p>
+
+
+            <div style="
+                margin:28px 0 12px;
+                text-align:center;
+            ">
+
+                <a
+                    href="{link_edoc}"
+                    style="
+                        display:inline-block;
+                        background:#0c4770;
+                        color:#ffffff;
+                        padding:13px 22px;
+                        border-radius:8px;
+                        font-size:13px;
+                        font-weight:700;
+                        text-decoration:none;
+                    "
+                >
+                    {texto_botao_seguro}
+                </a>
+
+            </div>
+
+
+            <p style="
+                margin:22px 0 0;
+                font-size:11px;
+                line-height:1.6;
+                color:#8796a1;
+                text-align:center;
+            ">
+                Esta é uma mensagem automática do eDOC.
+                Não é necessário responder este e-mail.
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+""",
+        subtype="html",
+    )
+
+    with smtplib.SMTP_SSL(
+        "smtp.gmail.com",
+        465,
+        timeout=20,
+    ) as servidor:
+
+        servidor.login(
+            email_edoc,
+            senha_email_edoc,
+        )
+
+        servidor.send_message(
+            mensagem
+        )
+
+
+def tentar_notificar_aluno_por_email(
+    aluno,
+    assunto,
+    titulo,
+    mensagem_principal,
+    descricao,
+    texto_botao="Acessar meus documentos",
+    cor_destaque="#0c4770",
+):
+    """
+    O envio do e-mail nunca deve impedir a atualização do status.
+
+    Se o Gmail estiver sem internet ou houver algum problema
+    temporário, o status continua sendo salvo normalmente.
+    """
+
+    if not aluno:
+        return False
+
+    email_destino = str(
+        aluno.get("email")
+        or ""
+    ).strip()
+
+    if not email_destino:
+        app.logger.warning(
+            "Notificação não enviada: aluno %s sem e-mail cadastrado.",
+            aluno.get("id"),
+        )
+
+        return False
+
+    try:
+
+        enviar_email_notificacao_status(
+            email_destino=email_destino,
+            nome_aluno=aluno.get("nome") or "Estudante",
+            assunto=assunto,
+            titulo=titulo,
+            mensagem_principal=mensagem_principal,
+            descricao=descricao,
+            texto_botao=texto_botao,
+            cor_destaque=cor_destaque,
+        )
+
+        app.logger.info(
+            "Notificação eDOC enviada para aluno_id=%s email=%s",
+            aluno.get("id"),
+            email_destino,
+        )
+
+        return True
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Não foi possível enviar a notificação eDOC "
+            "para aluno_id=%s: %s",
+            aluno.get("id"),
+            erro,
+        )
+
+        return False
 
 
 # ==========================================================
@@ -2871,4 +4404,4 @@ def gerarficha():
 # ==========================================================
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

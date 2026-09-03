@@ -1701,3 +1701,45 @@ footer {
 
 
 }
+
+/* ======================================================
+   CORREÇÃO DE ALTURA NO CELULAR
+====================================================== */
+
+html {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+footer {
+    margin-bottom: 0;
+}
+
+@media (max-width: 560px) {
+
+    html,
+    body {
+        min-height: 100dvh;
+        height: auto;
+    }
+
+    .estrutura {
+        height: auto;
+        min-height: 0;
+    }
+
+    footer {
+        min-height: 55px;
+        margin-top: 22px;
+        margin-bottom: 0;
+    }
+}
