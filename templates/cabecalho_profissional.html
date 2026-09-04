@@ -669,26 +669,25 @@
             </a>
 
 
+<!-- SOLICITAÇÕES 2ª VIA -->
 
-            <!-- CADASTRO -->
+<a
+    href="{{ url_for('solicitacoes_segunda_via') }}"
+    class="
+        edoc-menu-item
+        {% if request.endpoint == 'solicitacoes_segunda_via' %}
+            edoc-menu-ativo
+        {% endif %}
+    "
+>
 
-            <a
-                href="{{ url_for('preenchimento') }}"
-                class="
-                    edoc-menu-item
-                    {% if request.endpoint == 'preenchimento' %}
-                        edoc-menu-ativo
-                    {% endif %}
-                "
-            >
+    <i class="fa-solid fa-rotate"></i>
 
-                <i class="fa-solid fa-pen"></i>
+    <span>
+        Solicitações 2ª via
+    </span>
 
-                <span>
-                    Cadastrar estudantes
-                </span>
-
-            </a>
+</a>
 
 
 

@@ -1,5 +1,6 @@
 import os
 import smtplib
+import pandas as pd
 from datetime import date
 
 from email.message import EmailMessage
@@ -2086,6 +2087,317 @@ def pesquisar_alunos_live():
         ), 500
 
 # ==========================================================
+# IMPORTAR TURMA POR PLANILHA
+# ==========================================================
+
+@app.route("/importar-turma", methods=["GET", "POST"])
+@login_required_profissional
+def importar_turma():
+
+    if request.method == "POST":
+
+        arquivo = request.files.get("arquivo")
+
+
+        if not arquivo:
+
+            flash(
+                "Selecione uma planilha.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("importar_turma")
+            )
+
+
+        try:
+
+            df = pd.read_excel(
+                arquivo
+            )
+
+
+            alunos = df.fillna("").to_dict(
+                orient="records"
+            )
+
+
+            # guarda temporariamente na sessão
+            session["alunos_importacao"] = alunos
+
+
+            return render_template(
+                "preview_turma.html",
+                alunos=alunos
+            )
+
+
+        except Exception as erro:
+
+
+            flash(
+                f"Erro ao ler planilha: {erro}",
+                "erro"
+            )
+
+
+            return redirect(
+                url_for("importar_turma")
+            )
+
+
+    return render_template(
+        "importar_turma.html"
+    )
+
+
+
+# ==========================================================
+# CONFIRMAR IMPORTAÇÃO
+# ==========================================================
+# ==========================================================
+# CONFIRMAR IMPORTAÇÃO
+# ==========================================================
+
+@app.route("/confirmar-importacao", methods=["POST"])
+@login_required_profissional
+def confirmar_importacao():
+
+
+    alunos = session.get(
+        "alunos_importacao",
+        []
+    )
+
+
+    print("\n==============================")
+    print("ALUNOS RECEBIDOS:")
+    print(alunos[:1])
+    print("==============================\n")
+
+
+
+    if not alunos:
+
+        flash(
+            "Nenhum aluno encontrado para importar.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("importar_turma")
+        )
+
+
+
+    conexao = conectar_mysql()
+
+
+
+    if conexao is None:
+
+        flash(
+            "Erro ao conectar ao banco.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("importar_turma")
+        )
+
+
+
+    cursor = conexao.cursor()
+
+
+
+    importados = 0
+
+
+
+    try:
+
+
+        for aluno in alunos:
+
+
+
+            # ==========================
+            # BUSCA AUTOMÁTICA DOS CAMPOS
+            # ==========================
+
+
+            nome = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "nome" in chave.lower()
+                ),
+                None
+            )
+
+
+            matricula = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "mat" in chave.lower()
+                ),
+                None
+            )
+
+
+            cpf = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "cpf" in chave.lower()
+                ),
+                ""
+            )
+
+
+            turma = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "turma" in chave.lower()
+                ),
+                ""
+            )
+
+
+
+            print(
+                "IMPORTANDO:",
+                nome,
+                matricula,
+                turma
+            )
+
+
+
+            if not nome or not matricula:
+
+                continue
+
+
+
+            # ==========================
+            # VERIFICA DUPLICIDADE
+            # ==========================
+
+
+            cursor.execute(
+                """
+                SELECT id
+                FROM alunos
+                WHERE matricula = %s
+                """,
+                (
+                    str(matricula),
+                )
+            )
+
+
+            existe = cursor.fetchone()
+
+
+
+            if existe:
+
+                continue
+
+
+
+            # ==========================
+            # INSERE NO BANCO
+            # ==========================
+
+
+            cursor.execute(
+                """
+                INSERT INTO alunos
+                (
+                    nome,
+                    matricula,
+                    cpf,
+                    id_turma
+                )
+
+                VALUES
+                (
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
+                """,
+                (
+                    nome,
+                    str(matricula),
+                    cpf,
+                    turma
+                )
+            )
+
+
+
+            importados += 1
+
+
+
+        conexao.commit()
+
+
+
+        session.pop(
+            "alunos_importacao",
+            None
+        )
+
+
+
+        flash(
+            f"{importados} alunos importados com sucesso!",
+            "sucesso"
+        )
+
+
+
+    except Exception as erro:
+
+
+        conexao.rollback()
+
+
+        print(
+            "ERRO AO IMPORTAR:",
+            erro
+        )
+
+
+        flash(
+            f"Erro ao importar: {erro}",
+            "erro"
+        )
+
+
+
+    finally:
+
+
+        cursor.close()
+
+        conexao.close()
+
+
+
+    return redirect(
+        url_for("turmas_alunos")
+    )
+# ==========================================================
 # TURMA TDS A
 # ==========================================================
 
@@ -2218,7 +2530,6 @@ def carregar_alunos_turma(turma):
 
     return alunos
 
-
 @app.route("/turma_TDSA")
 @login_required_profissional
 def turma_3tdsa():
@@ -2226,7 +2537,7 @@ def turma_3tdsa():
     return render_template(
         "turma_TDSA.html",
         alunos=carregar_alunos_turma(
-            "3º TDS A"
+            "3 TDS A"
         )
     )
 
@@ -2234,7 +2545,6 @@ def turma_3tdsa():
 # ==========================================================
 # TURMA TDS B
 # ==========================================================
-
 @app.route("/turma_TDSB")
 @login_required_profissional
 def turma_3tdsb():
@@ -2242,10 +2552,9 @@ def turma_3tdsb():
     return render_template(
         "turma_TDSB.html",
         alunos=carregar_alunos_turma(
-            "3º TDS B"
+            "3 TDS B"
         )
     )
-
 
 # ==========================================================
 # TURMA MKT A
@@ -2258,7 +2567,7 @@ def turma_3mkta():
     return render_template(
         "turma_MKTA.html",
         alunos=carregar_alunos_turma(
-            "3º MKT A"
+            "3 MKT A"
         )
     )
 
@@ -2266,7 +2575,6 @@ def turma_3mkta():
 # ==========================================================
 # TURMA MKT B
 # ==========================================================
-
 @app.route("/turma_MKTB")
 @login_required_profissional
 def turma_3mktb():
@@ -2274,7 +2582,7 @@ def turma_3mktb():
     return render_template(
         "turma_MKTB.html",
         alunos=carregar_alunos_turma(
-            "3º MKT B"
+            "3 MKT B"
         )
     )
 

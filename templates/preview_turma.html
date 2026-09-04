@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Prévia da turma</title>
+
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f1f4f7;
+}
+
+
+.container{
+
+    width:90%;
+    margin:40px auto;
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:12px;
+
+}
+
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+
+th{
+
+background:#0c4770;
+color:white;
+
+}
+
+
+td,th{
+
+padding:12px;
+border:1px solid #ddd;
+
+}
+
+
+button{
+
+background:#0c4770;
+color:white;
+
+padding:12px 25px;
+
+border:none;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>
+Prévia da importação
+</h1>
+
+
+<p>
+Confira os alunos encontrados antes de salvar.
+</p>
+
+
+<h3>
+Quantidade:
+{{ alunos|length }}
+</h3>
+
+
+
+<table>
+
+
+<thead>
+
+<tr>
+
+{% for coluna in alunos[0].keys() %}
+
+<th>
+{{ coluna }}
+</th>
+
+{% endfor %}
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{% for aluno in alunos %}
+
+
+<tr>
+
+
+{% for valor in aluno.values() %}
+
+
+<td>
+{{ valor }}
+</td>
+
+
+{% endfor %}
+
+
+</tr>
+
+
+{% endfor %}
+
+
+</tbody>
+
+
+</table>
+
+
+<br>
+<form method="POST" action="/confirmar-importacao">
+
+<input 
+type="hidden"
+name="dados"
+value='{{ alunos|tojson|safe }}'
+>
+
+
+<button type="submit">
+Confirmar importação
+</button>
+
+
+</form>
+
+
+</div>
+
+
+</body>
+
+
+</html>

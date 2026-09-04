@@ -1253,6 +1253,70 @@
             margin-top: 0 !important;
         }
 
+    
+        .titulo-com-cadastro {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:12px;
+        }
+
+        .botao-novo-cadastro {
+            width:38px;
+            height:38px;
+            border-radius:50%;
+            border:none;
+            background:#0c4770;
+            color:white;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:16px;
+        }
+
+        .botao-novo-cadastro:hover {
+            background:#073450;
+        }
+
+        .modal-cadastro {
+            display:none;
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.45);
+            align-items:center;
+            justify-content:center;
+            z-index:999999;
+        }
+
+        .modal-cadastro.ativo {
+            display:flex;
+        }
+
+        .card-cadastro {
+            background:white;
+            width:320px;
+            padding:25px;
+            border-radius:14px;
+            text-align:center;
+        }
+
+        .opcao-cadastro {
+            width:100%;
+            padding:12px;
+            margin-top:10px;
+            border-radius:8px;
+            border:1px solid #d8e0e6;
+            background:#f8fbfd;
+            color:#0c4770;
+            cursor:pointer;
+            font-weight:700;
+        }
+
+        .opcao-cadastro:hover {
+            background:#e9f3fa;
+        }
+
     </style>
 
 </head>
@@ -1290,9 +1354,21 @@
              TÍTULO
         =============================================== -->
 
-        <h1>
-            Turmas e alunos
-        </h1>
+        <div class="titulo-com-cadastro">
+
+            <h1>
+                Turmas e alunos
+            </h1>
+
+            <button 
+                class="botao-novo-cadastro"
+                onclick="abrirCadastro()"
+                title="Novo cadastro"
+            >
+                <i class="fa-solid fa-plus"></i>
+            </button>
+
+        </div>
 
 
         <p class="subtitulo">
@@ -1867,7 +1943,38 @@
          JAVASCRIPT
     ====================================================== -->
 
-    <script>
+    
+        <div class="modal-cadastro" id="modalCadastro">
+
+            <div class="card-cadastro">
+
+                <h2>Novo cadastro</h2>
+
+                <button class="opcao-cadastro"
+                    onclick="window.location.href='{{ url_for('preenchimento') }}'">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Cadastrar estudante
+                </button>
+
+               <a 
+    href="{{ url_for('importar_turma') }}"
+    class="opcao-cadastro"
+>
+    <i class="fa-solid fa-file-import"></i>
+    Cadastrar turma
+</a>
+
+                <button class="opcao-cadastro"
+                    onclick="fecharCadastro()">
+                    Cancelar
+                </button>
+
+            </div>
+
+        </div>
+
+
+<script>
 
 
         /* ==========================================
@@ -2830,6 +2937,17 @@
 
     </script>
 
+
+
+<script>
+function abrirCadastro(){
+    document.getElementById("modalCadastro").classList.add("ativo");
+}
+
+function fecharCadastro(){
+    document.getElementById("modalCadastro").classList.remove("ativo");
+}
+</script>
 
 </body>
 

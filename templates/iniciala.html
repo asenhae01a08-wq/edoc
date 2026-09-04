@@ -586,6 +586,52 @@
                 </div>
 
 
+                <!-- EMAIL -->
+
+                <div class="card-dado">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            E-mail
+                        </span>
+
+                        <strong>
+                            {{ aluno["email"] or "Não informado" }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- CPF PROTEGIDO -->
+
+                <div class="card-dado">
+
+                    <div class="card-icon">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+
+                    <div>
+                        <span>
+                            CPF
+                        </span>
+
+                        <strong>
+                            {% if aluno.get("cpf") %}
+                                ***.***.***-{{ aluno["cpf"][-2:] }}
+                            {% else %}
+                                Não informado
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                </div>
+
+
             </section>
 
 
