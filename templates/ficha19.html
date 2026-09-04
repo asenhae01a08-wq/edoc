@@ -181,6 +181,10 @@
             background: #287248;
         }
 
+        .botao-salvar-alteracoes {
+            background: #1d8a68;
+        }
+
         .botao-finalizar {
             background: #0c4770;
         }
@@ -1058,15 +1062,15 @@
                 for="arquivoSiepe"
                 class="rotulo-upload"
             >
-                <i class="fa-solid fa-file-pdf"></i>
-                Selecionar PDF do SIEPE
+                <i class="fa-solid fa-file-excel"></i>
+                Selecionar PDF ou planilha
             </label>
 
             <input
                 type="file"
                 id="arquivoSiepe"
                 name="arquivoSiepe"
-                accept="application/pdf,.pdf"
+                accept="application/pdf,.pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx"
                 required
                 multiple
             >
@@ -1075,7 +1079,7 @@
                 class="nome-arquivo"
                 id="nomeArquivo"
             >
-                Nenhum PDF selecionado
+                Nenhum arquivo selecionado
             </span>
 
             <button
@@ -1083,7 +1087,7 @@
                 class="botao-edoc rotulo-upload"
             >
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
-                Ler PDF e gerar ficha
+                Ler arquivo e gerar ficha
             </button>
 
             <button
@@ -1096,6 +1100,16 @@
             </button>
 
             {% if aluno_id and dados_ficha %}
+                <button
+                    type="button"
+                    class="botao-edoc botao-salvar-alteracoes"
+                    id="botaoSalvarAlteracoes"
+                    data-url="{{ url_for('salvar_alteracoes_ficha19', id_aluno=aluno_id) }}"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Salvar alterações
+                </button>
+
                 <button
                     type="button"
                     class="botao-edoc botao-finalizar {% if ficha_ja_finalizada %}finalizado{% endif %}"
@@ -1116,6 +1130,28 @@
         </form>
 
     </header>
+
+    {% if aluno_id and dados_ficha %}
+        <div
+            style="
+                max-width: 210mm;
+                margin: 0 auto 12px;
+                padding: 10px 13px;
+                border: 1px solid #bdddf0;
+                border-radius: 8px;
+                background: #edf7fd;
+                color: #0c4770;
+                font-size: 12px;
+                line-height: 1.5;
+            "
+        >
+            <i class="fa-solid fa-pen-to-square"></i>
+            <strong>Conferência editável:</strong>
+            se algum dado importado estiver incorreto,
+            altere diretamente os campos da Ficha 19 e clique em
+            <strong>Salvar alterações</strong> antes de finalizar.
+        </div>
+    {% endif %}
 
     {% with mensagens = get_flashed_messages() %}
         {% if mensagens %}
@@ -3035,34 +3071,9 @@
             document.getElementById("nomeArquivo");
 
         /*
-            Esta parte apenas recebe o PDF e mostra o nome.
-
-            A leitura por scanner será conectada posteriormente
-            ao Flask/Python.
+            A seleção/validação de PDF e XLSX é controlada por
+            importacao_lote.js para evitar conflito entre scripts.
         */
-        arquivoSiepe.addEventListener("change", function () {
-            const arquivo = this.files[0];
-
-            if (!arquivo) {
-                nomeArquivo.textContent =
-                    "Nenhum PDF selecionado";
-
-                return;
-            }
-
-            if (arquivo.type !== "application/pdf") {
-                alert("Selecione um arquivo no formato PDF.");
-
-                this.value = "";
-
-                nomeArquivo.textContent =
-                    "Nenhum PDF selecionado";
-
-                return;
-            }
-
-            nomeArquivo.textContent = arquivo.name;
-        });
 
         document
             .getElementById("botaoImprimir")
@@ -3127,6 +3138,9 @@
             }, 4500);
         }
 
+        // Permite que ficha19.js use o mesmo toast da página.
+        window.mostrarToastEdoc = mostrarToast;
+
         if (botaoFinalizar) {
             botaoFinalizar.addEventListener(
                 "click",
@@ -3182,6 +3196,18 @@
                         '<i class="fa-solid fa-spinner fa-spin"></i> Finalizando...';
 
                     try {
+                        // Antes de marcar como pronta para emissão, persistimos
+                        // qualquer correção feita pelo profissional na tela.
+                        if (typeof window.salvarAlteracoesFicha19 === "function") {
+                            confirmarFinalizacao.innerHTML =
+                                '<i class="fa-solid fa-spinner fa-spin"></i> Salvando alterações...';
+
+                            await window.salvarAlteracoesFicha19({ silencioso: true });
+
+                            confirmarFinalizacao.innerHTML =
+                                '<i class="fa-solid fa-spinner fa-spin"></i> Finalizando...';
+                        }
+
                         const resposta = await fetch(
                             url,
                             {

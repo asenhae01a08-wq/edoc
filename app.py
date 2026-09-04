@@ -31,6 +31,7 @@ import models
 from models.conexaoBD import conectar_mysql
 from leitor_pdf import extrair_conteudo_pdf
 from parcer_siepe import extrair_dados_siepe
+from leitor_planilha_siepe import extrair_dados_planilha_siepe
 
 
 # ==========================================================
@@ -2796,37 +2797,57 @@ def importar_pdf_siepe():
         or arquivo.filename == ""
     ):
         return responder_erro(
-            "Selecione um PDF do SIEPE.",
+            "Selecione um arquivo do SIEPE.",
             400
         )
 
-    if not arquivo.filename.lower().endswith(
-        ".pdf"
+    nome_arquivo = (
+        arquivo.filename
+        or ""
+    ).lower()
+
+    if not (
+        nome_arquivo.endswith(".pdf")
+        or nome_arquivo.endswith(".xlsx")
     ):
         return responder_erro(
-            "O arquivo selecionado precisa ser um PDF.",
+            "O arquivo precisa estar no formato PDF ou XLSX.",
             400
         )
 
     try:
 
         # ==========================================
-        # 1 - LÊ O PDF
+        # 1 - IDENTIFICA O TIPO DO ARQUIVO
         # ==========================================
 
-        conteudo = extrair_conteudo_pdf(
-            arquivo
-        )
+        if nome_arquivo.endswith(".xlsx"):
 
-        # ==========================================
-        # 2 - EXTRAI AS INFORMAÇÕES
-        # ==========================================
+            # ======================================
+            # PLANILHA XLSX
+            # ======================================
 
-        dados = extrair_dados_siepe(
-            conteudo["texto"],
-            conteudo["tabelas"],
-            conteudo.get("paginas")
-        )
+            dados = (
+                extrair_dados_planilha_siepe(
+                    arquivo
+                )
+            )
+
+        else:
+
+            # ======================================
+            # PDF DO SIEPE
+            # ======================================
+
+            conteudo = extrair_conteudo_pdf(
+                arquivo
+            )
+
+            dados = extrair_dados_siepe(
+                conteudo["texto"],
+                conteudo["tabelas"],
+                conteudo.get("paginas")
+            )
 
         aluno_pdf = dados.get(
             "aluno",
@@ -2847,7 +2868,7 @@ def importar_pdf_siepe():
 
         if not matricula:
             return responder_erro(
-                "O PDF foi lido, mas a matrícula não foi encontrada.",
+                "O arquivo foi lido, mas a matrícula não foi encontrada.",
                 422
             )
 
@@ -2861,7 +2882,7 @@ def importar_pdf_siepe():
 
         if not aluno_id:
             raise ValueError(
-                "O PDF foi processado, "
+                "O arquivo foi processado, "
                 "mas não foi possível obter "
                 "o ID do aluno salvo."
             )
@@ -2949,7 +2970,7 @@ def importar_pdf_siepe():
         # ==========================================
 
         flash(
-            "PDF importado com sucesso. "
+            "Arquivo importado com sucesso. "
             "A Ficha 19 está em fabricação e o aluno "
             "já pode acompanhar o andamento."
         )
@@ -2980,9 +3001,86 @@ def importar_pdf_siepe():
         )
 
         return responder_erro(
-            f"Erro ao processar o PDF: {erro}",
+            f"Erro ao processar o arquivo: {erro}",
             500
         )
+
+
+# ==========================================================
+# SALVAR ALTERAÇÕES MANUAIS DA FICHA 19
+# ==========================================================
+
+@app.route(
+    "/ficha19/salvar-alteracoes/<int:id_aluno>",
+    methods=["POST"]
+)
+@login_required_profissional
+def salvar_alteracoes_ficha19(id_aluno):
+
+    aluno = models.buscar_aluno_por_id(
+        id_aluno
+    )
+
+    if aluno is None:
+        return jsonify({
+            "sucesso": False,
+            "mensagem": "Aluno não encontrado."
+        }), 404
+
+    dados = request.get_json(
+        silent=True
+    ) or {}
+
+    controles = dados.get(
+        "controles"
+    )
+
+    if not isinstance(controles, list):
+        return jsonify({
+            "sucesso": False,
+            "mensagem": (
+                "Os campos da Ficha 19 não foram "
+                "recebidos corretamente."
+            )
+        }), 400
+
+    try:
+        resultado = models.salvar_edicao_ficha19(
+            id_aluno,
+            controles
+        )
+
+        return jsonify({
+            "sucesso": True,
+            "mensagem": (
+                "Alterações da Ficha 19 salvas "
+                "com sucesso."
+            ),
+            "total_controles": resultado.get(
+                "total_controles",
+                len(controles)
+            )
+        })
+
+    except ValueError as erro:
+        return jsonify({
+            "sucesso": False,
+            "mensagem": str(erro)
+        }), 400
+
+    except Exception as erro:
+        app.logger.exception(
+            "Erro ao salvar alterações da Ficha 19 do aluno %s",
+            id_aluno
+        )
+
+        return jsonify({
+            "sucesso": False,
+            "mensagem": (
+                "Não foi possível salvar as alterações: "
+                f"{erro}"
+            )
+        }), 500
 
 
 # ==========================================================

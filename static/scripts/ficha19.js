@@ -342,7 +342,7 @@
 
                 const registros =
                     porComponente[
-                    normalizar(nomeComponente)
+                        normalizar(nomeComponente)
                     ];
 
                 if (!registros) {
@@ -374,7 +374,8 @@
                             deslocamento +
                             indice * 2;
 
-                        const posCh = posNota + 1;
+                        const posCh =
+                            posNota + 1;
 
                         if (inputs[posNota]) {
                             inputs[posNota].value =
@@ -421,61 +422,88 @@
         }
 
         const linhasRodape =
-            tabela.querySelectorAll("tfoot tr");
+            tabela.querySelectorAll(
+                "tfoot tr"
+            );
 
         if (linhasRodape.length >= 1) {
             const campos =
                 linhasRodape[0]
-                    .querySelectorAll("input");
+                    .querySelectorAll(
+                        "input"
+                    );
 
             resumoBase
                 .slice(0, 3)
-                .forEach(function (item, indice) {
-                    setValor(
-                        campos[indice],
-                        item.carga_horaria_total
-                    );
-                });
+                .forEach(
+                    function (
+                        item,
+                        indice
+                    ) {
+                        setValor(
+                            campos[indice],
+                            item.carga_horaria_total
+                        );
+                    }
+                );
 
             setValor(
                 campos[3],
-                totaisBase.carga_horaria_total
+                totaisBase
+                    .carga_horaria_total
             );
         }
 
         if (linhasRodape.length >= 2) {
             const campos =
                 linhasRodape[1]
-                    .querySelectorAll("input");
+                    .querySelectorAll(
+                        "input"
+                    );
 
             resumoBase
                 .slice(0, 3)
-                .forEach(function (item, indice) {
-                    setValor(
-                        campos[indice],
-                        item.carga_horaria_relogio
-                    );
-                });
+                .forEach(
+                    function (
+                        item,
+                        indice
+                    ) {
+                        setValor(
+                            campos[indice],
+                            item
+                                .carga_horaria_relogio
+                        );
+                    }
+                );
 
             setValor(
                 campos[3],
-                totaisBase.carga_horaria_relogio
+                totaisBase
+                    .carga_horaria_relogio
             );
         }
 
         if (linhasRodape.length >= 3) {
             const campos =
                 linhasRodape[2]
-                    .querySelectorAll("input");
+                    .querySelectorAll(
+                        "input"
+                    );
 
             resumoBase
                 .slice(0, 3)
-                .forEach(function (item, indice) {
-                    setValor(
-                        campos[indice],
-                        item.frequencia_percentual
-                    );
-                });
+                .forEach(
+                    function (
+                        item,
+                        indice
+                    ) {
+                        setValor(
+                            campos[indice],
+                            item
+                                .frequencia_percentual
+                        );
+                    }
+                );
         }
 
         const resultados =
@@ -485,51 +513,65 @@
 
         resumoBase
             .slice(0, 3)
-            .forEach(function (item, indice) {
-                const bloco = resultados[indice];
+            .forEach(
+                function (
+                    item,
+                    indice
+                ) {
+                    const bloco =
+                        resultados[indice];
 
-                if (!bloco) {
-                    return;
-                }
+                    if (!bloco) {
+                        return;
+                    }
 
-                const campos =
-                    bloco.querySelectorAll(
-                        "input, select"
+                    const campos =
+                        bloco.querySelectorAll(
+                            "input, select"
+                        );
+
+                    const cidadeEstado =
+                        String(
+                            item.cidade_estado ||
+                            ""
+                        ).split("/");
+
+                    setValor(
+                        campos[0],
+                        item.estabelecimento
                     );
 
-                const cidadeEstado =
-                    String(
-                        item.cidade_estado || ""
-                    ).split("/");
+                    setValor(
+                        campos[1],
+                        cidadeEstado[0]
+                            ? cidadeEstado[0]
+                                .trim()
+                            : ""
+                    );
 
-                setValor(
-                    campos[0],
-                    item.estabelecimento
-                );
+                    setValor(
+                        campos[2],
+                        cidadeEstado[1]
+                            ? cidadeEstado[1]
+                                .trim()
+                            : ""
+                    );
 
-                setValor(
-                    campos[1],
-                    cidadeEstado[0]
-                        ? cidadeEstado[0].trim()
-                        : ""
-                );
-
-                setValor(
-                    campos[2],
-                    cidadeEstado[1]
-                        ? cidadeEstado[1].trim()
-                        : ""
-                );
-
-                setValor(
-                    campos[3],
-                    item.resultado
-                );
-            });
+                    setValor(
+                        campos[3],
+                        item.resultado
+                    );
+                }
+            );
     }
 
-    function criarLinhaItinerario(item) {
-        const tr = document.createElement("tr");
+    function criarLinhaItinerario(
+        item
+    ) {
+        const tr =
+            document.createElement(
+                "tr"
+            );
 
         const valores = [
             item.tipo,
@@ -537,39 +579,60 @@
             item.ano,
             item.periodo_letivo,
             item.carga_horaria ??
-            item.carga_horaria_horas_aula,
+                item
+                    .carga_horaria_horas_aula,
             item.nota,
             item.frequencia,
             item.resultado_final
         ];
 
         valores.forEach(
-            function (valor, indice) {
+            function (
+                valor,
+                indice
+            ) {
                 const td =
-                    document.createElement("td");
+                    document
+                        .createElement(
+                            "td"
+                        );
 
                 const input =
-                    document.createElement("input");
+                    document
+                        .createElement(
+                            "input"
+                        );
 
                 if (
                     indice === 4 ||
                     indice === 5 ||
                     indice === 6
                 ) {
-                    input.type = "number";
+                    input.type =
+                        "number";
 
-                    if (indice === 5) {
-                        input.step = "0.1";
+                    if (
+                        indice === 5
+                    ) {
+                        input.step =
+                            "0.1";
                     }
 
-                    if (indice === 6) {
-                        input.step = "0.01";
+                    if (
+                        indice === 6
+                    ) {
+                        input.step =
+                            "0.01";
                     }
+
                 } else {
-                    input.type = "text";
+                    input.type =
+                        "text";
                 }
 
-                if (indice === 4) {
+                if (
+                    indice === 4
+                ) {
                     input.className =
                         "ch-itinerario";
                 }
@@ -578,11 +641,17 @@
                     valor !== null &&
                     valor !== undefined
                 ) {
-                    input.value = valor;
+                    input.value =
+                        valor;
                 }
 
-                td.appendChild(input);
-                tr.appendChild(td);
+                td.appendChild(
+                    input
+                );
+
+                tr.appendChild(
+                    td
+                );
             }
         );
 
@@ -638,10 +707,14 @@
 
     function preencherItinerario() {
         const itinerario =
-            Array.isArray(extras.itinerario)
+            Array.isArray(
+                extras.itinerario
+            )
                 ? extras.itinerario
                 : (
-                    Array.isArray(dados.itinerario)
+                    Array.isArray(
+                        dados.itinerario
+                    )
                         ? dados.itinerario
                         : []
                 );
@@ -652,77 +725,115 @@
 
         const grupos = {};
 
-        itinerario.forEach(function (item) {
-            const chave =
-                String(
-                    item.periodo_letivo || ""
-                ).trim();
+        itinerario.forEach(
+            function (item) {
+                const chave =
+                    String(
+                        item
+                            .periodo_letivo ||
+                        ""
+                    ).trim();
 
-            if (!grupos[chave]) {
-                grupos[chave] = [];
+                if (!grupos[chave]) {
+                    grupos[chave] = [];
+                }
+
+                grupos[chave]
+                    .push(item);
             }
-
-            grupos[chave].push(item);
-        });
-
-        const blocos = Array.from(
-            document.querySelectorAll(
-                ".bloco-itinerario"
-            )
         );
 
+        const blocos =
+            Array.from(
+                document
+                    .querySelectorAll(
+                        ".bloco-itinerario"
+                    )
+            );
+
         const atribuicoes = [
-            ["2024.1", blocos[0]],
-            ["2024.2", blocos[1]],
-            [null, blocos[2]],
-            ["2025", blocos[3]]
+            [
+                "2024.1",
+                blocos[0]
+            ],
+            [
+                "2024.2",
+                blocos[1]
+            ],
+            [
+                null,
+                blocos[2]
+            ],
+            [
+                "2025",
+                blocos[3]
+            ]
         ];
 
         atribuicoes.forEach(
-            function (atribuicao) {
-                const periodo = atribuicao[0];
-                const bloco = atribuicao[1];
+            function (
+                atribuicao
+            ) {
+                const periodo =
+                    atribuicao[0];
+
+                const bloco =
+                    atribuicao[1];
 
                 if (!bloco) {
                     return;
                 }
 
                 if (!periodo) {
-                    bloco.style.display = "none";
+                    bloco.style.display =
+                        "none";
+
                     return;
                 }
 
                 const itens =
-                    grupos[periodo] || [];
+                    grupos[periodo] ||
+                    [];
 
                 if (!itens.length) {
-                    bloco.style.display = "none";
+                    bloco.style.display =
+                        "none";
+
                     return;
                 }
 
-                bloco.style.display = "";
+                bloco.style.display =
+                    "";
 
                 preencherCabecalhoBloco(
                     bloco,
-                    metaItinerario["2024"] || {}
+                    metaItinerario[
+                        "2024"
+                    ] || {}
                 );
 
                 const tbody =
-                    bloco.querySelector(
-                        ".tabela-itinerario tbody"
-                    );
+                    bloco
+                        .querySelector(
+                            ".tabela-itinerario tbody"
+                        );
 
                 if (!tbody) {
                     return;
                 }
 
-                tbody.innerHTML = "";
+                tbody.innerHTML =
+                    "";
 
-                itens.forEach(function (item) {
-                    tbody.appendChild(
-                        criarLinhaItinerario(item)
-                    );
-                });
+                itens.forEach(
+                    function (item) {
+                        tbody.appendChild(
+                            criarLinhaItinerario(
+                                item
+                            )
+                        );
+                    }
+                );
             }
         );
 
@@ -732,7 +843,8 @@
             );
 
         if (tabelaAntiga) {
-            tabelaAntiga.style.display = "none";
+            tabelaAntiga.style.display =
+                "none";
         }
 
         const topoHistorico =
@@ -742,19 +854,25 @@
 
         if (topoHistorico) {
             const campos =
-                topoHistorico.querySelectorAll(
-                    ".campo-topo"
-                );
+                topoHistorico
+                    .querySelectorAll(
+                        ".campo-topo"
+                    );
 
             const meta =
-                metaItinerario["2024"] || {};
+                metaItinerario[
+                    "2024"
+                ] || {};
 
             function substituirTexto(
                 elemento,
                 rotulo,
                 valor
             ) {
-                if (!elemento || !valor) {
+                if (
+                    !elemento ||
+                    !valor
+                ) {
                     return;
                 }
 
@@ -795,7 +913,9 @@
 
         const observacoes =
             metaItinerario["2024"]
-                ? metaItinerario["2024"].observacoes
+                ? metaItinerario[
+                    "2024"
+                ].observacoes
                 : null;
 
         setValor(
@@ -838,11 +958,13 @@
 
         if (
             dataConclusao &&
-            resultadoCurso.data_conclusao
+            resultadoCurso
+                .data_conclusao
         ) {
             dataConclusao.value =
                 dataParaInput(
-                    resultadoCurso.data_conclusao
+                    resultadoCurso
+                        .data_conclusao
                 );
         }
 
@@ -850,7 +972,8 @@
             document.getElementById(
                 "resultadoFinal"
             ),
-            resultadoCurso.resultado_final
+            resultadoCurso
+                .resultado_final
         );
 
         const dataEmissao =
@@ -860,11 +983,13 @@
 
         if (
             dataEmissao &&
-            resultadoCurso.data_emissao
+            resultadoCurso
+                .data_emissao
         ) {
             dataEmissao.value =
                 dataParaInput(
-                    resultadoCurso.data_emissao
+                    resultadoCurso
+                        .data_emissao
                 );
         }
 
@@ -872,16 +997,387 @@
             document.querySelector(
                 ".campo-local"
             ),
-            resultadoCurso.cidade_emissao
+            resultadoCurso
+                .cidade_emissao
         );
 
         setValor(
             document.querySelector(
                 ".campo-estado"
             ),
-            resultadoCurso.uf_emissao
+            resultadoCurso
+                .uf_emissao
         );
     }
+
+    // =========================================================
+    // EDIÇÃO MANUAL DA FICHA 19
+    // =========================================================
+
+    function seletorControle(
+        elemento
+    ) {
+        if (elemento.id) {
+            return (
+                "#" +
+                CSS.escape(
+                    elemento.id
+                )
+            );
+        }
+
+        const nome =
+            elemento
+                .getAttribute(
+                    "name"
+                );
+
+        if (nome) {
+            return (
+                '[name="' +
+                CSS.escape(nome) +
+                '"]'
+            );
+        }
+
+        return null;
+    }
+
+    function capturarControlesFicha19() {
+        const controles = [];
+
+        document
+            .querySelectorAll(
+                ".folha input, " +
+                ".folha select, " +
+                ".folha textarea"
+            )
+            .forEach(
+                function (
+                    elemento,
+                    indiceGlobal
+                ) {
+                    controles.push({
+                        seletor:
+                            seletorControle(
+                                elemento
+                            ),
+
+                        indice:
+                            indiceGlobal,
+
+                        tipo:
+                            elemento
+                                .tagName
+                                .toLowerCase(),
+
+                        inputType:
+                            elemento.type ||
+                            null,
+
+                        valor:
+                            elemento.value,
+
+                        checked:
+                            (
+                                elemento.type ===
+                                "checkbox" ||
+
+                                elemento.type ===
+                                "radio"
+                            )
+                                ? elemento.checked
+                                : null
+                    });
+                }
+            );
+
+        return controles;
+    }
+
+    // =========================================================
+    // APLICA ALTERAÇÕES SALVAS
+    // =========================================================
+
+    function aplicarEdicaoManual() {
+        const edicao =
+            extras &&
+            Array.isArray(
+                extras.edicao_manual
+            )
+                ? extras.edicao_manual
+                : [];
+
+        if (!edicao.length) {
+            return;
+        }
+
+        const todos =
+            Array.from(
+                document
+                    .querySelectorAll(
+                        ".folha input, " +
+                        ".folha select, " +
+                        ".folha textarea"
+                    )
+            );
+
+        edicao.forEach(
+            function (item) {
+                let elemento = null;
+
+                // ---------------------------------------------
+                // TENTA PELO SELETOR SALVO
+                // ---------------------------------------------
+
+                if (
+                    item.seletor
+                ) {
+                    try {
+                        elemento =
+                            document
+                                .querySelector(
+                                    item.seletor
+                                );
+                    } catch (erro) {
+                        elemento =
+                            null;
+                    }
+                }
+
+                // ---------------------------------------------
+                // SE NÃO ENCONTRAR, USA A POSIÇÃO
+                // ---------------------------------------------
+
+                if (
+                    !elemento &&
+                    Number.isInteger(
+                        item.indice
+                    )
+                ) {
+                    elemento =
+                        todos[
+                            item.indice
+                        ];
+                }
+
+                if (!elemento) {
+                    return;
+                }
+
+                // ---------------------------------------------
+                // CHECKBOX / RADIO
+                // ---------------------------------------------
+
+                if (
+                    elemento.type ===
+                    "checkbox" ||
+
+                    elemento.type ===
+                    "radio"
+                ) {
+                    elemento.checked =
+                        Boolean(
+                            item.checked
+                        );
+                }
+
+                // ---------------------------------------------
+                // CAMPOS NORMAIS
+                // ---------------------------------------------
+
+                else {
+                    elemento.value =
+                        item.valor ??
+                        "";
+                }
+            }
+        );
+    }
+
+    // =========================================================
+    // SALVA ALTERAÇÕES NO SERVIDOR
+    // =========================================================
+
+    async function salvarAlteracoesFicha19(
+        opcoes = {}
+    ) {
+        const botao =
+            document.getElementById(
+                "botaoSalvarAlteracoes"
+            );
+
+        if (!botao) {
+            throw new Error(
+                "O botão de salvar alterações não foi encontrado."
+            );
+        }
+
+        const url =
+            botao.dataset.url;
+
+        if (!url) {
+            throw new Error(
+                "A rota para salvar as alterações não foi encontrada."
+            );
+        }
+
+        const textoOriginal =
+            botao.innerHTML;
+
+        if (
+            !opcoes.silencioso
+        ) {
+            botao.disabled =
+                true;
+
+            botao.innerHTML =
+                '<i class="fa-solid ' +
+                'fa-spinner fa-spin"></i> ' +
+                'Salvando...';
+        }
+
+        try {
+            const controles =
+                capturarControlesFicha19();
+
+            const resposta =
+                await fetch(
+                    url,
+                    {
+                        method:
+                            "POST",
+
+                        credentials:
+                            "same-origin",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json",
+
+                            "Accept":
+                                "application/json",
+
+                            "X-Requested-With":
+                                "XMLHttpRequest"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                controles:
+                                    controles
+                            })
+                    }
+                );
+
+            let retorno = {};
+
+            try {
+                retorno =
+                    await resposta.json();
+
+            } catch (erro) {
+                throw new Error(
+                    "O servidor não retornou uma resposta JSON válida."
+                );
+            }
+
+            if (
+                !resposta.ok ||
+                retorno.sucesso ===
+                false
+            ) {
+                throw new Error(
+                    retorno.mensagem ||
+                    retorno.erro ||
+                    "Não foi possível salvar as alterações."
+                );
+            }
+
+            extras.edicao_manual =
+                controles;
+
+            if (
+                !opcoes.silencioso
+            ) {
+                if (
+                    typeof window
+                        .mostrarToastEdoc ===
+                    "function"
+                ) {
+                    window
+                        .mostrarToastEdoc(
+                            "Alterações da Ficha 19 salvas com sucesso."
+                        );
+                } else {
+                    console.log(
+                        "Alterações da Ficha 19 salvas com sucesso."
+                    );
+                }
+            }
+
+            return retorno;
+
+        } finally {
+            if (
+                !opcoes.silencioso
+            ) {
+                botao.disabled =
+                    false;
+
+                botao.innerHTML =
+                    textoOriginal;
+            }
+        }
+    }
+
+    // =========================================================
+    // DISPONIBILIZA FUNÇÃO PARA OUTROS SCRIPTS
+    // =========================================================
+
+    window.salvarAlteracoesFicha19 =
+        salvarAlteracoesFicha19;
+
+    // =========================================================
+    // BOTÃO SALVAR ALTERAÇÕES
+    // =========================================================
+
+    const botaoSalvar =
+        document.getElementById(
+            "botaoSalvarAlteracoes"
+        );
+
+    if (botaoSalvar) {
+        botaoSalvar.addEventListener(
+            "click",
+            function () {
+                salvarAlteracoesFicha19()
+                    .catch(
+                        function (erro) {
+                            if (
+                                typeof window
+                                    .mostrarToastEdoc ===
+                                "function"
+                            ) {
+                                window
+                                    .mostrarToastEdoc(
+                                        erro.message,
+                                        true
+                                    );
+                            } else {
+                                alert(
+                                    erro.message
+                                );
+                            }
+                        }
+                    );
+            }
+        );
+    }
+
+    // =========================================================
+    // PREENCHIMENTO ORIGINAL
+    // =========================================================
 
     preencherAluno();
     preencherEscola();
@@ -889,4 +1385,11 @@
     preencherBaseComum();
     preencherItinerario();
     preencherResultadoFinal();
+
+    // =========================================================
+    // ALTERAÇÕES MANUAIS SEMPRE POR ÚLTIMO
+    // =========================================================
+
+    aplicarEdicaoManual();
+
 })();

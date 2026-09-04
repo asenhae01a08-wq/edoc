@@ -336,7 +336,7 @@ def salvar_importacao_pdf(dados):
                 atualizacoes.append("curso_id = %s")
                 valores.append(curso_id)
 
-            atualizacoes.append("status_ficha19 = 'pronta para emissão'")
+            atualizacoes.append("status_ficha19 = 'Pronta para emissão'")
             atualizacoes.append("cargo_nivel = 'Aluno'")
 
             valores.append(aluno_existente["id"])
@@ -382,7 +382,7 @@ def salvar_importacao_pdf(dados):
                 VALUES (
                     %s, %s, %s, %s, %s, %s, %s, %s, %s,
                     %s, NULL, %s, %s, %s, NULL, %s, %s,
-                    'pronta para emissão', 'Aluno'
+                    'Pronta para emissão', 'Aluno'
                 )
                 """,
                 (
@@ -1014,6 +1014,127 @@ def buscar_dados_ficha_por_aluno(aluno_id):
             "itinerario": itinerario_exibicao,
             "extras": extras,
         }
+
+    finally:
+        cursor.close()
+        conexao.close()
+
+
+# ==========================================================
+# EDIÇÃO MANUAL DA FICHA 19
+# ==========================================================
+
+def salvar_edicao_ficha19(aluno_id, controles):
+    """
+    Salva as correções feitas diretamente na Ficha 19.
+
+    As alterações ficam preservadas em
+    historico_escolar_geral.dados_extras["edicao_manual"].
+    O JavaScript reaplica esses valores por último ao abrir a ficha.
+    """
+
+    if not isinstance(controles, list):
+        raise ValueError(
+            "As alterações da Ficha 19 precisam ser enviadas em uma lista."
+        )
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        raise RuntimeError(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT id, dados_extras
+            FROM historico_escolar_geral
+            WHERE aluno_id = %s
+            ORDER BY id DESC
+            LIMIT 1
+            """,
+            (aluno_id,),
+        )
+
+        historico = cursor.fetchone()
+
+        if historico is None:
+            raise ValueError(
+                "Este aluno ainda não possui uma Ficha 19 importada."
+            )
+
+        extras = {}
+        bruto = historico.get("dados_extras")
+
+        if bruto:
+            try:
+                if isinstance(bruto, str):
+                    extras = json.loads(bruto)
+                elif isinstance(bruto, dict):
+                    extras = dict(bruto)
+            except (TypeError, ValueError, json.JSONDecodeError):
+                extras = {}
+
+        controles_limpos = []
+
+        for item in controles:
+            if not isinstance(item, dict):
+                continue
+
+            indice = item.get("indice")
+
+            if not isinstance(indice, int):
+                try:
+                    indice = int(indice)
+                except (TypeError, ValueError):
+                    indice = None
+
+            controles_limpos.append(
+                {
+                    "seletor": item.get("seletor"),
+                    "indice": indice,
+                    "tipo": item.get("tipo"),
+                    "inputType": item.get("inputType"),
+                    "valor": item.get("valor"),
+                    "checked": item.get("checked"),
+                }
+            )
+
+        extras["edicao_manual"] = controles_limpos
+        extras["edicao_manual_atualizada_em"] = (
+            datetime.now().isoformat(timespec="seconds")
+        )
+
+        cursor.execute(
+            """
+            UPDATE historico_escolar_geral
+            SET dados_extras = %s
+            WHERE id = %s
+            """,
+            (
+                json.dumps(
+                    extras,
+                    ensure_ascii=False,
+                    default=_json_padrao,
+                ),
+                historico["id"],
+            ),
+        )
+
+        conexao.commit()
+
+        return {
+            "sucesso": True,
+            "aluno_id": aluno_id,
+            "total_controles": len(controles_limpos),
+        }
+
+    except Exception:
+        conexao.rollback()
+        raise
 
     finally:
         cursor.close()

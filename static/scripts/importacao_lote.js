@@ -20,7 +20,7 @@
         return;
     }
 
-    // Garante seleção múltipla.
+    // Garante seleção múltipla
     input.multiple = true;
 
     const botaoEnviar =
@@ -143,6 +143,7 @@
 
     painel.innerHTML = `
         <div class="edoc-lote-topo">
+
             <strong id="edocLoteTitulo">
                 Importação em lote
             </strong>
@@ -151,13 +152,16 @@
                 class="edoc-lote-resumo"
                 id="edocLoteResumo"
             ></span>
+
         </div>
 
         <div class="edoc-lote-barra">
+
             <div
                 class="edoc-lote-progresso"
                 id="edocLoteProgresso"
             ></div>
+
         </div>
 
         <div
@@ -175,109 +179,169 @@
         document.querySelector(".barra-edoc");
 
     if (barra) {
+
         barra.insertAdjacentElement(
             "afterend",
             painel
         );
+
     } else {
+
         form.insertAdjacentElement(
             "afterend",
             painel
         );
+
     }
 
     const titulo =
-        painel.querySelector("#edocLoteTitulo");
+        painel.querySelector(
+            "#edocLoteTitulo"
+        );
 
     const resumo =
-        painel.querySelector("#edocLoteResumo");
+        painel.querySelector(
+            "#edocLoteResumo"
+        );
 
     const progresso =
-        painel.querySelector("#edocLoteProgresso");
+        painel.querySelector(
+            "#edocLoteProgresso"
+        );
 
     const atual =
-        painel.querySelector("#edocLoteAtual");
+        painel.querySelector(
+            "#edocLoteAtual"
+        );
 
     const lista =
-        painel.querySelector("#edocLoteLista");
+        painel.querySelector(
+            "#edocLoteLista"
+        );
 
     // =========================================================
     // ARQUIVOS
     // =========================================================
 
     function arquivosSelecionados() {
+
         return Array.from(
             input.files || []
         );
+
     }
 
-    function arquivoEhPdf(arquivo) {
-        return (
-            arquivo &&
-            arquivo.name &&
+    function arquivoEhValido(
+        arquivo
+    ) {
+
+        if (
+            !arquivo ||
+            !arquivo.name
+        ) {
+
+            return false;
+
+        }
+
+        const nome =
             arquivo.name
-                .toLowerCase()
-                .endsWith(".pdf")
+                .toLowerCase();
+
+        return (
+            nome.endsWith(".pdf") ||
+            nome.endsWith(".xlsx")
         );
+
     }
 
     function validarSelecao(
         arquivos,
         mostrarAlerta = true
     ) {
+
         if (!arquivos.length) {
+
             return false;
+
         }
+
+        // -----------------------------------------------------
+        // LIMITE DE ARQUIVOS
+        // -----------------------------------------------------
 
         if (
             arquivos.length >
             LIMITE_ARQUIVOS
         ) {
+
             if (mostrarAlerta) {
+
                 alert(
                     "Selecione no máximo " +
                     LIMITE_ARQUIVOS +
-                    " PDFs por vez."
+                    " arquivos por vez."
                 );
+
             }
 
             return false;
+
         }
+
+        // -----------------------------------------------------
+        // VALIDA PDF / XLSX
+        // -----------------------------------------------------
 
         const invalidos =
             arquivos.filter(
                 function (arquivo) {
-                    return !arquivoEhPdf(
+
+                    return !arquivoEhValido(
                         arquivo
                     );
+
                 }
             );
 
         if (invalidos.length) {
+
             if (mostrarAlerta) {
+
                 alert(
-                    "Todos os arquivos devem " +
-                    "estar no formato PDF."
+                    "Todos os arquivos devem estar no formato PDF ou XLSX."
                 );
+
             }
 
             return false;
+
         }
 
         return true;
+
     }
 
+    // =========================================================
+    // NOME DOS ARQUIVOS SELECIONADOS
+    // =========================================================
+
     function atualizarNomeSelecao() {
+
         const arquivos =
             arquivosSelecionados();
 
         if (!arquivos.length) {
+
             if (nomeArquivo) {
+
                 nomeArquivo.textContent =
-                    "Nenhum PDF selecionado";
+                    "Nenhum arquivo selecionado";
+
             }
 
             return;
+
         }
 
         if (
@@ -286,30 +350,41 @@
                 true
             )
         ) {
+
             input.value = "";
 
             if (nomeArquivo) {
+
                 nomeArquivo.textContent =
-                    "Nenhum PDF selecionado";
+                    "Nenhum arquivo selecionado";
+
             }
 
             return;
+
         }
 
         if (!nomeArquivo) {
+
             return;
+
         }
 
-        if (arquivos.length === 1) {
+        if (
+            arquivos.length === 1
+        ) {
+
             nomeArquivo.textContent =
                 arquivos[0].name;
 
             return;
+
         }
 
         nomeArquivo.textContent =
             arquivos.length +
-            " PDFs selecionados";
+            " arquivos selecionados";
+
     }
 
     input.addEventListener(
@@ -322,17 +397,26 @@
     // =========================================================
 
     function limparResultados() {
+
         lista.innerHTML = "";
-        progresso.style.width = "0%";
+
+        progresso.style.width =
+            "0%";
+
         atual.textContent = "";
+
         resumo.textContent = "";
+
     }
 
     function adicionarResultado(
         resultado
     ) {
+
         const item =
-            document.createElement("li");
+            document.createElement(
+                "li"
+            );
 
         item.className =
             "edoc-lote-item " +
@@ -343,28 +427,39 @@
             );
 
         const icone =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
 
         icone.textContent =
             resultado.sucesso
                 ? "✓"
                 : "✕";
 
-        item.appendChild(icone);
+        item.appendChild(
+            icone
+        );
 
         const texto =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
+
+        // -----------------------------------------------------
+        // SUCESSO
+        // -----------------------------------------------------
 
         if (resultado.sucesso) {
+
             const nome =
-                resultado.nome
-                || "Aluno";
+                resultado.nome ||
+                "Aluno";
 
             const matricula =
                 resultado.matricula
-                ? " — " +
-                  resultado.matricula
-                : "";
+                    ? " — " +
+                      resultado.matricula
+                    : "";
 
             texto.appendChild(
                 document.createTextNode(
@@ -379,8 +474,11 @@
             if (
                 resultado.url_ficha
             ) {
+
                 const link =
-                    document.createElement("a");
+                    document.createElement(
+                        "a"
+                    );
 
                 link.href =
                     resultado.url_ficha;
@@ -391,32 +489,54 @@
                 link.target =
                     "_blank";
 
-                texto.appendChild(link);
+                link.rel =
+                    "noopener noreferrer";
+
+                texto.appendChild(
+                    link
+                );
+
             }
-        } else {
+
+        }
+
+        // -----------------------------------------------------
+        // ERRO
+        // -----------------------------------------------------
+
+        else {
+
             texto.textContent =
                 resultado.arquivo +
                 ": " +
                 (
-                    resultado.erro
-                    || "Erro desconhecido."
+                    resultado.erro ||
+                    "Erro desconhecido."
                 );
+
         }
 
-        item.appendChild(texto);
-        lista.appendChild(item);
+        item.appendChild(
+            texto
+        );
+
+        lista.appendChild(
+            item
+        );
 
         lista.scrollTop =
             lista.scrollHeight;
+
     }
 
     // =========================================================
-    // ENVIA UM PDF POR VEZ
+    // ENVIA UM ARQUIVO POR VEZ
     // =========================================================
 
     async function enviarArquivo(
         arquivo
     ) {
+
         const dados =
             new FormData();
 
@@ -430,17 +550,30 @@
             await fetch(
                 form.action,
                 {
-                    method: "POST",
-                    body: dados,
+                    method:
+                        "POST",
+
+                    body:
+                        dados,
+
                     credentials:
                         "same-origin",
+
                     headers: {
-                        "X-EDOC-BATCH": "1",
+
+                        "X-EDOC-BATCH":
+                            "1",
+
                         "Accept":
                             "application/json"
+
                     }
                 }
             );
+
+        // -----------------------------------------------------
+        // SESSÃO EXPIRADA
+        // -----------------------------------------------------
 
         if (
             resposta.redirected &&
@@ -448,6 +581,7 @@
                 "/login"
             )
         ) {
+
             const erro =
                 new Error(
                     "Sua sessão expirou. " +
@@ -458,7 +592,12 @@
                 "SESSAO_EXPIRADA";
 
             throw erro;
+
         }
+
+        // -----------------------------------------------------
+        // TIPO DA RESPOSTA
+        // -----------------------------------------------------
 
         const tipo =
             resposta.headers.get(
@@ -470,35 +609,45 @@
                 "application/json"
             )
         ) {
+
             if (
                 resposta.status === 413
             ) {
+
                 throw new Error(
-                    "O PDF ultrapassa o limite " +
-                    "de 15 MB."
+                    "O arquivo ultrapassa o limite de 15 MB."
                 );
+
             }
 
             throw new Error(
-                "O servidor não retornou uma " +
-                "resposta válida para este PDF."
+                "O servidor não retornou uma resposta válida para este arquivo."
             );
+
         }
 
         const retorno =
             await resposta.json();
 
+        // -----------------------------------------------------
+        // ERRO DO BACK-END
+        // -----------------------------------------------------
+
         if (
             !resposta.ok ||
             !retorno.sucesso
         ) {
+
             throw new Error(
                 retorno.erro ||
-                "Não foi possível importar o PDF."
+                retorno.mensagem ||
+                "Não foi possível importar o arquivo."
             );
+
         }
 
         return retorno;
+
     }
 
     // =========================================================
@@ -508,16 +657,28 @@
     form.addEventListener(
         "submit",
         async function (evento) {
+
             const arquivos =
                 arquivosSelecionados();
 
-            /*
-                Com apenas 1 PDF,
-                o comportamento antigo continua.
-            */
-            if (arquivos.length <= 1) {
+            // =================================================
+            // UM ÚNICO ARQUIVO
+            //
+            // Deixa o formulário seguir normalmente.
+            // O Flask cuida de PDF ou XLSX.
+            // =================================================
+
+            if (
+                arquivos.length <= 1
+            ) {
+
                 return;
+
             }
+
+            // =================================================
+            // LOTE
+            // =================================================
 
             evento.preventDefault();
 
@@ -527,7 +688,9 @@
                     true
                 )
             ) {
+
                 return;
+
             }
 
             limparResultados();
@@ -539,33 +702,49 @@
             titulo.textContent =
                 "Importando " +
                 arquivos.length +
-                " PDFs";
+                " arquivos";
 
             let sucessos = 0;
+
             let erros = 0;
-            let interrompido = false;
+
+            let interrompido =
+                false;
+
+            // -------------------------------------------------
+            // DESABILITA BOTÃO
+            // -------------------------------------------------
 
             if (botaoEnviar) {
+
                 botaoEnviar.disabled =
                     true;
 
                 botaoEnviar.dataset
                     .textoOriginal =
-                    botaoEnviar.innerHTML;
+                        botaoEnviar
+                            .innerHTML;
 
                 botaoEnviar.innerHTML =
                     '<i class="fa-solid ' +
                     'fa-spinner fa-spin"></i> ' +
                     "Importando...";
+
             }
 
-            input.disabled = true;
+            input.disabled =
+                true;
+
+            // -------------------------------------------------
+            // ENVIA UM POR VEZ
+            // -------------------------------------------------
 
             for (
                 let indice = 0;
                 indice < arquivos.length;
                 indice++
             ) {
+
                 const arquivo =
                     arquivos[indice];
 
@@ -578,6 +757,7 @@
                     arquivo.name;
 
                 try {
+
                     const retorno =
                         await enviarArquivo(
                             arquivo
@@ -588,19 +768,27 @@
                     adicionarResultado(
                         {
                             ...retorno,
-                            sucesso: true,
+
+                            sucesso:
+                                true,
+
                             arquivo:
                                 arquivo.name
                         }
                     );
+
                 } catch (erro) {
+
                     erros++;
 
                     adicionarResultado(
                         {
-                            sucesso: false,
+                            sucesso:
+                                false,
+
                             arquivo:
                                 arquivo.name,
+
                             erro:
                                 erro.message
                         }
@@ -610,9 +798,17 @@
                         erro.codigo ===
                         "SESSAO_EXPIRADA"
                     ) {
-                        interrompido = true;
+
+                        interrompido =
+                            true;
+
                     }
+
                 }
+
+                // ---------------------------------------------
+                // PROGRESSO
+                // ---------------------------------------------
 
                 const processados =
                     indice + 1;
@@ -631,12 +827,24 @@
                     erros +
                     " erro(s)";
 
-                if (interrompido) {
+                if (
+                    interrompido
+                ) {
+
                     break;
+
                 }
+
             }
 
-            if (interrompido) {
+            // =================================================
+            // FINAL
+            // =================================================
+
+            if (
+                interrompido
+            ) {
+
                 titulo.textContent =
                     "Importação interrompida";
 
@@ -644,7 +852,9 @@
                     "Faça login novamente e " +
                     "reenvie os arquivos que " +
                     "não foram processados.";
+
             } else {
+
                 titulo.textContent =
                     "Importação finalizada";
 
@@ -652,21 +862,39 @@
                     sucessos +
                     " de " +
                     arquivos.length +
-                    " PDF(s) importado(s) " +
+                    " arquivo(s) importado(s) " +
                     "com sucesso.";
+
             }
 
-            input.disabled = false;
+            // -------------------------------------------------
+            // REATIVA INPUT
+            // -------------------------------------------------
+
+            input.disabled =
+                false;
+
+            // -------------------------------------------------
+            // REATIVA BOTÃO
+            // -------------------------------------------------
 
             if (botaoEnviar) {
+
                 botaoEnviar.disabled =
                     false;
 
                 botaoEnviar.innerHTML =
                     botaoEnviar.dataset
                         .textoOriginal ||
-                    "Ler PDF e gerar ficha";
+                    (
+                        '<i class="fa-solid ' +
+                        'fa-wand-magic-sparkles"></i> ' +
+                        'Ler arquivo e gerar ficha'
+                    );
+
             }
+
         }
     );
+
 })();
