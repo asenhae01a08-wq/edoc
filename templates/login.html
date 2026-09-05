@@ -14,13 +14,16 @@
         eDOC - Acesso
     </title>
 
+<!-- Importa o estilo da tela de acesso,
+     responsável pela identidade visual e responsividade. -->
 
     <link
         rel="stylesheet"
         href="{{ url_for('static', filename='style2.css') }}?v=101"
     >
 
-
+<!-- Biblioteca utilizada para os ícones
+     presentes nos campos e botões do sistema. -->
     <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -494,7 +497,8 @@
                         <!-- ==========================================
                              FORMULÁRIO
                         ========================================== -->
-
+<!-- Formulário responsável por enviar os dados de acesso
+     para a rota de login do Flask. -->
                         <form
                             action="{{ url_for('login') }}"
                             method="POST"
@@ -572,8 +576,8 @@
                                         required
                                     >
 
-
-
+<!-- Permite alternar a visualização da senha,
+     melhorando a experiência do usuário durante o login. -->
                                     <button
                                         type="button"
                                         class="botao-olho"

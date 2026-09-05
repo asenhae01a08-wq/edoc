@@ -2,6 +2,7 @@ import json
 from datetime import date, datetime
 from decimal import Decimal
 
+# Importa a função responsável por criar a conexão com o banco de dados MySQL
 from models.conexaoBD import conectar_mysql
 
 
@@ -13,7 +14,7 @@ def _valor_seguro(valor):
     return valor
 
 
-
+# Valida e converte as notas extraídas do documento para garantir valores corretos
 def _nota_segura(valor, contexto=""):
     if valor in (None, "", "-"):
         return None
@@ -36,7 +37,7 @@ def _nota_segura(valor, contexto=""):
 
     return round(nota, 2)
 
-
+# Garante que os valores de frequência estejam dentro do intervalo permitido
 def _percentual_seguro(valor, contexto=""):
     if valor in (None, "", "-"):
         return None
@@ -123,7 +124,7 @@ def _coluna_existe(cursor, tabela, coluna):
     )
     return cursor.fetchone()["total"] > 0
 
-
+# Verifica se o banco possui as tabelas e campos necessários para gerar a Ficha 19
 def _validar_estrutura(cursor):
     faltando = []
 
@@ -252,7 +253,7 @@ def _atualizar_escola(cursor, escola_pdf):
 
     return cursor.lastrowid
 
-
+# Recebe os dados extraídos do PDF SIEPE e salva todas as informações da Ficha 19 no banco
 def salvar_importacao_pdf(dados):
     """
     Salva o histórico oficial.
@@ -278,7 +279,7 @@ def salvar_importacao_pdf(dados):
         raise ValueError(
             f"A matrícula extraída precisa ter 7 números. Valor recebido: {matricula!r}."
         )
-
+# Abre conexão com o banco para armazenar os dados importados
     conexao = conectar_mysql()
 
     if conexao is None:
@@ -290,7 +291,7 @@ def salvar_importacao_pdf(dados):
         _validar_estrutura(cursor)
 
         escola_id = _atualizar_escola(cursor, escola_pdf)
-
+# Verifica se o aluno já existe no sistema através da matrícula
         cursor.execute(
             "SELECT * FROM alunos WHERE matricula = %s LIMIT 1",
             (matricula,),
@@ -310,7 +311,7 @@ def salvar_importacao_pdf(dados):
             "email": "email",
             "id_turma": "id_turma",
         }
-
+# Caso o aluno já esteja cadastrado, apenas atualiza suas informações
         if aluno_existente:
             atualizacoes = []
             valores = []
@@ -347,7 +348,7 @@ def salvar_importacao_pdf(dados):
             )
 
             aluno_id = aluno_existente["id"]
-
+# Caso seja um novo aluno, realiza o cadastro no banco
         else:
             curso_id = _curso_id_por_texto(
                 aluno_pdf.get("id_turma"),
@@ -478,7 +479,7 @@ def salvar_importacao_pdf(dados):
             )
 
             historico_id = cursor.lastrowid
-
+# Percorre as disciplinas da formação geral e salva no banco
         _limpar_disciplinas_antigas(cursor, aluno_id, historico_id)
 
         for item in base_comum:
@@ -552,7 +553,7 @@ def salvar_importacao_pdf(dados):
                     item.get("carga_horaria_horas_aula"),
                 ),
             )
-
+# Percorre as disciplinas do itinerário formativo e salva no banco
         for item in itinerario:
             if not item.get("nome"):
                 continue
@@ -630,7 +631,7 @@ def salvar_importacao_pdf(dados):
                     or item.get("carga_horaria"),
                 ),
             )
-
+# Confirma todas as alterações realizadas no banco de dados
         conexao.commit()
         return aluno_id
 
@@ -642,7 +643,7 @@ def salvar_importacao_pdf(dados):
         cursor.close()
         conexao.close()
 
-
+# Busca todas as informações necessárias para montar a visualização da Ficha 19
 def buscar_dados_ficha_por_aluno(aluno_id):
     conexao = conectar_mysql()
 
@@ -781,7 +782,7 @@ def _tabela_existe(cursor, tabela):
         and resultado.get("total", 0) > 0
     )
 
-
+# Versão compatível da consulta que verifica quais tabelas existem antes de realizar a busca
 def buscar_dados_ficha_por_aluno(aluno_id):
     """
     Versão compatível da consulta da Ficha 19.
@@ -1024,6 +1025,7 @@ def buscar_dados_ficha_por_aluno(aluno_id):
 # EDIÇÃO MANUAL DA FICHA 19
 # ==========================================================
 
+# Salva alterações manuais feitas pelo profissional antes da emissão da Ficha 19
 def salvar_edicao_ficha19(aluno_id, controles):
     """
     Salva as correções feitas diretamente na Ficha 19.
