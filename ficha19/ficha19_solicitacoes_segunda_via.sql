@@ -16,29 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `cursos`
+-- Table structure for table `solicitacoes_segunda_via`
 --
 
-DROP TABLE IF EXISTS `cursos`;
+DROP TABLE IF EXISTS `solicitacoes_segunda_via`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `cursos` (
+CREATE TABLE `solicitacoes_segunda_via` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(150) NOT NULL,
-  `carga_horaria` int DEFAULT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `aluno_id` int NOT NULL,
+  `motivo` varchar(255) NOT NULL,
+  `observacao` text,
+  `status` enum('Pendente','Em análise','Concluída') NOT NULL DEFAULT 'Pendente',
+  `data_solicitacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `data_atualizacao` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_solicitacao_segunda_via_aluno` (`aluno_id`),
+  CONSTRAINT `fk_solicitacao_segunda_via_aluno` FOREIGN KEY (`aluno_id`) REFERENCES `alunos` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `cursos`
+-- Dumping data for table `solicitacoes_segunda_via`
 --
 
-LOCK TABLES `cursos` WRITE;
-/*!40000 ALTER TABLE `cursos` DISABLE KEYS */;
-INSERT INTO `cursos` VALUES (1,'Técnico em Desenvolvimento de Sistemas',NULL,'2026-07-28 12:20:41'),(2,'Marketing',NULL,'2026-07-28 12:20:41');
-/*!40000 ALTER TABLE `cursos` ENABLE KEYS */;
+LOCK TABLES `solicitacoes_segunda_via` WRITE;
+/*!40000 ALTER TABLE `solicitacoes_segunda_via` DISABLE KEYS */;
+/*!40000 ALTER TABLE `solicitacoes_segunda_via` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-05 20:49:42
+-- Dump completed on 2026-09-05 20:49:41

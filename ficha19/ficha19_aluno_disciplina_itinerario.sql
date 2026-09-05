@@ -38,7 +38,7 @@ CREATE TABLE `aluno_disciplina_itinerario` (
 
 LOCK TABLES `aluno_disciplina_itinerario` WRITE;
 /*!40000 ALTER TABLE `aluno_disciplina_itinerario` DISABLE KEYS */;
-INSERT INTO `aluno_disciplina_itinerario` VALUES (15,1),(15,2),(15,3),(15,4),(15,5),(15,6),(15,7),(15,8),(15,9),(15,10),(15,11),(15,12),(15,13),(15,14),(15,15),(15,16),(15,17),(15,18);
+INSERT INTO `aluno_disciplina_itinerario` VALUES (15,1),(15,2),(15,3),(15,4),(15,5),(15,6),(15,7),(15,8),(15,9),(15,10),(15,11),(15,12),(15,13),(15,14),(15,15),(15,16),(15,17),(15,18),(18,19),(18,20),(18,21),(18,22),(18,23),(18,24),(18,25),(18,26),(18,27),(18,28),(18,29),(18,30),(18,31),(18,32),(18,33),(18,34),(18,35),(18,36),(19,37),(19,38),(19,39),(19,40),(19,41),(19,42),(19,43),(19,44),(19,45),(19,46),(19,47),(19,48),(19,49),(19,50),(19,51),(19,52),(19,53),(19,54);
 /*!40000 ALTER TABLE `aluno_disciplina_itinerario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-03 21:39:17
+-- Dump completed on 2026-09-05 20:49:41
