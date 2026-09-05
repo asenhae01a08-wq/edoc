@@ -5,6 +5,8 @@ from models.conexaoBD import conectar_mysql
 # BUSCAR ALUNOS POR TURMA
 # ==========================================================
 
+# Retorna os alunos pertencentes a uma turma específica.
+# Usado nas telas de turmas e gerenciamento dos estudantes.
 def buscar_alunos_por_turma(turma):
 
     conexao = conectar_mysql()
@@ -45,10 +47,12 @@ def buscar_alunos_por_turma(turma):
         conexao.close()
 
 
+
 # ==========================================================
 # BUSCAR TODOS OS ALUNOS
 # ==========================================================
 
+# Busca todos os estudantes cadastrados no sistema.
 def buscar_todos_alunos():
 
     conexao = conectar_mysql()
@@ -82,10 +86,12 @@ def buscar_todos_alunos():
         conexao.close()
 
 
+
 # ==========================================================
 # BUSCAR ALUNO POR ID
 # ==========================================================
 
+# Busca um aluno pelo identificador único do banco.
 def buscar_aluno_por_id(id_aluno):
 
     conexao = conectar_mysql()
@@ -126,10 +132,12 @@ def buscar_aluno_por_id(id_aluno):
         conexao.close()
 
 
+
 # ==========================================================
 # BUSCAR ALUNO POR MATRÍCULA
 # ==========================================================
 
+# Localiza aluno utilizando a matrícula.
 def buscar_aluno_por_matricula(matricula):
 
     conexao = conectar_mysql()
@@ -159,10 +167,12 @@ def buscar_aluno_por_matricula(matricula):
         conexao.close()
 
 
+
 # ==========================================================
 # BUSCAR ALUNO POR EMAIL
 # ==========================================================
 
+# Busca aluno pelo email cadastrado.
 def buscar_aluno_por_email(email):
 
     conexao = conectar_mysql()
@@ -192,10 +202,12 @@ def buscar_aluno_por_email(email):
         conexao.close()
 
 
+
 # ==========================================================
 # CADASTRAR ALUNO
 # ==========================================================
 
+# Realiza o cadastro de um novo estudante no banco.
 def cadastrar_aluno(
     nome,
     matricula,
@@ -211,7 +223,7 @@ def cadastrar_aluno(
 
         return (
             False,
-            "Não foi possível conectar ao banco de dados.",
+            "Não foi possível conectar ao banco.",
             None
         )
 
@@ -221,24 +233,13 @@ def cadastrar_aluno(
 
     try:
 
-        # ==================================================
-        # CONFERE SE JÁ EXISTE
-        # ==================================================
-
         cursor.execute(
             """
-            SELECT
-                id,
-                matricula,
-                cpf,
-                email
-
+            SELECT id
             FROM alunos
-
             WHERE matricula = %s
                OR cpf = %s
                OR email = %s
-
             LIMIT 1
             """,
             (
@@ -248,7 +249,6 @@ def cadastrar_aluno(
             ),
         )
 
-
         existente = cursor.fetchone()
 
 
@@ -256,84 +256,41 @@ def cadastrar_aluno(
 
             return (
                 False,
-                "Já existe um aluno com essa matrícula, CPF ou e-mail.",
+                "Aluno já cadastrado.",
                 None
             )
 
 
-        # ==================================================
-        # CURSO
-        # ==================================================
-
-        curso_id = (
-            1
-            if "TDS" in turma.upper()
-
-            else 2
-            if "MKT" in turma.upper()
-
-            else None
-        )
-
-
-        # ==================================================
-        # SENHA INICIAL
-        # MATRÍCULA INVERTIDA
-        # ==================================================
-
-        senha_inicial = matricula[::-1]
-
-
-        # ==================================================
-        # INSERE ALUNO
-        # ==================================================
-
         cursor.execute(
             """
-            INSERT INTO alunos (
-
+            INSERT INTO alunos
+            (
                 nome,
                 matricula,
-                data_nascimento,
-                id_turma,
                 cpf,
-                escola_id,
-                curso_id,
-                primeiro_login,
                 email,
-                senha,
-                status_ficha19,
-                cargo_nivel
-
+                data_nascimento,
+                id_turma
             )
 
-            VALUES (
-
+            VALUES
+            (
                 %s,
                 %s,
                 %s,
                 %s,
                 %s,
-                1,
-                %s,
-                NULL,
-                %s,
-                %s,
-                'Em fabricação',
-                'Aluno'
-
+                %s
             )
             """,
             (
                 nome,
                 matricula,
-                data_nascimento,
-                turma,
                 cpf,
-                curso_id,
                 email,
-                senha_inicial,
-            ),
+                data_nascimento,
+                turma
+            )
         )
 
 
@@ -343,7 +300,7 @@ def cadastrar_aluno(
         return (
             True,
             "Aluno cadastrado com sucesso.",
-            senha_inicial
+            cursor.lastrowid
         )
 
 
@@ -352,78 +309,6 @@ def cadastrar_aluno(
         conexao.rollback()
 
         raise
-
-
-    finally:
-
-        cursor.close()
-        conexao.close()
-
-
-# ==========================================================
-# PESQUISAR ALUNO
-# NOME OU MATRÍCULA
-# ==========================================================
-
-def buscar_alunos_por_pesquisa(termo):
-
-    if not termo:
-        return []
-
-
-    termo = termo.strip()
-
-
-    if not termo:
-        return []
-
-
-    conexao = conectar_mysql()
-
-
-    if conexao is None:
-        return []
-
-
-    cursor = conexao.cursor(dictionary=True)
-
-
-    try:
-
-        pesquisa = f"%{termo}%"
-
-
-        cursor.execute(
-            """
-            SELECT
-
-                id,
-                nome,
-                matricula,
-                id_turma,
-                status_ficha19,
-
-                NULL AS curso_nome,
-                0 AS possui_ficha
-
-            FROM alunos
-
-            WHERE
-                nome LIKE %s
-                OR CAST(matricula AS CHAR) LIKE %s
-
-            ORDER BY nome
-
-            LIMIT 30
-            """,
-            (
-                pesquisa,
-                pesquisa,
-            ),
-        )
-
-
-        return cursor.fetchall()
 
 
     finally:
