@@ -1,5 +1,6 @@
 import os
 import smtplib
+import pandas as pd
 from datetime import date
 
 from email.message import EmailMessage
@@ -2099,6 +2100,105 @@ def pesquisar_alunos_live():
                 )
             }
         ), 500
+
+# ==========================================================
+# IMPORTAR TURMA POR PLANILHA
+# ==========================================================
+
+@app.route(
+    "/importar-turma",
+    methods=["GET", "POST"]
+)
+@login_required_profissional
+def importar_turma():
+
+    if request.method == "POST":
+
+        arquivo = request.files.get("arquivo")
+
+        if (
+            arquivo is None
+            or arquivo.filename == ""
+        ):
+
+            flash(
+                "Selecione uma planilha.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("importar_turma")
+            )
+
+        nome_arquivo = (
+            arquivo.filename
+            or ""
+        ).lower()
+
+        if not nome_arquivo.endswith(".xlsx"):
+
+            flash(
+                "A planilha precisa estar no formato XLSX.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("importar_turma")
+            )
+
+        try:
+
+            df = pd.read_excel(
+                arquivo
+            )
+
+            alunos = (
+                df.fillna("")
+                .to_dict(
+                    orient="records"
+                )
+            )
+
+            if not alunos:
+
+                flash(
+                    "A planilha não possui alunos para importar.",
+                    "erro"
+                )
+
+                return redirect(
+                    url_for("importar_turma")
+                )
+
+            session[
+                "alunos_importacao"
+            ] = alunos
+
+            return render_template(
+                "preview_turma.html",
+                alunos=alunos
+            )
+
+        except Exception as erro:
+
+            app.logger.exception(
+                "Erro ao ler a planilha da turma: %s",
+                erro
+            )
+
+            flash(
+                f"Erro ao ler a planilha: {erro}",
+                "erro"
+            )
+
+            return redirect(
+                url_for("importar_turma")
+            )
+
+    return render_template(
+        "importar_turma.html"
+    )
+
 
 # ==========================================================
 # TURMA TDS A

@@ -47,6 +47,71 @@ def buscar_alunos_por_turma(turma):
         conexao.close()
 
 
+# ==========================================================
+# BUSCAR ALUNOS POR PESQUISA
+# ==========================================================
+
+# Pesquisa alunos por nome, matrícula, CPF ou e-mail.
+# É utilizada pela pesquisa ao vivo da tela "Turmas e alunos".
+def buscar_alunos_por_pesquisa(termo):
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        return []
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+
+        termo = str(
+            termo or ""
+        ).strip()
+
+        if not termo:
+            return []
+
+        termo_busca = f"%{termo}%"
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                nome,
+                matricula,
+                id_turma,
+                cpf,
+                email,
+                data_nascimento,
+                status_ficha19
+
+            FROM alunos
+
+            WHERE
+                nome LIKE %s
+                OR matricula LIKE %s
+                OR cpf LIKE %s
+                OR email LIKE %s
+                OR id_turma LIKE %s
+
+            ORDER BY nome
+            """,
+            (
+                termo_busca,
+                termo_busca,
+                termo_busca,
+                termo_busca,
+                termo_busca,
+            ),
+        )
+
+        return cursor.fetchall()
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
 
 # ==========================================================
 # BUSCAR TODOS OS ALUNOS
@@ -84,7 +149,6 @@ def buscar_todos_alunos():
 
         cursor.close()
         conexao.close()
-
 
 
 # ==========================================================
@@ -132,7 +196,6 @@ def buscar_aluno_por_id(id_aluno):
         conexao.close()
 
 
-
 # ==========================================================
 # BUSCAR ALUNO POR MATRÍCULA
 # ==========================================================
@@ -165,7 +228,6 @@ def buscar_aluno_por_matricula(matricula):
 
         cursor.close()
         conexao.close()
-
 
 
 # ==========================================================
@@ -202,7 +264,6 @@ def buscar_aluno_por_email(email):
         conexao.close()
 
 
-
 # ==========================================================
 # CADASTRAR ALUNO
 # ==========================================================
@@ -227,11 +288,13 @@ def cadastrar_aluno(
             None
         )
 
-
     cursor = conexao.cursor(dictionary=True)
 
-
     try:
+
+        # ==================================================
+        # VERIFICA DUPLICIDADE
+        # ==================================================
 
         cursor.execute(
             """
@@ -251,7 +314,6 @@ def cadastrar_aluno(
 
         existente = cursor.fetchone()
 
-
         if existente:
 
             return (
@@ -260,6 +322,17 @@ def cadastrar_aluno(
                 None
             )
 
+        # ==================================================
+        # CADASTRA O ALUNO
+        #
+        # O valor de turma é gravado exatamente como
+        # recebido pelo formulário:
+        #
+        # 3º TDS A
+        # 3º TDS B
+        # 3º MKT A
+        # 3º MKT B
+        # ==================================================
 
         cursor.execute(
             """
@@ -293,9 +366,7 @@ def cadastrar_aluno(
             )
         )
 
-
         conexao.commit()
-
 
         return (
             True,
@@ -303,13 +374,11 @@ def cadastrar_aluno(
             cursor.lastrowid
         )
 
-
     except Exception:
 
         conexao.rollback()
 
         raise
-
 
     finally:
 
