@@ -3,14 +3,16 @@ import re
 import unicodedata
 from datetime import datetime, date
 
-
+# Remove espaços desnecessários e padroniza valores extraídos do PDF
+# garantindo que os dados enviados para o banco fiquem organizados.
 def _limpar(valor):
     if valor is None:
         return None
     valor = re.sub(r"\s+", " ", str(valor)).strip()
     return valor or None
 
-
+# Normaliza textos removendo acentos e deixando tudo em maiúsculo.
+# Usado para facilitar a comparação de informações extraídas do documento.
 def _normalizar(valor):
     valor = _limpar(valor) or ""
     valor = unicodedata.normalize("NFKD", valor)
@@ -66,7 +68,8 @@ def _data_extenso_pt(texto):
     except ValueError:
         return None
 
-
+# Trabalha com as palavras e posições do PDF.
+# As coordenadas permitem identificar informações mesmo em tabelas complexas.
 def _words(pagina):
     return pagina.get("palavras") or []
 
@@ -111,7 +114,8 @@ def _valor_rotulo(palavras, rotulo, x_valor=190, tolerancia_y=4):
     vals.sort(key=lambda w: w["x0"])
     return _limpar(" ".join(w["texto"] for w in vals))
 
-
+# Extrai os dados principais da primeira página:
+# informações do aluno, escola, responsáveis e dados complementares.
 def _extrair_pagina1(pagina):
     palavras = _words(pagina)
     texto = pagina.get("texto", "")
@@ -244,7 +248,8 @@ def _linhas_por_y(palavras, y0=None, y1=None, tolerancia=1.3):
         linhas.append((y, linha))
     return linhas
 
-
+# Faz a leitura da formação geral básica,
+# identificando disciplinas, notas, carga horária e frequência.
 def _extrair_pagina2(pagina):
     palavras = _words(pagina)
 
@@ -403,7 +408,8 @@ def _extrair_meta_direita_p3(palavras):
         "observacoes": _texto_area(palavras, x0=960, y0=212, y1=235),
     }
 
-
+# Extrai os componentes dos itinerários formativos,
+# incluindo notas, frequência e carga horária.
 def _extrair_itinerario_pagina(pagina, numero):
     palavras = _words(pagina)
     if numero == 3:
@@ -519,7 +525,9 @@ def _extrair_resultado_curso(pagina):
         "data_emissao": data_emissao,
     }
 
-
+# Função principal do parser.
+# Organiza todas as informações extraídas das páginas do PDF
+# e retorna os dados estruturados para geração da Ficha 19.
 def extrair_dados_siepe(texto, tabelas=None, paginas=None):
     paginas = paginas or []
     if len(paginas) < 4:
@@ -1627,7 +1635,8 @@ def _extrair_resultado_curso(pagina):
         pagina
     )
 
-
+# Realiza validações finais antes de salvar os dados,
+# garantindo que informações obrigatórias estejam corretas.
 def _validar_dados_extraidos(dados):
     aluno = dados.get("aluno") or {}
 

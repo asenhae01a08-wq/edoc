@@ -6,36 +6,76 @@ import pymupdf
 import pdfplumber
 
 
+# Realiza a leitura dos documentos PDF do SIEPE.
+# O método combina PyMuPDF e pdfplumber para extrair
+# informações necessárias para geração da Ficha 19.
 def extrair_conteudo_pdf(arquivo):
+
     """
     Lê o PDF oficial do histórico escolar.
 
     Retorna:
     - texto completo;
-    - tabelas do pdfplumber (mantidas por compatibilidade);
-    - páginas com texto e palavras posicionadas do PyMuPDF.
+    - tabelas extraídas;
+    - páginas com informações de posicionamento.
 
-    As coordenadas das palavras são importantes porque o documento oficial
-    usa tabelas visuais e algumas células não são separadas corretamente pelo
-    pdfplumber.
+    As coordenadas das palavras são utilizadas para interpretar
+    corretamente tabelas do documento oficial.
     """
+
+    # Lê o arquivo enviado pelo usuário diretamente em memória,
+    # evitando a necessidade de salvar arquivos temporários.
     conteudo = arquivo.read()
 
+    # Valida se o arquivo recebido possui conteúdo.
     if not conteudo:
         raise ValueError("O PDF está vazio.")
 
-    documento = pymupdf.open(stream=conteudo, filetype="pdf")
+    # Abre o documento PDF utilizando os bytes carregados.
+    documento = pymupdf.open(
+        stream=conteudo,
+        filetype="pdf"
+    )
 
     textos_paginas = []
     paginas = []
 
     try:
+
+        # Percorre todas as páginas do documento,
+        # extraindo texto e posição das palavras.
         for numero, pagina in enumerate(documento, start=1):
-            texto_pagina = pagina.get_text("text", sort=True)
+
+            # Extrai o texto da página.
+            # sort=True tenta organizar o texto
+            # seguindo a ordem visual do documento.
+            texto_pagina = pagina.get_text(
+                "text",
+                sort=True
+            )
+
             textos_paginas.append(texto_pagina)
 
+            # Lista que armazenará cada palavra
+            # juntamente com sua posição no PDF.
             palavras = []
-            for palavra in pagina.get_text("words", sort=True):
+
+            # Extrai as palavras individualmente.
+            # O PyMuPDF retorna:
+            #
+            # 0 = posição X inicial
+            # 1 = posição Y inicial
+            # 2 = posição X final
+            # 3 = posição Y final
+            # 4 = texto
+            #
+            # Essas coordenadas são importantes para
+            # interpretar tabelas do histórico escolar.
+            for palavra in pagina.get_text(
+                "words",
+                sort=True
+            ):
+
                 palavras.append(
                     {
                         "x0": float(palavra[0]),
@@ -46,6 +86,8 @@ def extrair_conteudo_pdf(arquivo):
                     }
                 )
 
+            # Guarda todas as informações importantes
+            # daquela página.
             paginas.append(
                 {
                     "numero": numero,
@@ -55,25 +97,52 @@ def extrair_conteudo_pdf(arquivo):
                     "palavras": palavras,
                 }
             )
+
     finally:
+
+        # Fecha o documento depois da leitura.
+        # Isso libera os recursos utilizados pelo PyMuPDF.
         documento.close()
 
-    texto = "\n".join(textos_paginas).strip()
+    # Junta o texto de todas as páginas em uma única string.
+    texto = "\n".join(
+        textos_paginas
+    ).strip()
 
+    # Verifica se foi possível extrair uma quantidade
+    # mínima de texto.
+    #
+    # Caso o PDF seja somente uma imagem digitalizada,
+    # o PyMuPDF não conseguirá extrair o texto normalmente.
     if len(texto) < 30:
+
         raise ValueError(
             "Não foi possível extrair texto suficiente do PDF. "
             "Se o documento for somente imagem, será necessário ativar OCR."
         )
 
+    # Lista que armazenará as tabelas encontradas pelo pdfplumber.
     tabelas = []
 
-    # Mantemos o pdfplumber porque ele ainda pode ser útil em outros
-    # documentos, mas o parser do histórico oficial usa principalmente
-    # as coordenadas do PyMuPDF.
-    with pdfplumber.open(BytesIO(conteudo)) as pdf:
-        for numero_pagina, pagina in enumerate(pdf.pages, start=1):
+    # Abre novamente o conteúdo em memória,
+    # dessa vez utilizando o pdfplumber.
+    #
+    # O pdfplumber é utilizado principalmente
+    # para tentar identificar tabelas.
+    with pdfplumber.open(
+        BytesIO(conteudo)
+    ) as pdf:
+
+        # Percorre todas as páginas.
+        for numero_pagina, pagina in enumerate(
+            pdf.pages,
+            start=1
+        ):
+
+            # Tenta extrair todas as tabelas da página.
             for tabela in pagina.extract_tables() or []:
+
+                # Guarda a página e suas linhas.
                 tabelas.append(
                     {
                         "pagina": numero_pagina,
@@ -81,6 +150,8 @@ def extrair_conteudo_pdf(arquivo):
                     }
                 )
 
+    # Retorna todas as informações necessárias
+    # para o parser do SIEPE.
     return {
         "texto": texto,
         "tabelas": tabelas,
