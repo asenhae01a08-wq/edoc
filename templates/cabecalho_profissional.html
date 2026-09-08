@@ -669,27 +669,6 @@
             </a>
 
 
-<!-- SOLICITAÇÕES 2ª VIA -->
-
-<a
-    href="{{ url_for('solicitacoes_segunda_via') }}"
-    class="
-        edoc-menu-item
-        {% if request.endpoint == 'solicitacoes_segunda_via' %}
-            edoc-menu-ativo
-        {% endif %}
-    "
->
-
-    <i class="fa-solid fa-rotate"></i>
-
-    <span>
-        Solicitações 2ª via
-    </span>
-
-</a>
-
-
 
             <!-- TURMAS -->
 
@@ -718,12 +697,29 @@
 
             </a>
 
+<a
+    href="{{ url_for('solicitacoes_segunda_via') }}"
+    class="
+        edoc-menu-item
+        {% if request.endpoint == 'solicitacoes_segunda_via' %}
+            edoc-menu-ativo
+        {% endif %}
+    "
+>
+
+    <i class="fa-solid fa-rotate"></i>
+
+    <span>
+        Solicitações 2ª via
+    </span>
+
+</a>
 
 
             <!-- SUPORTE -->
 
             <a
-                href="{{ url_for('suporte') }}"
+                href="{{ url_for('suporte_profissional') }}"
                 class="
                     edoc-menu-item
                     {% if request.endpoint == 'suporte' %}

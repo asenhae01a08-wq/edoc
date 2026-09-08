@@ -384,3 +384,58 @@ def cadastrar_aluno(
 
         cursor.close()
         conexao.close()
+        
+        # ==========================================================
+# BUSCAR ALUNOS POR PESQUISA (nome ou matrícula)
+# ==========================================================
+
+def buscar_alunos_por_pesquisa(termo):
+    """
+    Pesquisa alunos por nome ou matrícula (busca parcial).
+    Usado na pesquisa ao vivo da tela Turmas e Alunos.
+    """
+
+    if not termo or not str(termo).strip():
+        return []
+
+    termo = str(termo).strip()
+
+    conexao = conectar_mysql()
+    if conexao is None:
+        return []
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+        termo_like = f"%{termo}%"
+
+        cursor.execute(
+            """
+            SELECT
+                id,
+                nome,
+                matricula,
+                id_turma,
+                email,
+                cpf,
+                data_nascimento,
+                status_ficha19
+            FROM alunos
+            WHERE
+                nome LIKE %s
+                OR matricula LIKE %s
+            ORDER BY nome
+            LIMIT 40
+            """,
+            (termo_like, termo_like)
+        )
+
+        return cursor.fetchall() or []
+
+    except Exception as erro:
+        print("Erro em buscar_alunos_por_pesquisa:", erro)
+        return []
+
+    finally:
+        cursor.close()
+        conexao.close()

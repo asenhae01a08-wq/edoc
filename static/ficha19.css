@@ -356,130 +356,83 @@ textarea {
     width: 100%;
 }
 
-/* Impressão */
+/* =========================================================
+   IMPRESSÃO
+   ========================================================= */
+
+@page {
+    margin: 0;
+    size: A4 portrait;
+}
 
 @media print {
-    .brasao-oficial img {
-        max-height: 24mm;
-        max-width: 25mm;
+
+    /* Esconde o sistema */
+    #edoc-cabecalho-profissional,
+    .barra-edoc,
+    .cabecalho-fixo,
+    .mensagens-flash,
+    .mensagem-flash,
+    .toast-edoc,
+    .modal-finalizacao,
+    .flash,
+    .alert,
+    .mensagem-sistema,
+    .botao-voltar,
+    .acoes-edoc,
+    .identidade-edoc {
+        display: none !important;
     }
 
-    .telefone-escola-oficial input,
-    .quadro-autorizacao-oficial input,
-    .quadro-cadastro-oficial input {
+    html,
+    body,
+    body.pagina-ficha19-edoc {
+        background: #ffffff !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #formFicha19 {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .folha {
+        box-shadow: none !important;
+        margin: 0 auto !important;
+        min-height: 297mm;
+        width: 210mm;
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .folha:last-child {
+        page-break-after: auto;
+        break-after: auto;
+    }
+
+    input,
+    select,
+    textarea {
         background: transparent !important;
-        border: none !important;
+        color: #000000 !important;
     }
-}
 
-/* =========================================================
-   CAMPOS
-   ========================================================= */
+    input::placeholder,
+    textarea::placeholder {
+        color: transparent !important;
+    }
 
-input,
-select,
-textarea {
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    color: #000000;
-    outline: none;
-}
-
-input:hover,
-input:focus,
-select:hover,
-select:focus,
-textarea:hover,
-textarea:focus {
-    background-color: #fff9cf;
-}
-
-input[readonly] {
-    cursor: default;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: #999999;
-    opacity: 1;
-}
-
-.campo-linha {
-    border-bottom: 1px solid #000000;
-    font-size: 9px;
-    min-height: 17px;
-    padding: 1px 3px;
-}
-
-/* =========================================================
-   PRIMEIRA PÁGINA
-   ========================================================= */
-
-.texto-certificado {
-    font-size: 9px;
-    line-height: 2;
-    margin-top: 10px;
-    text-align: justify;
-}
-
-.texto-certificado p {
-    margin-bottom: 5px;
-}
-
-.campo-nome {
-    font-weight: bold;
-    text-transform: uppercase;
-    width: 320px;
-}
-
-.campo-filiacao {
-    text-transform: uppercase;
-    width: 225px;
-}
-
-.campo-data {
-    width: 110px;
-}
-
-.campo-cidade {
-    text-transform: uppercase;
-    width: 105px;
-}
-
-.campo-uf {
-    text-align: center;
-    text-transform: uppercase;
-    width: 32px;
-}
-
-.campo-nacionalidade {
-    text-transform: uppercase;
-    width: 115px;
-}
-
-.campo-rg {
-    width: 100px;
-}
-
-.campo-orgao {
-    text-transform: uppercase;
-    width: 80px;
-}
-
-.campo-cpf {
-    width: 125px;
-}
-
-.campo-conclusao {
-    text-transform: uppercase;
-    width: 115px;
-}
-
-.campo-modalidade {
-    font-weight: bold;
-    text-transform: uppercase;
-    width: 120px;
+    .campo-linha,
+    .resultado-ano input,
+    .resultado-ano select,
+    .dados-itinerario input,
+    .quadro-resultado input,
+    .quadro-resultado select,
+    .local-data input,
+    .rodape-documento input {
+        border-bottom-color: transparent !important;
+    }
 }
 
 /* =========================================================
@@ -972,15 +925,14 @@ input.componente {
 }
 
 @media print {
-    html,
-    body {
-        background-color: #ffffff;
-        height: auto;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-
+  .cabecalho-fixo,
+.barra-edoc,
+.modal-finalizacao,
+.toast-edoc,
+.aviso-conferencia-edoc,
+.mensagens-flash-edoc {
+    display: none !important;
+}
     #formFicha19 {
         margin: 0;
         padding: 0;
@@ -1613,5 +1565,17 @@ input.componente {
 
     .rodape-capa input {
         border-bottom-color: #000000 !important;
+    }
+}
+
+@media print {
+    .toast-edoc,
+    #flashEdoc,
+    .mensagem-flash-edoc {
+        display: none !important;
+    }
+
+    .mensagem-conferencia {
+        display: none !important;
     }
 }

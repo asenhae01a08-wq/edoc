@@ -1125,19 +1125,21 @@
 
     </header>
 
-    {% if aluno_id and dados_ficha %}
-        <div
-            style="
-                max-width: 210mm;
-                margin: 0 auto 12px;
-                padding: 10px 13px;
-                border: 1px solid #bdddf0;
-                border-radius: 8px;
-                background: #edf7fd;
-                color: #0c4770;
-                font-size: 12px;
-                line-height: 1.5;
-            "
+   {% if aluno_id and dados_ficha %}
+    <div
+        class="aviso-conferencia-edoc"
+        style="
+            max-width: 210mm;
+            margin: 0 auto 12px;
+            padding: 10px 13px;
+            border: 1px solid #bdddf0;
+            border-radius: 8px;
+            background: #edf7fd;
+            color: #0c4770;
+            font-size: 12px;
+            line-height: 1.5;
+        "
+    >
         >
             <i class="fa-solid fa-pen-to-square"></i>
             <strong>Conferência editável:</strong>
@@ -1148,8 +1150,11 @@
     {% endif %}
 
     {% with mensagens = get_flashed_messages() %}
-        {% if mensagens %}
-            <div style="max-width: 210mm; margin: 0 auto 15px;">
+    {% if mensagens %}
+        <div
+            class="mensagens-flash-edoc"
+            style="max-width: 210mm; margin: 0 auto 15px;"
+        >
                 {% for mensagem in mensagens %}
                     <div style="background:#fff3cd; border:1px solid #ffe69c; padding:10px 12px; margin-bottom:6px; border-radius:6px; font-size:13px;">
                         {{ mensagem }}
@@ -3443,10 +3448,6 @@
     <script
     src="{{ url_for('static', filename='scripts/pdf_ficha19.js') }}"
     ></script>
-<img
-    src="{{ url_for('static', filename='img/brasao_pernambuco.png') }}"
-    alt="Brasão de Pernambuco"
->
 
 
     <!-- Importação múltipla: não interfere no fluxo de 1 PDF -->

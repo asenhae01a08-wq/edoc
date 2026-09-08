@@ -351,7 +351,7 @@
                         Ver lista
                     </span>
 
-                    <i class="fa-solid fa-chevron-right"></i>
+                    
 
                 </div>
 
@@ -407,40 +407,6 @@
 
         </a>
 
-
-
-        <!-- CADASTRAR ESTUDANTES -->
-
-        <a
-            href="{{ url_for('preenchimento') }}"
-            class="card-funcionalidade card-cadastro"
-        >
-
-
-            <div class="icone-funcionalidade">
-
-                <i class="fa-solid fa-pen"></i>
-
-            </div>
-
-
-            <h2>
-                Cadastrar estudantes
-            </h2>
-
-
-            <p>
-
-                Preencha e revise as informações
-                escolares necessárias.
-
-            </p>
-
-
-            <span class="linha-card"></span>
-
-
-        </a>
 
 
 
@@ -548,36 +514,39 @@
              SUPORTE
         =============================================== -->
 
-        <a
-            href="{{ url_for('suporte') }}"
-            class="card-funcionalidade card-suporte"
-        >
+       <!-- ==============================================
+     SUPORTE
+============================================== -->
+
+<a 
+    href="{{ url_for('suporte_profissional') }}" 
+    class="card-funcionalidade card-suporte" 
+>
+
+    <div class="icone-funcionalidade">
+
+        <i class="fa-regular fa-circle-question"></i>
+
+    </div>
 
 
-            <div class="icone-funcionalidade">
-
-                <i class="fa-regular fa-circle-question"></i>
-
-            </div>
+    <h2>
+        Suporte
+    </h2>
 
 
-            <h2>
-                Suporte
-            </h2>
+    <p>
+
+        Acesse a central de ajuda e
+        os canais de atendimento do eDOC.
+
+    </p>
 
 
-            <p>
-
-                Acesse a central de ajuda e
-                os canais de atendimento do eDOC.
-
-            </p>
+    <span class="linha-card"></span>
 
 
-            <span class="linha-card"></span>
-
-
-        </a>
+</a>
 
 
 

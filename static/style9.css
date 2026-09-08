@@ -393,3 +393,48 @@ body {
     left: 18px;
 }
 }
+
+/* =========================================================
+   CORREÇÃO DAS MENSAGENS FLASH
+   ========================================================= */
+/* =========================================================
+   CORREÇÃO DAS MENSAGENS FLASH
+   ========================================================= */
+
+.pagina-suporte {
+    flex-direction: column;   /* ← importante */
+}
+
+.mensagens-flash {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto 18px auto;
+    padding: 0;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.mensagem-flash {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px 0;
+    padding: 14px 20px;
+    box-sizing: border-box;
+
+    text-align: center;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.mensagem-flash.sucesso {
+    background: #e8f7ef !important;
+    color: #1d8a68 !important;
+    border: 1px solid #b9e3cf !important;
+}
+
+.mensagem-flash.erro {
+    background: #fdecec !important;
+    color: #b42318 !important;
+    border: 1px solid #f2b8b5 !important;
+}

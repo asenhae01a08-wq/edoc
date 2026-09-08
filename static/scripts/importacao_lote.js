@@ -530,21 +530,21 @@
     }
 
     // =========================================================
-    // ENVIA UM ARQUIVO POR VEZ
-    // =========================================================
+// ENVIA UM ARQUIVO POR VEZ
+// =========================================================
 
-    async function enviarArquivo(
-        arquivo
-    ) {
+async function enviarArquivo(arquivo) {
 
-        const dados =
-            new FormData();
+    const dados =
+        new FormData();
 
-        dados.append(
-            "arquivoSiepe",
-            arquivo,
-            arquivo.name
-        );
+    dados.append(
+        "arquivoSiepe",
+        arquivo,
+        arquivo.name
+    );
+
+    try {
 
         const resposta =
             await fetch(
@@ -570,6 +570,79 @@
                     }
                 }
             );
+
+        const resultado =
+            await resposta.json();
+
+        // =========================================
+        // ERRO DEVOLVIDO PELO FLASK
+        // =========================================
+
+        if (
+            !resposta.ok ||
+            !resultado.sucesso
+        ) {
+
+            throw new Error(
+                resultado.erro ||
+                "Não foi possível importar o arquivo."
+            );
+
+        }
+
+        // =========================================
+        // SUCESSO
+        // =========================================
+
+        if (
+            typeof window.mostrarToastEdoc ===
+            "function"
+        ) {
+
+            window.mostrarToastEdoc(
+                "Arquivo importado com sucesso. " +
+                "A Ficha 19 está em fabricação e o aluno " +
+                "já pode acompanhar o andamento."
+            );
+
+        }
+
+        // =========================================
+        // RETORNA O RESULTADO PARA A IMPORTAÇÃO
+        // EM LOTE CONTINUAR FUNCIONANDO
+        // =========================================
+
+        return resultado;
+
+    } catch (erro) {
+
+        // =========================================
+        // MOSTRA ERRO NO TOAST
+        // =========================================
+
+        if (
+            typeof window.mostrarToastEdoc ===
+            "function"
+        ) {
+
+            window.mostrarToastEdoc(
+                erro.message ||
+                "Erro ao importar o arquivo.",
+                true
+            );
+
+        } else {
+
+            console.error(
+                "Erro na importação:",
+                erro
+            );
+
+        }
+
+        throw erro;
+    }
+}
 
         // -----------------------------------------------------
         // SESSÃO EXPIRADA

@@ -74,8 +74,8 @@
                 <p>
 
                     Este é seu primeiro acesso.
-                    Crie uma nova senha para continuar
-                    utilizando o eDOC.
+                    Crie uma nova senha e informe um e-mail
+                    para recuperação da sua conta.
 
                 </p>
 
@@ -126,7 +126,9 @@
             >
 
 
-                <!-- NOVA SENHA -->
+                <!-- ======================================
+                     NOVA SENHA
+                ======================================= -->
 
                 <div class="campo">
 
@@ -172,7 +174,9 @@
 
 
 
-                <!-- CONFIRMAR SENHA -->
+                <!-- ======================================
+                     CONFIRMAR SENHA
+                ======================================= -->
 
                 <div class="campo">
 
@@ -218,7 +222,58 @@
 
 
 
-                <!-- BOTÃO -->
+                <!-- ======================================
+                     E-MAIL DE RECUPERAÇÃO
+                ======================================= -->
+
+                <div class="campo">
+
+
+                    <label for="email">
+
+                        E-mail para recuperação de senha
+
+                    </label>
+
+
+                    <div class="campo-senha">
+
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Digite seu melhor e-mail"
+                            autocomplete="email"
+                            required
+                        >
+
+
+                        <span class="icone-email">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                        </span>
+
+
+                    </div>
+
+
+                    <small>
+
+                        Este e-mail será utilizado caso você
+                        esqueça sua senha futuramente.
+
+                    </small>
+
+
+                </div>
+
+
+
+                <!-- ======================================
+                     BOTÃO
+                ======================================= -->
 
                 <button
                     type="submit"
@@ -227,7 +282,7 @@
 
                     <i class="fa-solid fa-key"></i>
 
-                    Redefinir senha
+                    Salvar e continuar
 
                 </button>
 

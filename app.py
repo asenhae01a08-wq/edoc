@@ -46,9 +46,8 @@ load_dotenv(
     )
 )
 
-# Inicialização da aplicação Flask e configurações gerais do sistema.
+
 app = Flask(__name__)
-# Chave utilizada para segurança das sessões dos usuários.
 app.secret_key = "12345678"
 app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
 
@@ -57,8 +56,6 @@ app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024
 # STATUS DA FICHA 19
 # ==========================================================
 
-# Atualiza o status da Ficha 19 do estudante no banco de dados,
-# permitindo que o aluno acompanhe o andamento do documento.
 def definir_status_ficha19(aluno_id, novo_status):
     """
     Atualiza somente o status da Ficha 19 do aluno.
@@ -135,11 +132,8 @@ app.config["PASTA_PDFS_GERADOS"] = PASTA_PDFS_GERADOS
 
 # ==========================================================
 # DECORADORES DE LOGIN
-# ==========================================================  
+# ==========================================================
 
-# Decorator responsável por proteger páginas exclusivas
-# do profissional da secretaria escolar.
-# Impede que alunos acessem funcionalidades administrativas.
 def login_required_profissional(f):
 
     @wraps(f)
@@ -182,8 +176,7 @@ def login_required_profissional(f):
     return decorated_function
 
 
-# Decorator responsável por proteger páginas do aluno,
-# garantindo que apenas estudantes autenticados tenham acesso.
+
 def login_required_aluno(f):
 
     @wraps(f)
@@ -234,9 +227,6 @@ def login_required_aluno(f):
     "/login",
     methods=["GET", "POST"]
 )
-# Realiza a autenticação dos usuários do sistema.
-# O login identifica se o acesso pertence a um aluno
-# ou profissional e direciona para sua área específica.
 def login():
 
     # ======================================================
@@ -612,6 +602,250 @@ def redefinir():
 
 
     # ======================================================
+    # RECEBE OS DADOS
+    # ======================================================
+
+    senha = request.form.get(
+        "senha",
+        ""
+    ).strip()
+
+
+    confirmar_senha = request.form.get(
+        "confirmar_senha",
+        ""
+    ).strip()
+
+
+    email = request.form.get(
+        "email",
+        ""
+    ).strip()
+
+
+    # ======================================================
+    # CAMPOS VAZIOS
+    # ======================================================
+
+    if (
+        not senha
+        or not confirmar_senha
+        or not email
+    ):
+
+        flash(
+            "Preencha todos os campos.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # VALIDAÇÃO BÁSICA DO EMAIL
+    # ======================================================
+
+    if (
+        "@" not in email
+        or "." not in email.split("@")[-1]
+    ):
+
+        flash(
+            "Digite um e-mail válido.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # SENHA MÍNIMA
+    # ======================================================
+
+    if len(senha) < 6:
+
+        flash(
+            "A senha deve possuir pelo menos 6 caracteres.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # CONFIRMAÇÃO
+    # ======================================================
+
+    if senha != confirmar_senha:
+
+        flash(
+            "As senhas não coincidem.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    # ======================================================
+    # CONEXÃO
+    # ======================================================
+
+    conexao = conectar_mysql()
+
+
+    if conexao is None:
+
+        flash(
+            "Não foi possível conectar ao banco de dados.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    cursor = conexao.cursor()
+
+
+    try:
+
+        # ==================================================
+        # ATUALIZA OS DADOS DO PRIMEIRO ACESSO
+        # ==================================================
+
+        cursor.execute(
+            """
+            UPDATE alunos
+
+            SET
+                senha = %s,
+                email = %s,
+                primeiro_login = CURRENT_DATE()
+
+            WHERE id = %s
+            """,
+            (
+                senha,
+                email,
+                usuario_id
+            )
+        )
+
+
+        # ==================================================
+        # VERIFICA SE O ALUNO FOI ENCONTRADO
+        # ==================================================
+
+        if cursor.rowcount == 0:
+
+            conexao.rollback()
+
+            flash(
+                "Aluno não encontrado.",
+                "erro"
+            )
+
+            return redirect(
+                url_for("redefinir")
+            )
+
+
+        # ==================================================
+        # SALVA NO BANCO
+        # ==================================================
+
+        conexao.commit()
+
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+
+        print(
+            "ERRO AO REDEFINIR SENHA DO ALUNO:",
+            erro
+        )
+
+
+        flash(
+            "Não foi possível salvar os dados.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("redefinir")
+        )
+
+
+    finally:
+
+        cursor.close()
+
+        conexao.close()
+
+
+    # ======================================================
+    # FINALIZA A SESSÃO DE PRIMEIRO ACESSO
+    # ======================================================
+
+    session.clear()
+
+
+    flash(
+        "Senha redefinida com sucesso! "
+        "Entre novamente com sua nova senha.",
+        "sucesso"
+    )
+
+
+    return redirect(
+        url_for("login")
+    )
+
+    # ======================================================
+    # SEGURANÇA
+    # Só entra aqui quem veio do primeiro acesso
+    # ======================================================
+
+    usuario_id = session.get(
+        "usuario_id"
+    )
+
+
+    if not usuario_id:
+
+        flash(
+            "Faça login para continuar.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("login")
+        )
+
+
+    # ======================================================
+    # GET
+    # ======================================================
+
+    if request.method == "GET":
+
+        return render_template(
+            "redefinir.html"
+        )
+
+
+    # ======================================================
     # RECEBE AS SENHAS
     # ======================================================
 
@@ -913,8 +1147,6 @@ def meus_documentos_aluno():
 
 @app.route("/solicitar-segunda-via", methods=["POST"])
 @login_required_aluno
-# Registra uma solicitação de segunda via feita pelo aluno
-# e envia para análise da secretaria escolar.
 def solicitar_segunda_via():
 
     aluno_id = session.get("aluno_id")
@@ -1580,9 +1812,6 @@ def fichas_em_andamento():
     methods=["POST"]
 )
 @login_required_profissional
-
-# Remove apenas os dados da Ficha 19 gerada,
-# mantendo o cadastro do estudante no sistema.
 def excluir_ficha19(aluno_id):
 
     conexao = conectar_mysql()
@@ -2105,10 +2334,7 @@ def pesquisar_alunos_live():
 # IMPORTAR TURMA POR PLANILHA
 # ==========================================================
 
-@app.route(
-    "/importar-turma",
-    methods=["GET", "POST"]
-)
+@app.route("/importar-turma", methods=["GET", "POST"])
 @login_required_profissional
 def importar_turma():
 
@@ -2116,10 +2342,8 @@ def importar_turma():
 
         arquivo = request.files.get("arquivo")
 
-        if (
-            arquivo is None
-            or arquivo.filename == ""
-        ):
+
+        if not arquivo:
 
             flash(
                 "Selecione uma planilha.",
@@ -2130,21 +2354,6 @@ def importar_turma():
                 url_for("importar_turma")
             )
 
-        nome_arquivo = (
-            arquivo.filename
-            or ""
-        ).lower()
-
-        if not nome_arquivo.endswith(".xlsx"):
-
-            flash(
-                "A planilha precisa estar no formato XLSX.",
-                "erro"
-            )
-
-            return redirect(
-                url_for("importar_turma")
-            )
 
         try:
 
@@ -2152,54 +2361,286 @@ def importar_turma():
                 arquivo
             )
 
-            alunos = (
-                df.fillna("")
-                .to_dict(
-                    orient="records"
-                )
+
+            alunos = df.fillna("").to_dict(
+                orient="records"
             )
 
-            if not alunos:
 
-                flash(
-                    "A planilha não possui alunos para importar.",
-                    "erro"
-                )
+            # guarda temporariamente na sessão
+            session["alunos_importacao"] = alunos
 
-                return redirect(
-                    url_for("importar_turma")
-                )
-
-            session[
-                "alunos_importacao"
-            ] = alunos
 
             return render_template(
                 "preview_turma.html",
                 alunos=alunos
             )
 
+
         except Exception as erro:
 
-            app.logger.exception(
-                "Erro ao ler a planilha da turma: %s",
-                erro
-            )
 
             flash(
-                f"Erro ao ler a planilha: {erro}",
+                f"Erro ao ler planilha: {erro}",
                 "erro"
             )
+
 
             return redirect(
                 url_for("importar_turma")
             )
+
 
     return render_template(
         "importar_turma.html"
     )
 
 
+
+# ==========================================================
+# CONFIRMAR IMPORTAÇÃO
+# ==========================================================
+# ==========================================================
+# CONFIRMAR IMPORTAÇÃO
+# ==========================================================
+
+@app.route("/confirmar-importacao", methods=["POST"])
+@login_required_profissional
+def confirmar_importacao():
+
+
+    alunos = session.get(
+        "alunos_importacao",
+        []
+    )
+
+
+    print("\n==============================")
+    print("ALUNOS RECEBIDOS:")
+    print(alunos[:1])
+    print("==============================\n")
+
+
+
+    if not alunos:
+
+        flash(
+            "Nenhum aluno encontrado para importar.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("importar_turma")
+        )
+
+
+
+    conexao = conectar_mysql()
+
+
+
+    if conexao is None:
+
+        flash(
+            "Erro ao conectar ao banco.",
+            "erro"
+        )
+
+        return redirect(
+            url_for("importar_turma")
+        )
+
+
+
+    cursor = conexao.cursor()
+
+
+
+    importados = 0
+
+
+
+    try:
+
+
+        for aluno in alunos:
+
+
+
+            # ==========================
+            # BUSCA AUTOMÁTICA DOS CAMPOS
+            # ==========================
+
+
+            nome = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "nome" in chave.lower()
+                ),
+                None
+            )
+
+
+            matricula = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "mat" in chave.lower()
+                ),
+                None
+            )
+
+
+            cpf = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "cpf" in chave.lower()
+                ),
+                ""
+            )
+
+
+            turma = next(
+                (
+                    valor
+                    for chave, valor in aluno.items()
+                    if "turma" in chave.lower()
+                ),
+                ""
+            )
+
+
+
+            print(
+                "IMPORTANDO:",
+                nome,
+                matricula,
+                turma
+            )
+
+
+
+            if not nome or not matricula:
+
+                continue
+
+
+
+            # ==========================
+            # VERIFICA DUPLICIDADE
+            # ==========================
+
+
+            cursor.execute(
+                """
+                SELECT id
+                FROM alunos
+                WHERE matricula = %s
+                """,
+                (
+                    str(matricula),
+                )
+            )
+
+
+            existe = cursor.fetchone()
+
+
+
+            if existe:
+
+                continue
+
+
+
+            # ==========================
+            # INSERE NO BANCO
+            # ==========================
+
+
+            cursor.execute(
+                """
+                INSERT INTO alunos
+                (
+                    nome,
+                    matricula,
+                    cpf,
+                    id_turma
+                )
+
+                VALUES
+                (
+                    %s,
+                    %s,
+                    %s,
+                    %s
+                )
+                """,
+                (
+                    nome,
+                    str(matricula),
+                    cpf,
+                    turma
+                )
+            )
+
+
+
+            importados += 1
+
+
+
+        conexao.commit()
+
+
+
+        session.pop(
+            "alunos_importacao",
+            None
+        )
+
+
+
+        flash(
+            f"{importados} alunos importados com sucesso!",
+            "sucesso"
+        )
+
+
+
+    except Exception as erro:
+
+
+        conexao.rollback()
+
+
+        print(
+            "ERRO AO IMPORTAR:",
+            erro
+        )
+
+
+        flash(
+            f"Erro ao importar: {erro}",
+            "erro"
+        )
+
+
+
+    finally:
+
+
+        cursor.close()
+
+        conexao.close()
+
+
+
+    return redirect(
+        url_for("turmas_alunos")
+    )
 # ==========================================================
 # TURMA TDS A
 # ==========================================================
@@ -2211,8 +2652,7 @@ TURMAS_EDOC = (
     "3º MKT B",
 )
 
-# Realiza a validação do CPF utilizando
-# o cálculo oficial dos dígitos verificadores.
+
 def validar_cpf(cpf):
     """
     Valida CPF pelo cálculo oficial dos dois dígitos verificadores.
@@ -2334,7 +2774,6 @@ def carregar_alunos_turma(turma):
 
     return alunos
 
-
 @app.route("/turma_TDSA")
 @login_required_profissional
 def turma_3tdsa():
@@ -2342,7 +2781,7 @@ def turma_3tdsa():
     return render_template(
         "turma_TDSA.html",
         alunos=carregar_alunos_turma(
-            "3º TDS A"
+            "3 TDS A"
         )
     )
 
@@ -2350,7 +2789,6 @@ def turma_3tdsa():
 # ==========================================================
 # TURMA TDS B
 # ==========================================================
-
 @app.route("/turma_TDSB")
 @login_required_profissional
 def turma_3tdsb():
@@ -2358,10 +2796,9 @@ def turma_3tdsb():
     return render_template(
         "turma_TDSB.html",
         alunos=carregar_alunos_turma(
-            "3º TDS B"
+            "3 TDS B"
         )
     )
-
 
 # ==========================================================
 # TURMA MKT A
@@ -2374,7 +2811,7 @@ def turma_3mkta():
     return render_template(
         "turma_MKTA.html",
         alunos=carregar_alunos_turma(
-            "3º MKT A"
+            "3 MKT A"
         )
     )
 
@@ -2382,7 +2819,6 @@ def turma_3mkta():
 # ==========================================================
 # TURMA MKT B
 # ==========================================================
-
 @app.route("/turma_MKTB")
 @login_required_profissional
 def turma_3mktb():
@@ -2390,7 +2826,7 @@ def turma_3mktb():
     return render_template(
         "turma_MKTB.html",
         alunos=carregar_alunos_turma(
-            "3º MKT B"
+            "3 MKT B"
         )
     )
 
@@ -2880,9 +3316,6 @@ def ficha19():
     methods=["POST"]
 )
 @login_required_profissional
-# Recebe arquivos do SIEPE em formato PDF ou XLSX,
-# realiza a leitura dos dados do estudante,
-# salva as informações no banco e inicia a geração da Ficha 19.
 def importar_pdf_siepe():
 
     modo_lote = (
@@ -4524,19 +4957,291 @@ def nova_senha(token):
         url_for("login")
     )
 
+# ==========================================================
+# SUPORTE DO ALUNO
+# ==========================================================
 
-# ==========================================================
-# SUPORTE
-# ==========================================================
+# ============================================================
+# CONTATOS DE SUPORTE
+# ============================================================
+
+def buscar_contatos_suporte():
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        return (
+            "suporte@gmail.com",
+            "(81) 7400-0000"
+        )
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                email,
+                telefone
+            FROM config_suporte
+            WHERE id = 1
+            LIMIT 1
+            """
+        )
+
+        contato = cursor.fetchone()
+
+        if contato:
+            return (
+                contato.get("email") or "suporte@gmail.com",
+                contato.get("telefone") or "(81) 7400-0000"
+            )
+
+        return (
+            "suporte@gmail.com",
+            "(81) 7400-0000"
+        )
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro ao buscar contatos de suporte: %s",
+            erro
+        )
+
+        return (
+            "suporte@gmail.com",
+            "(81) 7400-0000"
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+
+def salvar_contatos_suporte(email, telefone):
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        raise RuntimeError(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+    cursor = conexao.cursor()
+
+    try:
+
+        cursor.execute(
+            """
+            INSERT INTO config_suporte (
+                id,
+                email,
+                telefone
+            )
+            VALUES (
+                1,
+                %s,
+                %s
+            )
+            ON DUPLICATE KEY UPDATE
+                email = VALUES(email),
+                telefone = VALUES(telefone)
+            """,
+            (
+                email,
+                telefone
+            )
+        )
+
+        conexao.commit()
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao salvar contatos de suporte: %s",
+            erro
+        )
+
+        raise
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
 
 @app.route("/suporte")
+@login_required_aluno
 def suporte():
 
+    email, telefone = buscar_contatos_suporte()
+
     return render_template(
-        "suporte.html"
+        "suporte.html",
+        email_suporte=email,
+        telefone_suporte=telefone
     )
 
+# ==========================================================
+# SUPORTE DO PROFISSIONAL
+# ==========================================================
 
+# ============================================================
+# CONTATOS DE SUPORTE
+# ============================================================
+
+def buscar_contatos_suporte():
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        return (
+            "suporte@gmail.com",
+            "(81) 7400-0000"
+        )
+
+    cursor = conexao.cursor(dictionary=True)
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                email,
+                telefone
+            FROM config_suporte
+            WHERE id = 1
+            LIMIT 1
+            """
+        )
+
+        contato = cursor.fetchone()
+
+        if contato:
+            return (
+                contato.get("email") or "suporte@gmail.com",
+                contato.get("telefone") or "(81) 7400-0000"
+            )
+
+        return (
+            "suporte@gmail.com",
+            "(81) 7400-0000"
+        )
+
+    except Exception as erro:
+
+        app.logger.exception(
+            "Erro ao buscar contatos de suporte: %s",
+            erro
+        )
+
+        return (
+            "suporte@gmail.com",
+            "(81) 7400-0000"
+        )
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+
+
+def salvar_contatos_suporte(email, telefone):
+
+    conexao = conectar_mysql()
+
+    if conexao is None:
+        raise RuntimeError(
+            "Não foi possível conectar ao banco de dados."
+        )
+
+    cursor = conexao.cursor()
+
+    try:
+
+        cursor.execute(
+            """
+            INSERT INTO config_suporte (
+                id,
+                email,
+                telefone
+            )
+            VALUES (
+                1,
+                %s,
+                %s
+            )
+            ON DUPLICATE KEY UPDATE
+                email = VALUES(email),
+                telefone = VALUES(telefone)
+            """,
+            (
+                email,
+                telefone
+            )
+        )
+
+        conexao.commit()
+
+    except Exception as erro:
+
+        conexao.rollback()
+
+        app.logger.exception(
+            "Erro ao salvar contatos de suporte: %s",
+            erro
+        )
+
+        raise
+
+    finally:
+
+        cursor.close()
+        conexao.close()
+@app.route("/suporte_p", methods=["GET", "POST"])
+@login_required_profissional
+def suporte_profissional():
+
+    if request.method == "POST":
+
+        email = request.form.get("email", "").strip()
+        telefone = request.form.get("telefone", "").strip()
+
+        if not email or not telefone:
+            flash("Preencha o e-mail e o telefone.", "erro")
+            return redirect(url_for("suporte_profissional"))
+
+        if "@" not in email or "." not in email.split("@")[-1]:
+            flash("Digite um e-mail válido.", "erro")
+            return redirect(url_for("suporte_profissional"))
+
+        try:
+            salvar_contatos_suporte(email, telefone)
+
+            flash(
+                "Contatos de suporte atualizados com sucesso!",
+                "sucesso"
+            )
+
+        except Exception:
+            flash(
+                "Não foi possível salvar as alterações.",
+                "erro"
+            )
+
+        return redirect(url_for("suporte_profissional"))
+
+    email, telefone = buscar_contatos_suporte()
+
+    return render_template(
+        "suporte_p.html",
+        email_suporte=email,
+        telefone_suporte=telefone
+    )
+    
 # ==========================================================
 # LOGOUT
 # ==========================================================

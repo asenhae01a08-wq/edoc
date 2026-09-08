@@ -1,0 +1,1704 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>eDOC - Suporte</title>
+
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style9.css') }}?v=41"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <style>
+
+        /* =====================================================
+           RESET DA PÁGINA
+        ===================================================== */
+
+        html,
+        body {
+            width: 100% !important;
+            min-height: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+
+        body {
+            min-height: 100vh;
+        }
+
+
+
+        /* =====================================================
+           CABEÇALHO DO ALUNO
+        ===================================================== */
+
+        #edoc-cabecalho-aluno {
+            width: 100%;
+
+            background: #ffffff;
+
+            border-bottom: 1px solid #d8e0e6;
+        }
+
+
+
+        /* =====================================================
+           TOPO
+        ===================================================== */
+
+        #edoc-cabecalho-aluno .edoc-aluno-topo {
+            width: min(1180px, 92%);
+            min-height: 84px;
+
+            margin: 0 auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 30px;
+        }
+
+
+
+        /* =====================================================
+           MARCA
+        ===================================================== */
+
+        #edoc-cabecalho-aluno .edoc-aluno-marca {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            color: inherit;
+
+            text-decoration: none;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-logo {
+            width: 52px;
+            height: 52px;
+
+            min-width: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 12px;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-logo img {
+            width: 44px;
+            height: 44px;
+
+            display: block;
+
+            object-fit: contain;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-nome-sistema {
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-nome-sistema strong {
+            color: #0c4770;
+
+            font-size: 27px;
+            line-height: 1;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-nome-sistema span {
+            margin-top: 5px;
+
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+
+        /* =====================================================
+           PERFIL
+        ===================================================== */
+
+        #edoc-cabecalho-aluno .edoc-aluno-area-usuario {
+            position: relative;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-usuario {
+            padding: 5px 7px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+
+            background: transparent;
+
+            border: none;
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            transition: 0.2s;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-usuario:hover {
+            background: #f5f8fa;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-dados {
+            display: flex;
+            flex-direction: column;
+
+            text-align: right;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-dados strong {
+            color: #26333d;
+
+            font-size: 13px;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-dados span {
+            margin-top: 3px;
+
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-avatar {
+            width: 43px;
+            height: 43px;
+
+            min-width: 43px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 50%;
+
+            font-size: 18px;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-seta {
+            color: #8c9ba5;
+
+            font-size: 9px;
+
+            transition: 0.2s;
+        }
+
+
+        #edoc-cabecalho-aluno
+        .edoc-aluno-usuario.ativo
+        .edoc-aluno-seta {
+            transform: rotate(180deg);
+        }
+
+
+
+        /* =====================================================
+           DROPDOWN
+        ===================================================== */
+
+        #edoc-cabecalho-aluno .edoc-aluno-menu-usuario {
+            width: 155px;
+
+            position: absolute;
+
+            top: calc(100% + 8px);
+            right: 0;
+
+            display: none;
+
+            overflow: hidden;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 9px;
+
+            box-shadow:
+                0 7px 24px
+                rgba(12, 71, 112, 0.14);
+
+            z-index: 9999;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-menu-usuario.aberto {
+            display: block;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-menu-usuario a {
+            min-height: 44px;
+
+            padding: 0 15px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+
+            color: #b64040;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-menu-usuario a:hover {
+            background: #fff5f5;
+        }
+
+
+
+        /* =====================================================
+           MENU AZUL DO ALUNO
+        ===================================================== */
+
+        #edoc-cabecalho-aluno .edoc-aluno-navegacao {
+            width: 100%;
+
+            background: #0c4770;
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-menu {
+            width: min(1180px, 92%);
+
+            min-height: 48px;
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+        }
+
+
+        #edoc-cabecalho-aluno .edoc-aluno-menu-item {
+            min-height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            color: #ffffff;
+
+            text-decoration: none;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            border-left:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+
+            transition: 0.2s;
+        }
+
+
+        #edoc-cabecalho-aluno
+        .edoc-aluno-menu-item:last-child {
+            border-right:
+                1px solid
+                rgba(255, 255, 255, 0.08);
+        }
+
+
+        #edoc-cabecalho-aluno
+        .edoc-aluno-menu-item:hover {
+            background: #126596;
+        }
+
+
+        #edoc-cabecalho-aluno
+        .edoc-aluno-menu-item.ativo {
+            background: #126596;
+        }
+
+
+
+        /* =====================================================
+           POSICIONAMENTO DO SUPORTE
+        ===================================================== */
+
+        .pagina-suporte {
+            min-height:
+                calc(100vh - 132px);
+
+            padding:
+                55px
+                20px
+                45px;
+        }
+
+
+
+        /* =====================================================
+           BOTÃO VOLTAR
+        ===================================================== */
+
+        .edoc-voltar-suporte {
+            width: 46px;
+            height: 46px;
+
+            min-width: 46px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 10px;
+
+            text-decoration: none;
+
+            font-size: 18px;
+
+            transition: 0.2s;
+        }
+
+
+        .edoc-voltar-suporte:hover {
+            background: #0c4770;
+            color: #ffffff;
+
+            transform: translateX(-3px);
+        }
+
+
+
+        /* =====================================================
+           TOPO DO CARD
+        ===================================================== */
+
+        .topo-card-suporte {
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 8px;
+        }
+
+
+
+        /* =====================================================
+           BOTÃO EDITAR
+        ===================================================== */
+
+        .botao-editar-suporte {
+            width: 46px;
+            height: 46px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+            color: #0c4770;
+
+            border: 1px solid #c9ddea;
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 17px;
+
+            transition: 0.2s;
+        }
+
+
+        .botao-editar-suporte:hover {
+            background: #0c4770;
+            color: #ffffff;
+
+            transform: translateY(-2px);
+        }
+
+
+
+        /* =====================================================
+           CABEÇALHO DA CENTRAL
+        ===================================================== */
+
+        .cabecalho-suporte {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-bottom: 28px;
+        }
+
+
+        .cabecalho-suporte > i {
+            color: #0c4770;
+
+            font-size: 28px;
+        }
+
+
+        .cabecalho-suporte h1 {
+            margin: 0;
+
+            color: #26333d;
+
+            font-size: 27px;
+        }
+
+
+
+        /* =====================================================
+           LISTA DE CONTATOS
+        ===================================================== */
+
+        .lista-contatos {
+            display: flex;
+            flex-direction: column;
+
+            gap: 14px;
+        }
+
+
+
+        /* =====================================================
+           CONTATO
+        ===================================================== */
+
+        .contato {
+            min-height: 76px;
+
+            padding:
+                12px
+                16px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            background: #ffffff;
+
+            border: 1px solid #d8e0e6;
+            border-radius: 12px;
+
+            text-decoration: none;
+
+            transition: 0.2s;
+
+            box-sizing: border-box;
+        }
+
+
+        .contato:hover {
+            border-color: #c9ddea;
+
+            box-shadow:
+                0 5px 15px
+                rgba(12, 71, 112, 0.08);
+        }
+
+
+
+        /* =====================================================
+           ÍCONE DO CONTATO
+        ===================================================== */
+
+        .icone-contato {
+            width: 44px;
+            height: 44px;
+
+            min-width: 44px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e9f3fa;
+
+            color: #0c4770;
+
+            border-radius: 10px;
+
+            font-size: 18px;
+        }
+
+
+
+        /* =====================================================
+           DADOS DO CONTATO
+        ===================================================== */
+
+        .dados-contato {
+            flex: 1;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 5px;
+        }
+
+
+        .dados-contato span {
+            color: #667580;
+
+            font-size: 11px;
+        }
+
+
+        .dados-contato strong {
+            color: #26333d;
+
+            font-size: 14px;
+
+            word-break: break-word;
+        }
+
+
+
+        /* =====================================================
+           CAMPOS DE EDIÇÃO
+        ===================================================== */
+
+        .campo-edicao {
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .campo-edicao input {
+            width: 100%;
+
+            padding:
+                8px
+                10px;
+
+            box-sizing: border-box;
+
+            border: 1px solid transparent;
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #26333d;
+
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+
+        .campo-edicao input:disabled {
+            cursor: default;
+        }
+
+
+        .campo-edicao input.editando {
+            background: #ffffff;
+
+            border-color: #c9ddea;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(12, 71, 112, 0.06);
+        }
+
+
+
+        /* =====================================================
+           BOTÃO LÁPIS DOS CAMPOS
+        ===================================================== */
+
+        .botao-lapis {
+            width: 34px;
+            height: 34px;
+
+            min-width: 34px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: transparent;
+
+            color: #8c9ba5;
+
+            border: none;
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            transition: 0.2s;
+        }
+
+
+        .botao-lapis:hover {
+            background: #e9f3fa;
+
+            color: #0c4770;
+        }
+
+
+
+        /* =====================================================
+           SETA DOS CONTATOS
+        ===================================================== */
+
+        .seta-contato {
+            color: #8c9ba5;
+
+            font-size: 12px;
+
+            transition: 0.2s;
+        }
+
+
+        .contato:hover .seta-contato {
+            color: #0c4770;
+
+            transform: translateX(3px);
+        }
+
+
+
+        /* =====================================================
+           MODO EDIÇÃO
+        ===================================================== */
+
+        .modo-edicao .contato {
+            cursor: default;
+        }
+
+
+        .modo-edicao .contato:hover {
+            box-shadow: none;
+        }
+
+
+        .modo-edicao .seta-contato {
+            display: none;
+        }
+
+
+
+        /* =====================================================
+           BOTÃO SALVAR
+        ===================================================== */
+
+        .area-salvar {
+            display: none;
+
+            justify-content: center;
+
+            margin-top: 22px;
+        }
+
+
+        .area-salvar.mostrar {
+            display: flex;
+        }
+
+
+        .btn-salvar-suporte {
+            min-width: 190px;
+
+            padding:
+                12px
+                22px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            background: #0c4770;
+
+            color: #ffffff;
+
+            border: none;
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+
+        .btn-salvar-suporte:hover {
+            background: #126596;
+
+            transform: translateY(-1px);
+        }
+
+
+
+        /* =====================================================
+           MENSAGEM
+        ===================================================== */
+
+        .mensagem-ajuda {
+            margin:
+                24px
+                auto
+                20px;
+
+            max-width: 700px;
+
+            color: #667580;
+
+            font-size: 13px;
+
+            line-height: 1.6;
+
+            text-align: center;
+        }
+
+
+
+
+        /* =====================================================
+           MENSAGENS FLASH
+        ===================================================== */
+
+        .mensagem-flash {
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.mensagem-flash.sucesso {
+    background: #eaf7f1;
+    color: #1d8a68;
+    border: 1px solid #bfe4d3;
+}
+
+.mensagem-flash.erro {
+    background: #fff1f1;
+    color: #b64040;
+    border: 1px solid #eccaca;
+}yyy
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 650px) {
+
+            #edoc-cabecalho-aluno
+            .edoc-aluno-dados {
+                display: none;
+            }
+
+
+            #edoc-cabecalho-aluno
+            .edoc-aluno-menu {
+                width: 100%;
+            }
+
+
+            #edoc-cabecalho-aluno
+            .edoc-aluno-menu-item {
+                font-size: 10px;
+            }
+
+
+            .pagina-suporte {
+                padding:
+                    30px
+                    15px;
+            }
+
+
+            .cabecalho-suporte h1 {
+                font-size: 23px;
+            }
+
+
+            .campo-edicao input {
+                font-size: 13px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         CABEÇALHO DE ACORDO COM O USUÁRIO
+    ===================================================== -->
+
+
+    {% if session.get("nivel") == "Aluno" %}
+
+
+        <!-- =================================================
+             CABEÇALHO DO ALUNO
+        ================================================= -->
+
+        <header id="edoc-cabecalho-aluno">
+
+
+            <div class="edoc-aluno-topo">
+
+
+                <!-- LOGO -->
+
+                <a
+                    href="{{ url_for('iniciala') }}"
+                    class="edoc-aluno-marca"
+                >
+
+                    <div class="edoc-aluno-logo">
+
+                        <img
+                            src="{{ url_for('static', filename='img/logo.png') }}"
+                            alt="Logo eDOC"
+                        >
+
+                    </div>
+
+
+                    <div class="edoc-aluno-nome-sistema">
+
+                        <strong>
+                            eDOC
+                        </strong>
+
+                        <span>
+                            Gestão Documental Escolar
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+
+                <!-- PERFIL -->
+
+                <div class="edoc-aluno-area-usuario">
+
+
+                    <button
+                        type="button"
+                        class="edoc-aluno-usuario"
+                        id="edocBotaoAluno"
+                        onclick="edocAbrirMenuAluno(event)"
+                    >
+
+                        <div class="edoc-aluno-dados">
+
+                            <strong>
+                                {{ session.get("nome", "Aluno") }}
+                            </strong>
+
+                            <span>
+                                Aluno
+                            </span>
+
+                        </div>
+
+
+                        <div class="edoc-aluno-avatar">
+
+                            <i class="fa-regular fa-user"></i>
+
+                        </div>
+
+
+                        <i
+                            class="fa-solid fa-chevron-down edoc-aluno-seta"
+                        ></i>
+
+                    </button>
+
+
+
+                    <div
+                        class="edoc-aluno-menu-usuario"
+                        id="edocMenuAluno"
+                    >
+
+                        <a href="{{ url_for('logout') }}">
+
+                            <i class="fa-solid fa-right-from-bracket"></i>
+
+                            Sair
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- MENU -->
+
+            <div class="edoc-aluno-navegacao">
+
+
+                <nav class="edoc-aluno-menu">
+
+
+                    <a
+                        href="{{ url_for('iniciala') }}"
+                        class="edoc-aluno-menu-item"
+                    >
+
+                        <i class="fa-solid fa-house"></i>
+
+                        Início
+
+                    </a>
+
+
+
+                    <a
+                        href="{{ url_for('meus_documentos_aluno') }}"
+                        class="edoc-aluno-menu-item"
+                    >
+
+                        <i class="fa-regular fa-file-lines"></i>
+
+                        Meus documentos
+
+                    </a>
+
+
+
+                    <!-- CORRIGIDO:
+                         ALUNO VAI PARA /suporte,
+                         NÃO PARA /suporte_p -->
+
+                    <a
+                        href="{{ url_for('suporte') }}"
+                        class="edoc-aluno-menu-item ativo"
+                    >
+
+                        <i class="fa-regular fa-circle-question"></i>
+
+                        Suporte
+
+                    </a>
+
+
+                </nav>
+
+
+            </div>
+
+
+        </header>
+
+
+
+    {% elif session.get("nivel") == "Profissional" %}
+
+
+        <!-- =================================================
+             CABEÇALHO PROFISSIONAL
+        ================================================= -->
+
+        {% include 'cabecalho_profissional.html' %}
+
+
+    {% endif %}
+
+
+
+    <!-- =====================================================
+         CONTEÚDO DO SUPORTE
+    ===================================================== -->
+
+    <main class="pagina-suporte">
+
+
+        <!-- =================================================
+             MENSAGENS DO FLASK
+        ================================================= -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="mensagens-flash">
+            {% for category, message in messages %}
+                <div class="mensagem-flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
+
+        <section class="card-suporte">
+
+
+
+            <!-- =================================================
+                 TOPO DO CARD
+            ================================================= -->
+
+            <div class="topo-card-suporte">
+
+
+                <!-- BOTÃO VOLTAR -->
+
+                {% if session.get("nivel") == "Aluno" %}
+
+
+                    <a
+                        href="{{ url_for('iniciala') }}"
+                        class="edoc-voltar-suporte"
+                        title="Voltar"
+                        aria-label="Voltar"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                    </a>
+
+
+                {% elif session.get("nivel") == "Profissional" %}
+
+
+                    <a
+                        href="{{ url_for('inicialp') }}"
+                        class="edoc-voltar-suporte"
+                        title="Voltar"
+                        aria-label="Voltar"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                    </a>
+
+
+                {% else %}
+
+
+                    <a
+                        href="{{ url_for('login') }}"
+                        class="edoc-voltar-suporte"
+                        title="Voltar"
+                        aria-label="Voltar"
+                    >
+
+                        <i class="fa-solid fa-arrow-left"></i>
+
+                    </a>
+
+
+                {% endif %}
+
+
+
+                <!-- =================================================
+                     BOTÃO EDITAR
+                     APARECE SOMENTE PARA PROFISSIONAL
+                ================================================= -->
+
+                {% if session.get("nivel") == "Profissional" %}
+
+                    <button
+                        type="button"
+                        class="botao-editar-suporte"
+                        id="botaoEditar"
+                        onclick="ativarEdicao()"
+                        title="Editar contatos"
+                        aria-label="Editar contatos"
+                    >
+
+                        <i class="fa-solid fa-pen"></i>
+
+                    </button>
+
+                {% endif %}
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CABEÇALHO
+            ================================================= -->
+
+            <div class="cabecalho-suporte">
+
+
+                <i class="fa-regular fa-circle-question"></i>
+
+
+                <h1>
+                    Suporte
+                </h1>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 FORMULÁRIO
+            ================================================= -->
+
+            {% if session.get("nivel") == "Profissional" %}
+
+                <form
+                    method="POST"
+                    action="{{ url_for('suporte_profissional') }}"
+                    id="formSuporte"
+                >
+
+            {% endif %}
+
+
+
+            <div
+                class="lista-contatos"
+                id="listaContatos"
+            >
+
+
+                <!-- =================================================
+                     EMAIL
+                ================================================= -->
+
+                <div class="contato">
+
+
+                    <div class="icone-contato">
+
+                        <i class="fa-regular fa-envelope"></i>
+
+                    </div>
+
+
+                    <div class="dados-contato">
+
+
+                        <span>
+                            Email
+                        </span>
+
+
+                        {% if session.get("nivel") == "Profissional" %}
+
+                            <div class="campo-edicao">
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value="{{ email_suporte }}"
+                                    disabled
+                                    required
+                                >
+
+
+                                <button
+                                    type="button"
+                                    class="botao-lapis"
+                                    onclick="editarCampo('email')"
+                                    title="Editar e-mail"
+                                    aria-label="Editar e-mail"
+                                >
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </button>
+
+                            </div>
+
+                        {% else %}
+
+                            <strong>
+                                {{ email_suporte }}
+                            </strong>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    {% if session.get("nivel") == "Aluno" %}
+
+                        <a
+                            href="mailto:{{ email_suporte }}"
+                            class="seta-contato"
+                            aria-label="Enviar e-mail"
+                        >
+
+                        </a>
+
+                    {% else %}
+
+                        <i class="fa-solid fa-chevron-right seta-contato"></i>
+
+                    {% endif %}
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TELEFONE
+                ================================================= -->
+
+                <div class="contato">
+
+
+                    <div class="icone-contato">
+
+                        <i class="fa-solid fa-phone"></i>
+
+                    </div>
+
+
+                    <div class="dados-contato">
+
+
+                        <span>
+                            Telefone
+                        </span>
+
+
+                        {% if session.get("nivel") == "Profissional" %}
+
+                            <div class="campo-edicao">
+
+                                <input
+                                    type="text"
+                                    id="telefone"
+                                    name="telefone"
+                                    value="{{ telefone_suporte }}"
+                                    disabled
+                                    required
+                                >
+
+
+                                <button
+                                    type="button"
+                                    class="botao-lapis"
+                                    onclick="editarCampo('telefone')"
+                                    title="Editar telefone"
+                                    aria-label="Editar telefone"
+                                >
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </button>
+
+                            </div>
+
+                        {% else %}
+
+                            <strong>
+                                {{ telefone_suporte }}
+                            </strong>
+
+                        {% endif %}
+
+
+                    </div>
+
+
+
+                    {% if session.get("nivel") == "Aluno" %}
+
+                        <a
+                            href="tel:{{ telefone_suporte }}"
+                            class="seta-contato"
+                            aria-label="Ligar"
+                        >
+
+                        </a>
+
+                    {% else %}
+
+                        <i class="fa-solid fa-chevron-right seta-contato"></i>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BOTÃO SALVAR
+                 APARECE SOMENTE QUANDO EDITAR
+            ================================================= -->
+
+            {% if session.get("nivel") == "Profissional" %}
+
+                <div
+                    class="area-salvar"
+                    id="areaSalvar"
+                >
+
+                    <button
+                        type="submit"
+                        class="btn-salvar-suporte"
+                    >
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Salvar alterações
+
+                    </button>
+
+                </div>
+
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 FECHA FORMULÁRIO DO PROFISSIONAL
+            ================================================= -->
+
+            {% if session.get("nivel") == "Profissional" %}
+
+                </form>
+
+            {% endif %}
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT DO PROFISSIONAL
+    ===================================================== -->
+
+    {% if session.get("nivel") == "Profissional" %}
+
+        <script>
+
+            /* =================================================
+               ATIVAR MODO DE EDIÇÃO
+            ================================================= */
+
+            function ativarEdicao() {
+
+                const email =
+                    document.getElementById("email");
+
+                const telefone =
+                    document.getElementById("telefone");
+
+                const areaSalvar =
+                    document.getElementById("areaSalvar");
+
+                const botaoEditar =
+                    document.getElementById("botaoEditar");
+
+                const listaContatos =
+                    document.getElementById("listaContatos");
+
+
+                if (!email || !telefone) {
+                    return;
+                }
+
+
+                /* Libera os campos */
+
+                email.disabled = false;
+                telefone.disabled = false;
+
+
+                /* Adiciona aparência de edição */
+
+                email.classList.add("editando");
+                telefone.classList.add("editando");
+
+
+                /* Mostra botão salvar */
+
+                if (areaSalvar) {
+
+                    areaSalvar.classList.add("mostrar");
+
+                }
+
+
+                /* Marca o modo de edição */
+
+                if (listaContatos) {
+
+                    listaContatos.classList.add("modo-edicao");
+
+                }
+
+
+                /* Esconde botão de editar */
+
+                if (botaoEditar) {
+
+                    botaoEditar.style.display = "none";
+
+                }
+
+
+                /* Foco no primeiro campo */
+
+                email.focus();
+
+            }
+
+
+
+            /* =================================================
+               EDITAR CAMPO INDIVIDUAL
+            ================================================= */
+
+            function editarCampo(campo) {
+
+                const input =
+                    document.getElementById(campo);
+
+                if (!input) {
+                    return;
+                }
+
+
+                input.disabled = false;
+
+                input.classList.add("editando");
+
+                input.focus();
+
+                input.select();
+
+
+                const areaSalvar =
+                    document.getElementById("areaSalvar");
+
+                if (areaSalvar) {
+
+                    areaSalvar.classList.add("mostrar");
+
+                }
+
+
+                const listaContatos =
+                    document.getElementById("listaContatos");
+
+                if (listaContatos) {
+
+                    listaContatos.classList.add("modo-edicao");
+
+                }
+
+
+                const botaoEditar =
+                    document.getElementById("botaoEditar");
+
+                if (botaoEditar) {
+
+                    botaoEditar.style.display = "none";
+
+                }
+
+            }
+
+        </script>
+
+    {% endif %}
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT DO ALUNO
+    ===================================================== -->
+
+    {% if session.get("nivel") == "Aluno" %}
+
+        <script>
+
+
+            function edocAbrirMenuAluno(event) {
+
+                event.stopPropagation();
+
+
+                const menu =
+                    document.getElementById(
+                        "edocMenuAluno"
+                    );
+
+
+                const botao =
+                    document.getElementById(
+                        "edocBotaoAluno"
+                    );
+
+
+                if (!menu || !botao) {
+                    return;
+                }
+
+
+                menu.classList.toggle(
+                    "aberto"
+                );
+
+
+                botao.classList.toggle(
+                    "ativo"
+                );
+
+            }
+
+
+
+            document.addEventListener(
+                "click",
+                function () {
+
+
+                    const menu =
+                        document.getElementById(
+                            "edocMenuAluno"
+                        );
+
+
+                    const botao =
+                        document.getElementById(
+                            "edocBotaoAluno"
+                        );
+
+
+                    if (menu) {
+
+                        menu.classList.remove(
+                            "aberto"
+                        );
+
+                    }
+
+
+                    if (botao) {
+
+                        botao.classList.remove(
+                            "ativo"
+                        );
+
+                    }
+
+
+                }
+            );
+
+
+        </script>
+
+    {% endif %}
+
+
+</body>
+
+</html>
+```
