@@ -2781,7 +2781,7 @@ def turma_3tdsa():
     return render_template(
         "turma_TDSA.html",
         alunos=carregar_alunos_turma(
-            "3 TDS A"
+            "3º TDS A"
         )
     )
 
@@ -2796,7 +2796,7 @@ def turma_3tdsb():
     return render_template(
         "turma_TDSB.html",
         alunos=carregar_alunos_turma(
-            "3 TDS B"
+            "3º TDS B"
         )
     )
 
@@ -2811,7 +2811,7 @@ def turma_3mkta():
     return render_template(
         "turma_MKTA.html",
         alunos=carregar_alunos_turma(
-            "3 MKT A"
+            "3º MKT A"
         )
     )
 
@@ -2826,7 +2826,7 @@ def turma_3mktb():
     return render_template(
         "turma_MKTB.html",
         alunos=carregar_alunos_turma(
-            "3 MKT B"
+            "3º MKT B"
         )
     )
 
